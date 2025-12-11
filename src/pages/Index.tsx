@@ -1,13 +1,25 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Navbar } from '@/components/layout/Navbar';
+import { Hero } from '@/components/sections/Hero';
+import { Features } from '@/components/sections/Features';
+import { HowItWorks } from '@/components/sections/HowItWorks';
+import { Flows } from '@/components/sections/Flows';
+import { Dashboard } from '@/components/sections/Dashboard';
+import { FinalCTA } from '@/components/sections/FinalCTA';
+import { AppProvider } from '@/context/AppContext';
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <AppProvider>
+      <div className="scroll-snap-y h-screen overflow-y-auto">
+        <Navbar />
+        <Hero />
+        <Features />
+        <HowItWorks />
+        <Flows />
+        <Dashboard />
+        <FinalCTA />
       </div>
-    </div>
+    </AppProvider>
   );
 };
 
