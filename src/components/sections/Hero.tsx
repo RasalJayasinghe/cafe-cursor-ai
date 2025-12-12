@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Utensils, FileText, Share2, MessageCircle } from 'lucide-react';
+import { Utensils, FileText, Share2, MessageCircle, MapPin } from 'lucide-react';
+import globeColombo from '@/assets/globe-colombo.png';
 
 const flowTiles = [
   { icon: Utensils, label: 'Claim Meal' },
@@ -17,21 +18,36 @@ export function Hero() {
 
   return (
     <section id="hero" className="min-h-screen snap-section flex items-center relative overflow-hidden">
-      {/* Parallax background */}
+      {/* Globe background */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        initial={{ opacity: 0, scale: 1.1 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.5 }}
       >
-        <div className="absolute top-20 -left-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute bottom-20 -right-40 w-96 h-96 rounded-full bg-primary/10 blur-3xl" />
+        <img
+          src={globeColombo}
+          alt="Globe showing Colombo, Sri Lanka"
+          className="w-full h-full object-cover opacity-60"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/90 to-transparent" />
       </motion.div>
 
-      <div className="container mx-auto px-6 py-24 pt-32">
+      <div className="container mx-auto px-6 py-24 pt-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: Content */}
           <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-6"
+            >
+              <MapPin className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">Based in Colombo, Sri Lanka</span>
+            </motion.div>
+
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -48,7 +64,7 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="mt-6 text-xl text-muted-foreground max-w-lg leading-relaxed"
             >
-              Taste quick AI tools — claim meals, generate posts, share projects, and ask questions.
+              Small bites of AI for creators & communities — claim meals, generate posts, share projects, and ask questions.
             </motion.p>
 
             <motion.div
@@ -68,7 +84,7 @@ export function Hero() {
                 size="lg"
                 variant="outline"
                 onClick={() => scrollToSection('#dashboard')}
-                className="text-base px-8 h-12 rounded-xl"
+                className="text-base px-8 h-12 rounded-xl border-border/50 bg-background/50 backdrop-blur-sm"
               >
                 Open Dashboard
               </Button>
@@ -82,7 +98,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="relative"
           >
-            <div className="bg-card border border-border rounded-2xl p-8 shadow-xl">
+            <div className="bg-card/80 backdrop-blur-md border border-border/50 rounded-2xl p-8 shadow-xl">
               <p className="text-sm font-medium text-muted-foreground mb-6">Available Flows</p>
               <div className="grid grid-cols-2 gap-4">
                 {flowTiles.map((tile, index) => (
@@ -92,7 +108,7 @@ export function Hero() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    className="bg-surface rounded-xl p-4 flex flex-col items-center gap-3 cursor-pointer hover:bg-muted transition-colors"
+                    className="bg-surface/80 backdrop-blur-sm rounded-xl p-4 flex flex-col items-center gap-3 cursor-pointer hover:bg-muted transition-colors"
                   >
                     <tile.icon className="w-8 h-8 text-primary" />
                     <span className="text-sm font-medium text-foreground">{tile.label}</span>
