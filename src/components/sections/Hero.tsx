@@ -104,12 +104,11 @@ export function Hero() {
           </motion.div>
           
           {/* Animated line with dot */}
-          <div className="relative h-12 w-px">
-            <div className="absolute inset-0 bg-gradient-to-b from-foreground/50 to-transparent" />
+          <div className="relative h-10 w-[2px] bg-gradient-to-b from-foreground/50 to-transparent mx-auto">
             <motion.div
-              animate={{ y: [0, 36, 0] }}
+              animate={{ y: [0, 32, 0] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-foreground shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-foreground shadow-[0_0_10px_rgba(255,255,255,0.5)]"
             />
           </div>
           
@@ -117,11 +116,11 @@ export function Hero() {
           <motion.div
             animate={{ y: [0, 4, 0] }}
             transition={{ duration: 1, repeat: Infinity }}
-            className="flex flex-col items-center -mt-1"
+            className="flex flex-col items-center"
           >
             <ChevronDown className="w-4 h-4 text-foreground/40" />
-            <ChevronDown className="w-4 h-4 text-foreground/60 -mt-2" />
-            <ChevronDown className="w-4 h-4 text-foreground/80 -mt-2" />
+            <ChevronDown className="w-4 h-4 text-foreground/60 -mt-2.5" />
+            <ChevronDown className="w-4 h-4 text-foreground/80 -mt-2.5" />
           </motion.div>
           </div>
         </motion.div>
