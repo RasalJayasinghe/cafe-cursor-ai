@@ -44,10 +44,18 @@ export function Hero() {
           </motion.div>
 
           {/* Giant Heading */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg md:text-xl lg:text-2xl text-muted-foreground font-light tracking-wide mb-4"
+          >
+            Welcome to
+          </motion.p>
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
             className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] font-bold tracking-tighter text-foreground leading-none"
           >
             Cafe Cursor
