@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Utensils, FileText, Share2, MessageCircle, MapPin } from 'lucide-react';
+import { Utensils, FileText, Share2, MessageCircle, MapPin, ChevronDown } from 'lucide-react';
 import globeColombo from '@/assets/globe-colombo.png';
 
 const flowTiles = [
@@ -80,19 +80,44 @@ export function Hero() {
             Where creators connect, ideas brew, and communities gather around AI
           </motion.p>
 
-          {/* Scroll indicator */}
+          {/* Scroll indicator - Gen-Z style */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 cursor-pointer group"
+            onClick={() => document.getElementById('flows-preview')?.scrollIntoView({ behavior: 'smooth' })}
           >
+            {/* Text with gradient and glow */}
             <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full flex justify-center pt-2"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="relative"
             >
-              <motion.div className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+              <span className="text-xs font-bold uppercase tracking-[0.4em] text-foreground/70 group-hover:text-foreground transition-colors">
+                Scroll
+              </span>
+            </motion.div>
+            
+            {/* Animated line with dot */}
+            <div className="relative h-16 w-px">
+              <div className="absolute inset-0 bg-gradient-to-b from-foreground/50 to-transparent" />
+              <motion.div
+                animate={{ y: [0, 48, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-foreground shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+              />
+            </div>
+            
+            {/* Bouncing chevrons */}
+            <motion.div
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 1, repeat: Infinity }}
+              className="flex flex-col items-center -mt-2"
+            >
+              <ChevronDown className="w-4 h-4 text-foreground/40" />
+              <ChevronDown className="w-4 h-4 text-foreground/60 -mt-2" />
+              <ChevronDown className="w-4 h-4 text-foreground/80 -mt-2" />
             </motion.div>
           </motion.div>
         </div>
