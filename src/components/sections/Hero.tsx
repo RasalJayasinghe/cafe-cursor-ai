@@ -86,9 +86,12 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer group"
-          onClick={() => document.getElementById('flows-preview')?.scrollIntoView({ behavior: 'smooth' })}
+          className="absolute bottom-6 left-0 right-0 z-20 flex justify-center"
         >
+          <div 
+            className="flex flex-col items-center gap-2 cursor-pointer group"
+            onClick={() => document.getElementById('flows-preview')?.scrollIntoView({ behavior: 'smooth' })}
+          >
           {/* Text with gradient and glow */}
           <motion.div
             animate={{ opacity: [0.5, 1, 0.5] }}
@@ -120,6 +123,7 @@ export function Hero() {
             <ChevronDown className="w-4 h-4 text-foreground/60 -mt-2" />
             <ChevronDown className="w-4 h-4 text-foreground/80 -mt-2" />
           </motion.div>
+          </div>
         </motion.div>
       </section>
 
