@@ -35,86 +35,101 @@ export function Hero() {
       </motion.div>
 
       <div className="container mx-auto px-6 py-24 pt-32 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left: Content */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-6"
-            >
-              <MapPin className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Based in Colombo, Sri Lanka</span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight"
-            >
-              Welcome to{' '}
-              <span className="text-primary">Cafe Cursor</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-6 text-xl text-muted-foreground max-w-lg leading-relaxed"
-            >
-              Small bites of AI for creators & communities — claim meals, generate posts, share projects, and ask questions.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-10 flex flex-wrap gap-4"
-            >
-              <Button
-                size="lg"
-                onClick={() => scrollToSection('#flows')}
-                className="text-base px-8 h-12 rounded-xl"
-              >
-                Try interactive flows
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => scrollToSection('#dashboard')}
-                className="text-base px-8 h-12 rounded-xl border-border/50 bg-background/50 backdrop-blur-sm"
-              >
-                Open Dashboard
-              </Button>
-            </motion.div>
-          </div>
-
-          {/* Right: Preview Card */}
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+          {/* Badge */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="relative"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-6"
           >
-            <div className="bg-card/80 backdrop-blur-md border border-border/50 rounded-2xl p-8 shadow-xl">
-              <p className="text-sm font-medium text-muted-foreground mb-6">Available Flows</p>
-              <div className="grid grid-cols-2 gap-4">
-                {flowTiles.map((tile, index) => (
-                  <motion.div
-                    key={tile.label}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-surface/80 backdrop-blur-sm rounded-xl p-4 flex flex-col items-center gap-3 cursor-pointer hover:bg-muted transition-colors"
-                  >
-                    <tile.icon className="w-8 h-8 text-primary" />
-                    <span className="text-sm font-medium text-foreground">{tile.label}</span>
-                  </motion.div>
-                ))}
-              </div>
+            <MapPin className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Based in Colombo, Sri Lanka</span>
+          </motion.div>
+
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight"
+          >
+            Welcome to{' '}
+            <span className="text-primary">Cafe Cursor</span>
+          </motion.h1>
+
+          {/* Subheading */}
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-6 text-xl text-muted-foreground max-w-2xl leading-relaxed"
+          >
+            Small bites of AI for creators & communities — claim meals, generate posts, share projects, and ask questions.
+          </motion.p>
+
+          {/* Expressive Flow Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="mt-16 w-full"
+          >
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-8 font-medium"
+            >
+              Available Flows
+            </motion.p>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {flowTiles.map((tile, index) => (
+                <motion.div
+                  key={tile.label}
+                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: 0.7 + index * 0.1,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  whileHover={{ 
+                    scale: 1.08, 
+                    y: -8,
+                    transition: { duration: 0.2 }
+                  }}
+                  className="group relative"
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/50 to-primary/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Card */}
+                  <div className="relative bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 md:p-8 flex flex-col items-center gap-4 cursor-pointer overflow-hidden group-hover:border-primary/50 transition-all duration-300">
+                    {/* Animated gradient background */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Icon container with ring */}
+                    <motion.div
+                      whileHover={{ rotate: [0, -10, 10, 0] }}
+                      transition={{ duration: 0.5 }}
+                      className="relative"
+                    >
+                      <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/40 transition-all duration-300">
+                        <tile.icon className="w-7 h-7 md:w-8 md:h-8 text-primary group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    </motion.div>
+                    
+                    {/* Label */}
+                    <span className="relative text-base md:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
+                      {tile.label}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         </div>
