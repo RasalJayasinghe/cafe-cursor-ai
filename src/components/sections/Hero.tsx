@@ -22,13 +22,22 @@ export function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5 }}
         >
-          <img
-            src={globeColombo}
-            alt="Globe showing Colombo, Sri Lanka"
-            className="w-full h-full object-cover opacity-60"
+        <img
+          src={globeColombo}
+          alt="Globe showing Colombo, Sri Lanka"
+          className="w-full h-full object-cover opacity-60"
+        />
+        {/* Sri Lanka beacon */}
+        <div className="absolute top-[58%] left-[48%] -translate-x-1/2 -translate-y-1/2">
+          <motion.div
+            animate={{ scale: [1, 1.5, 1], opacity: [0.8, 0.3, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="w-4 h-4 rounded-full bg-foreground/60 blur-sm"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/80 to-transparent" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-foreground" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 to-transparent" />
         </motion.div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-6">
@@ -50,7 +59,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl lg:text-2xl text-muted-foreground font-light tracking-wide mb-4"
           >
-            Welcome to
+            A place where
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
@@ -68,7 +77,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-8 text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed"
           >
-            Small bites of AI for creators & communities
+            Where creators connect, ideas brew, and communities gather around AI
           </motion.p>
 
           {/* Scroll indicator */}
