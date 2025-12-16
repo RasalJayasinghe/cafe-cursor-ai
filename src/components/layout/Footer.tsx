@@ -81,10 +81,17 @@ export function Footer() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="font-mono text-sm"
+            className="font-mono text-sm flex items-center gap-2"
           >
             <span className="text-foreground/40">hosted_by:</span>
-            <span className="text-foreground/70 ml-2">TechTalk360</span>
+            <a 
+              href="#" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[#4AAED9] hover:text-[#5DC1EC] transition-colors font-medium"
+            >
+              TechTalk360
+            </a>
           </motion.div>
         </div>
       </div>
