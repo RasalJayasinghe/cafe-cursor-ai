@@ -457,33 +457,34 @@ export default function PostGeneration() {
 
       {/* Header */}
       <motion.header 
-        className="relative z-10 p-4 md:p-6 flex items-center justify-between border-b transition-colors duration-500"
+        className="relative z-10 px-3 py-3 sm:p-4 md:p-6 flex items-center justify-between border-b transition-colors duration-500"
         style={{ borderColor: currentScreenVibe.border }}
       >
         <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-xs font-mono hidden sm:inline">~/cafe-cursor</span>
         </Link>
-        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+        <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-muted-foreground">
           <Terminal className="w-3 h-3" />
-          <span>post-gen v1.0</span>
+          <span className="hidden sm:inline">post-gen v1.0</span>
+          <span className="sm:hidden">v1.0</span>
         </div>
       </motion.header>
 
-      <main className="relative z-10 min-h-[calc(100vh-73px)] flex flex-col lg:flex-row">
+      <main className="relative z-10 min-h-[calc(100vh-60px)] sm:min-h-[calc(100vh-73px)] flex flex-col lg:flex-row">
         {/* Left Panel - Editor */}
-        <div className="flex-1 p-4 md:p-8 lg:p-12 flex flex-col">
+        <div className="flex-1 p-3 sm:p-4 md:p-8 lg:p-12 flex flex-col">
           {/* Title area */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="mb-8"
+            className="mb-4 sm:mb-8"
           >
-            <div className="flex items-center gap-3 mb-2">
-              <Coffee className="w-5 h-5 text-foreground/60" />
-              <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">Brew your post</span>
+            <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+              <Coffee className="w-4 h-4 sm:w-5 sm:h-5 text-foreground/60" />
+              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">Brew your post</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
               What's your <span className="text-foreground/60">vibe</span>?
             </h1>
           </motion.div>
@@ -493,19 +494,19 @@ export default function PostGeneration() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="flex flex-wrap gap-2 mb-8"
+            className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-8"
           >
             {(Object.keys(vibeTemplates) as Vibe[]).map((v) => (
               <button
                 key={v}
                 onClick={() => handleVibeChange(v)}
-                className={`relative px-5 py-2.5 rounded-full font-mono text-sm transition-all duration-300 ${
+                className={`relative px-3 sm:px-5 py-2 sm:py-2.5 rounded-full font-mono text-xs sm:text-sm transition-all duration-300 ${
                   vibe === v
                     ? 'bg-foreground text-background'
                     : 'bg-transparent border border-foreground/20 text-foreground/60 hover:border-foreground/40 hover:text-foreground'
                 }`}
               >
-                <span className="mr-2">{vibeEmoji[v]}</span>
+                <span className="mr-1 sm:mr-2">{vibeEmoji[v]}</span>
                 {v}
                 {vibe === v && (
                   <motion.div
@@ -525,40 +526,40 @@ export default function PostGeneration() {
             transition={{ delay: 0.2 }}
             className="flex-1 flex flex-col"
           >
-            <div className="relative flex-1 min-h-[200px]">
+            <div className="relative flex-1 min-h-[120px] sm:min-h-[200px]">
               <textarea
                 value={caption}
                 onChange={(e) => {
                   setCaption(e.target.value);
                   setIsTyping(false);
                 }}
-                className="w-full h-full bg-transparent border-0 text-foreground resize-none focus:outline-none text-lg md:text-xl leading-relaxed placeholder:text-foreground/20"
+                className="w-full h-full bg-transparent border-0 text-foreground resize-none focus:outline-none text-base sm:text-lg md:text-xl leading-relaxed placeholder:text-foreground/20"
                 placeholder="Start typing or select a vibe..."
                 aria-label="Caption"
               />
               {/* Gradient fade at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
             </div>
 
             {/* Controls row */}
-            <div className="flex items-center justify-between pt-4 border-t border-border/20 mt-4">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-border/20 mt-3 sm:mt-4">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   onClick={handleShuffle}
-                  className="p-2 text-foreground/40 hover:text-foreground transition-colors"
+                  className="p-1.5 sm:p-2 text-foreground/40 hover:text-foreground transition-colors"
                   aria-label="Shuffle"
                 >
                   <RotateCcw className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-2 px-4 py-2 bg-foreground/5 hover:bg-foreground/10 rounded-lg transition-colors text-sm font-mono"
+                  className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/5 hover:bg-foreground/10 rounded-lg transition-colors text-xs sm:text-sm font-mono"
                 >
                   {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   {copied ? 'copied!' : 'copy'}
                 </button>
               </div>
-              <span className={`font-mono text-xs ${isOverLimit ? 'text-red-400' : 'text-foreground/30'}`}>
+              <span className={`font-mono text-[10px] sm:text-xs ${isOverLimit ? 'text-red-400' : 'text-foreground/30'}`}>
                 {charCount}/{MAX_CHARS}
               </span>
             </div>
@@ -576,14 +577,17 @@ export default function PostGeneration() {
           transition={{ duration: 0.5 }}
         />
 
+        {/* Horizontal divider for mobile/tablet */}
+        <div className="lg:hidden h-px mx-3 sm:mx-4" style={{ background: currentScreenVibe.border }} />
+
         {/* Right Panel - Preview & Actions */}
-        <div className="lg:w-[420px] p-4 md:p-8 lg:p-12 bg-foreground/[0.02] flex flex-col">
-          {/* ASCII Logo */}
+        <div className="lg:w-[420px] p-3 sm:p-4 md:p-8 lg:p-12 bg-foreground/[0.02] flex flex-col">
+          {/* ASCII Logo - hidden on small mobile */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="mb-8 flex justify-center"
+            className="mb-4 sm:mb-8 flex justify-center hidden sm:flex"
           >
             <CoffeeCupLogo vibe={vibe} />
           </motion.div>
@@ -595,29 +599,29 @@ export default function PostGeneration() {
             transition={{ delay: 0.3 }}
             className="flex-1"
           >
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
               <Sparkles className="w-3 h-3" style={{ color: currentScreenVibe.accent, opacity: 0.6 }} />
-              <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">Preview</span>
+              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">Preview</span>
             </div>
 
             {/* Terminal-style preview */}
             <motion.div 
-              className="relative bg-background rounded-xl overflow-hidden transition-colors duration-500"
+              className="relative bg-background rounded-lg sm:rounded-xl overflow-hidden transition-colors duration-500"
               style={{ borderWidth: 1, borderStyle: 'solid', borderColor: currentScreenVibe.border }}
             >
               {/* Terminal header */}
               <div 
-                className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02] transition-colors duration-500"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-foreground/[0.02] transition-colors duration-500"
                 style={{ borderBottomWidth: 1, borderBottomStyle: 'solid', borderBottomColor: currentScreenVibe.border }}
               >
-                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: currentScreenVibe.accent, opacity: 0.4 }} />
-                <div className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
-                <div className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
-                <span className="ml-2 text-[10px] font-mono text-foreground/30">your-post.txt</span>
+                <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style={{ backgroundColor: currentScreenVibe.accent, opacity: 0.4 }} />
+                <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-foreground/20" />
+                <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-foreground/20" />
+                <span className="ml-1 sm:ml-2 text-[8px] sm:text-[10px] font-mono text-foreground/30">your-post.txt</span>
               </div>
               
               {/* Content */}
-              <div className="p-4 min-h-[200px] font-mono text-sm leading-relaxed">
+              <div className="p-3 sm:p-4 min-h-[120px] sm:min-h-[200px] font-mono text-xs sm:text-sm leading-relaxed">
                 <span className="text-foreground/80">{displayedText}</span>
                 <span 
                   className={`${cursorVisible ? 'opacity-100' : 'opacity-0'} transition-opacity`}
@@ -627,13 +631,13 @@ export default function PostGeneration() {
 
               {/* Footer */}
               <div 
-                className="px-4 py-2 bg-foreground/[0.02] flex items-center justify-between transition-colors duration-500"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/[0.02] flex items-center justify-between transition-colors duration-500"
                 style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: currentScreenVibe.border }}
               >
-                <span className="text-[10px] font-mono" style={{ color: currentScreenVibe.accent, opacity: 0.6 }}>
+                <span className="text-[8px] sm:text-[10px] font-mono" style={{ color: currentScreenVibe.accent, opacity: 0.6 }}>
                   {vibeEmoji[vibe]} {vibe}
                 </span>
-                <span className="text-[10px] font-mono text-foreground/30">
+                <span className="text-[8px] sm:text-[10px] font-mono text-foreground/30">
                   {charCount} chars
                 </span>
               </div>
@@ -645,26 +649,30 @@ export default function PostGeneration() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="mt-8 space-y-3"
+            className="mt-4 sm:mt-8 space-y-2 sm:space-y-3"
           >
-            <p className="text-xs font-mono text-foreground/40 uppercase tracking-widest mb-4">Share</p>
+            <p className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest mb-2 sm:mb-4">Share</p>
             
-            <button
-              onClick={handleShareX}
-              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-foreground text-background rounded-xl font-mono text-sm hover:bg-foreground/90 transition-colors group"
-            >
-              <Twitter className="w-4 h-4" />
-              Post to X
-              <Zap className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
+            <div className="flex gap-2 sm:flex-col sm:gap-3">
+              <button
+                onClick={handleShareX}
+                className="flex-1 sm:flex-none w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-foreground text-background rounded-lg sm:rounded-xl font-mono text-xs sm:text-sm hover:bg-foreground/90 transition-colors group"
+              >
+                <Twitter className="w-4 h-4" />
+                <span className="hidden sm:inline">Post to X</span>
+                <span className="sm:hidden">X</span>
+                <Zap className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block" />
+              </button>
 
-            <button
-              onClick={handleShareLinkedIn}
-              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-transparent border border-foreground/20 text-foreground rounded-xl font-mono text-sm hover:bg-foreground/5 hover:border-foreground/30 transition-all"
-            >
-              <Linkedin className="w-4 h-4" />
-              Share on LinkedIn
-            </button>
+              <button
+                onClick={handleShareLinkedIn}
+                className="flex-1 sm:flex-none w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-transparent border border-foreground/20 text-foreground rounded-lg sm:rounded-xl font-mono text-xs sm:text-sm hover:bg-foreground/5 hover:border-foreground/30 transition-all"
+              >
+                <Linkedin className="w-4 h-4" />
+                <span className="hidden sm:inline">Share on LinkedIn</span>
+                <span className="sm:hidden">LinkedIn</span>
+              </button>
+            </div>
           </motion.div>
 
           {/* Footer */}
@@ -672,9 +680,9 @@ export default function PostGeneration() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-8 pt-4 border-t border-foreground/10"
+            className="mt-4 sm:mt-8 pt-3 sm:pt-4 border-t border-foreground/10"
           >
-            <p className="text-[10px] font-mono text-foreground/20 text-center">
+            <p className="text-[8px] sm:text-[10px] font-mono text-foreground/20 text-center">
               brewed with ☕ at cafe cursor, colombo
             </p>
           </motion.div>

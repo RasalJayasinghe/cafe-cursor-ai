@@ -112,7 +112,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl p-0 bg-transparent border-0 overflow-hidden">
+      <DialogContent className="max-w-2xl p-0 bg-transparent border-0 overflow-hidden max-h-[90vh] sm:max-h-[85vh]">
         <div className="relative">
           {/* Animated glow border */}
           <div className="absolute -inset-[1px] bg-gradient-to-r from-foreground/20 via-foreground/40 to-foreground/20 rounded-2xl blur-sm animate-pulse" />
@@ -252,9 +252,9 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                   </div>
 
                   {/* Code content */}
-                  <div className="p-4 font-mono text-sm max-h-[60vh] overflow-y-auto">
+                  <div className="p-2 sm:p-4 font-mono text-xs sm:text-sm max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
                     {/* Command line */}
-                    <div className="text-muted-foreground/60 text-xs mb-4 px-2">
+                    <div className="text-muted-foreground/60 text-[10px] sm:text-xs mb-3 sm:mb-4 px-2">
                       # Select one meal and one drink to complete your order
                     </div>
 

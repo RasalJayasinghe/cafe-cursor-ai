@@ -89,33 +89,34 @@ export default function ShareProject() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="border-b border-foreground/10 bg-foreground/5">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
             <Link to="/">
-              <Button variant="ghost" size="sm" className="font-mono text-xs">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+              <Button variant="ghost" size="sm" className="font-mono text-xs px-2 sm:px-3">
+                <ArrowLeft className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Back</span>
               </Button>
             </Link>
-            <div>
-              <h1 className="font-mono text-lg font-bold">Project Gallery</h1>
-              <p className="font-mono text-xs text-muted-foreground">Cafe Cursor • Colombo</p>
+            <div className="min-w-0">
+              <h1 className="font-mono text-sm sm:text-lg font-bold truncate">Project Gallery</h1>
+              <p className="font-mono text-[10px] sm:text-xs text-muted-foreground">Cafe Cursor • Colombo</p>
             </div>
           </div>
           
           <Button
             onClick={() => setShowForm(true)}
-            className="font-mono text-xs bg-foreground text-background hover:bg-foreground/90"
+            className="font-mono text-[10px] sm:text-xs bg-foreground text-background hover:bg-foreground/90 px-2 sm:px-3 h-8 sm:h-9 flex-shrink-0"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Share Project
+            <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Share Project</span>
+            <span className="sm:hidden">Share</span>
           </Button>
         </div>
       </header>
 
       {/* Projects Grid */}
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="grid gap-4 md:grid-cols-2">
+      <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
           <AnimatePresence mode="popLayout">
             {projects.map((project, index) => (
               <motion.div
@@ -216,20 +217,20 @@ export default function ShareProject() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-background/80 backdrop-blur-sm"
             onClick={() => setShowForm(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-lg"
+              className="relative w-full max-w-lg max-h-[90vh] sm:max-h-none overflow-y-auto"
             >
               {/* Glow border */}
-              <div className="absolute -inset-[1px] bg-gradient-to-r from-foreground/20 via-foreground/40 to-foreground/20 rounded-2xl blur-sm" />
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-foreground/20 via-foreground/40 to-foreground/20 rounded-t-2xl sm:rounded-2xl blur-sm" />
               
-              <div className="relative bg-background border border-foreground/10 rounded-2xl overflow-hidden">
+              <div className="relative bg-background border border-foreground/10 rounded-t-2xl sm:rounded-2xl overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/10 bg-foreground/5">
                   <div className="flex items-center gap-2">
