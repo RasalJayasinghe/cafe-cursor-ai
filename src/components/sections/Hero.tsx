@@ -100,7 +100,7 @@ export function Hero() {
           </motion.p>
         </div>
 
-        {/* Scroll indicator - Minimal style */}
+        {/* Scroll indicator - Terminal command style */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -108,21 +108,27 @@ export function Hero() {
           className="absolute bottom-10 left-0 right-0 z-20 flex justify-center"
         >
           <div 
-            className="flex flex-col items-center gap-4 cursor-pointer group"
+            className="flex flex-col items-center gap-3 cursor-pointer group"
             onClick={() => document.getElementById('flows-preview')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            {/* Minimal line with traveling dot */}
-            <div className="relative h-12 w-[1px] bg-foreground/20">
-              <motion.div
-                animate={{ y: [0, 40, 0] }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-foreground/60"
+            {/* Terminal command */}
+            <div className="flex items-center gap-1 font-mono text-sm text-foreground/50 group-hover:text-foreground/70 transition-colors">
+              <span className="text-foreground/30">&gt;</span>
+              <span>scroll</span>
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                className="w-[2px] h-4 bg-foreground/60"
               />
             </div>
+            
+            {/* Subtle arrow */}
+            <motion.div
+              animate={{ y: [0, 3, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <ChevronDown className="w-4 h-4 text-foreground/30 group-hover:text-foreground/50 transition-colors" />
+            </motion.div>
           </div>
         </motion.div>
       </section>
