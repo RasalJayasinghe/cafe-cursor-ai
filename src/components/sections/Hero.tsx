@@ -100,7 +100,7 @@ export function Hero() {
           </motion.p>
         </div>
 
-        {/* Scroll indicator - Binary pulse style */}
+        {/* Scroll indicator - Matrix drop style */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,52 +108,65 @@ export function Hero() {
           className="absolute bottom-8 left-0 right-0 z-20 flex justify-center"
         >
           <div 
-            className="flex flex-col items-center gap-3 cursor-pointer group"
+            className="flex flex-col items-center cursor-pointer group"
             onClick={() => document.getElementById('flows-preview')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            {/* Binary digits container */}
-            <div className="relative h-16 w-8 overflow-hidden">
-              {/* Falling binary digits */}
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{ 
-                    y: ['-100%', '200%'],
-                    opacity: [0, 1, 1, 0]
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.6,
-                    ease: 'linear'
-                  }}
-                  className="absolute left-1/2 -translate-x-1/2 font-mono text-sm font-bold"
-                  style={{
-                    textShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)'
+            {/* Matrix rain container */}
+            <div className="relative w-20 h-24 overflow-hidden">
+              {/* Falling character columns */}
+              {[-2, -1, 0, 1, 2].map((col) => (
+                <div 
+                  key={col} 
+                  className="absolute top-0 flex flex-col items-center"
+                  style={{ 
+                    left: `calc(50% + ${col * 14}px)`,
+                    transform: 'translateX(-50%)'
                   }}
                 >
-                  <span className="text-foreground/80">{i % 2}</span>
-                  <span className="text-foreground/60">{(i + 1) % 2}</span>
-                </motion.div>
+                  {[0, 1, 2, 3].map((row) => (
+                    <motion.span
+                      key={row}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ 
+                        opacity: [0, 0.8, 0.4, 0],
+                        y: [-20, 80]
+                      }}
+                      transition={{
+                        duration: 1.8,
+                        repeat: Infinity,
+                        delay: (Math.abs(col) * 0.15) + (row * 0.2),
+                        ease: 'linear'
+                      }}
+                      className="font-mono text-xs text-foreground/70 leading-tight"
+                      style={{
+                        textShadow: '0 0 8px rgba(255,255,255,0.6)'
+                      }}
+                    >
+                      {['0', '1', '▼', '↓', '⌄', '∨'][Math.floor(Math.random() * 6)]}
+                    </motion.span>
+                  ))}
+                </div>
               ))}
               
-              {/* Glow trail */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-foreground/5 to-transparent" />
+              {/* Arrow shape overlay - characters converge to arrow */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
+                <motion.div
+                  animate={{ 
+                    opacity: [0.5, 1, 0.5],
+                    y: [0, 3, 0]
+                  }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="flex flex-col items-center"
+                  style={{
+                    textShadow: '0 0 12px rgba(255,255,255,0.8)'
+                  }}
+                >
+                  <span className="font-mono text-foreground/60 text-[10px]">▼ ▼ ▼</span>
+                  <span className="font-mono text-foreground/70 text-xs -mt-1">▼ ▼</span>
+                  <span className="font-mono text-foreground/90 text-sm -mt-1">▼</span>
+                </motion.div>
+              </div>
             </div>
-            
-            {/* Arrow indicator */}
-            <motion.div
-              animate={{ y: [0, 4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="relative"
-            >
-              <ChevronDown 
-                className="w-5 h-5 text-foreground/60 group-hover:text-foreground/80 transition-colors" 
-                style={{
-                  filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.3))'
-                }}
-              />
-            </motion.div>
           </div>
         </motion.div>
       </section>
