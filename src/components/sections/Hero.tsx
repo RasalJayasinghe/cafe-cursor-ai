@@ -193,7 +193,7 @@ export function Hero() {
                   </motion.div>
                   
                   {/* Label */}
-                  <span className="relative text-base md:text-lg font-semibold text-foreground transition-colors duration-300">
+                  <span className="relative text-base md:text-lg font-semibold text-foreground transition-colors duration-300 text-center">
                     {tile.label}
                   </span>
                 </div>
