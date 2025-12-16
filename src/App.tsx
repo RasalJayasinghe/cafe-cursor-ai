@@ -7,6 +7,7 @@ import { AppProvider } from "@/context/AppContext";
 import Index from "./pages/Index";
 import WorkersDashboard from "./pages/WorkersDashboard";
 import ShareProject from "./pages/ShareProject";
+import PostGeneration from "./pages/PostGeneration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<WorkersDashboard />} />
             <Route path="/projects" element={<ShareProject />} />
+            <Route path="/post-gen" element={<PostGeneration />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

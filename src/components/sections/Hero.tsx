@@ -21,6 +21,8 @@ export function Hero() {
       setClaimMealOpen(true);
     } else if (action === 'share-project') {
       navigate('/projects');
+    } else if (action === 'post-gen') {
+      navigate('/post-gen');
     }
   };
 
