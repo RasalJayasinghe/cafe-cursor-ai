@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Utensils, FileText, Share2, MessageCircle, MapPin, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import globeColombo from '@/assets/globe-colombo.png';
 import { ClaimMealDialog } from '@/components/flows/ClaimMealDialog';
 
@@ -12,11 +13,14 @@ const flowTiles = [
 ];
 
 export function Hero() {
+  const navigate = useNavigate();
   const [claimMealOpen, setClaimMealOpen] = useState(false);
 
   const handleTileClick = (action: string) => {
     if (action === 'claim-meal') {
       setClaimMealOpen(true);
+    } else if (action === 'share-project') {
+      navigate('/projects');
     }
   };
 
