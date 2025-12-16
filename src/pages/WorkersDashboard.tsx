@@ -7,9 +7,21 @@ import { Link } from 'react-router-dom';
 
 type Filter = 'pending' | 'completed' | 'all';
 
+// Sample static data for preview
+const SAMPLE_TOKENS = [
+  { id: '1', token: 'CC-7842', name: 'John Doe', email: 'john@example.com', food: 'rice-bowl', drink: 'cafe-latte', createdAt: new Date(Date.now() - 5 * 60000).toISOString(), used: false },
+  { id: '2', token: 'CC-3156', name: 'Jane Smith', email: 'jane@example.com', food: 'signature-noodles', drink: 'ceylon-tea', createdAt: new Date(Date.now() - 12 * 60000).toISOString(), used: false },
+  { id: '3', token: 'CC-9284', name: 'Mike Chen', email: 'mike@example.com', food: 'artisan-sandwich', drink: 'espresso', createdAt: new Date(Date.now() - 25 * 60000).toISOString(), used: true },
+  { id: '4', token: 'CC-4721', name: 'Sarah Lee', email: 'sarah@example.com', food: 'garden-salad', drink: 'fresh-juice', createdAt: new Date(Date.now() - 45 * 60000).toISOString(), used: false },
+  { id: '5', token: 'CC-6038', name: 'Alex Kumar', email: 'alex@example.com', food: 'rice-bowl', drink: 'ceylon-tea', createdAt: new Date(Date.now() - 60 * 60000).toISOString(), used: true },
+];
+
 export default function WorkersDashboard() {
-  const { tokens, markTokenUsed } = useApp();
+  const { tokens: realTokens, markTokenUsed } = useApp();
   const [filter, setFilter] = useState<Filter>('pending');
+  
+  // Use sample data if no real tokens exist
+  const tokens = realTokens.length > 0 ? realTokens : SAMPLE_TOKENS;
 
   const filteredTokens = tokens.filter(token => {
     if (filter === 'pending') return !token.used;
