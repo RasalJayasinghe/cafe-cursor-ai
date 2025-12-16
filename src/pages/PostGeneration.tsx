@@ -41,177 +41,169 @@ const vibeTemplates: Record<Vibe, string[]> = {
 
 const MAX_CHARS = 280;
 
-// ASCII Art Cursor Logo Component
-function AsciiCursorLogo({ vibe }: { vibe: Vibe }) {
-  const [glitchFrame, setGlitchFrame] = useState(0);
-  const [particles, setParticles] = useState<{ id: number; x: number; y: number; char: string }[]>([]);
+// Coffee Cup with Cursor Logo Component
+function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
+  const [steamParticles, setSteamParticles] = useState<{ id: number; x: number; delay: number }[]>([]);
 
-  // Glitch effect
+  // Generate steam particles
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Math.random() > 0.7) {
-        setGlitchFrame(f => (f + 1) % 3);
-        setTimeout(() => setGlitchFrame(0), 100);
-      }
+      setSteamParticles(prev => {
+        const newParticle = {
+          id: Date.now(),
+          x: 30 + Math.random() * 40,
+          delay: Math.random() * 0.5
+        };
+        return [...prev.slice(-6), newParticle];
+      });
+    }, vibe === 'hype' ? 300 : 600);
+    return () => clearInterval(interval);
+  }, [vibe]);
+
+  // Clean old particles
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSteamParticles(prev => prev.filter(p => Date.now() - p.id < 3000));
     }, 500);
     return () => clearInterval(interval);
   }, []);
 
-  // Particle emission (steam from cup)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const chars = vibe === 'hype' ? ['*', '✦', '♨', '~'] : ['·', '°', '~', '○'];
-      setParticles(prev => {
-        const newParticle = {
-          id: Date.now(),
-          x: 70 + Math.random() * 40,
-          y: 0,
-          char: chars[Math.floor(Math.random() * chars.length)]
-        };
-        return [...prev.slice(-12), newParticle];
-      });
-    }, vibe === 'hype' ? 150 : 300);
-    return () => clearInterval(interval);
-  }, [vibe]);
-
-  // Remove old particles
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setParticles(prev => prev.filter(p => Date.now() - p.id < 2000));
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
-
-  const cupFrames = [
-    // Normal
-    [
-      '         ) )  )        ',
-      '        ( ( (         ',
-      '         ) )  )        ',
-      '      .─────────.      ',
-      '     /           \\     ',
-      '    │   ╱─────╲   │    ',
-      '    │  ╱ ╲   ╱ ╲  │    ',
-      '    │ ╱   ╲ ╱   ╲ │    ',
-      '    │ ╲   ╱ ╲   ╱ │    ',
-      '    │  ╲ ╱   ╲ ╱  │    ',
-      '    │   ╲─────╱   │    ',
-      '    │             │────╮',
-      '    │             │    │',
-      '     \\           /────╯',
-      '      `─────────´      ',
-    ],
-    // Glitch 1
-    [
-      '         ) )  )        ',
-      '        ( ( (         ',
-      '        ░) )  )░       ',
-      '      .─────────.      ',
-      '     /           \\     ',
-      '    │   ╱─────╲   │    ',
-      '   ░│  ╱ ╲   ╱ ╲  │░   ',
-      '    │ ╱   ╲ ╱   ╲ │    ',
-      '    │ ╲   ╱ ╲   ╱ │    ',
-      '    │  ╲ ╱   ╲ ╱  │    ',
-      '    │   ╲─────╱   │    ',
-      '    │░░░░░░░░░░░░░│────╮',
-      '    │             │    │',
-      '     \\           /────╯',
-      '      `─────────´      ',
-    ],
-    // Glitch 2
-    [
-      '        ░) )  )░       ',
-      '        ( ( (         ',
-      '         ) )  )        ',
-      '     ░.─────────.░     ',
-      '     /           \\     ',
-      '    │   ╱─────╲   │    ',
-      '    │  ╱ ╲   ╱ ╲  │    ',
-      '   ▒│ ╱   ╲ ╱   ╲ │▒   ',
-      '    │ ╲   ╱ ╲   ╱ │    ',
-      '    │  ╲ ╱   ╲ ╱  │    ',
-      '    │   ╲─────╱   │    ',
-      '    │             │────╮',
-      '   ░│             │    │',
-      '     \\           /────╯',
-      '     ░`─────────´░     ',
-    ],
-  ];
-
-  const currentFrame = cupFrames[glitchFrame];
-  
-  const vibeColors: Record<Vibe, string> = {
-    chill: 'text-foreground/60',
-    hype: 'text-foreground',
-    dev: 'text-foreground/70',
-    poetic: 'text-foreground/50',
+  const vibeIntensity = {
+    chill: { glow: 0.1, steam: 0.4 },
+    hype: { glow: 0.4, steam: 0.8 },
+    dev: { glow: 0.2, steam: 0.5 },
+    poetic: { glow: 0.15, steam: 0.3 },
   };
 
   return (
-    <div className="relative select-none">
-      {/* Glow effect behind */}
-      <div 
-        className={`absolute inset-0 blur-xl transition-opacity duration-500 ${
-          vibe === 'hype' ? 'opacity-30' : 'opacity-10'
-        }`}
-        style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
-        }}
-      />
-      
-      {/* Main ASCII art */}
-      <pre 
-        className={`font-mono text-[10px] sm:text-xs leading-none tracking-tight transition-colors duration-300 ${vibeColors[vibe]}`}
-        style={{ 
-          textShadow: vibe === 'hype' ? '0 0 10px rgba(255,255,255,0.5)' : 'none',
-        }}
-      >
-        {currentFrame.map((line, i) => (
-          <motion.div
-            key={i}
-            animate={glitchFrame > 0 ? { x: [0, Math.random() * 4 - 2, 0] } : {}}
-            transition={{ duration: 0.05 }}
-          >
-            {line}
-          </motion.div>
-        ))}
-      </pre>
-
-      {/* Rising steam particles */}
-      <AnimatePresence>
-        {particles.map((particle) => (
-          <motion.span
-            key={particle.id}
-            initial={{ opacity: 0.9, y: particle.y, x: particle.x }}
-            animate={{ 
-              opacity: 0, 
-              y: particle.y - 60, 
-              x: particle.x + (Math.random() - 0.5) * 30 
-            }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 2.5, ease: 'easeOut' }}
-            className="absolute font-mono text-xs text-foreground/50 pointer-events-none"
-            style={{ top: particle.y, left: particle.x }}
-          >
-            {particle.char}
-          </motion.span>
-        ))}
-      </AnimatePresence>
-
-      {/* Blinking cursor line at bottom */}
+    <div className="relative flex flex-col items-center">
+      {/* Glow effect */}
       <motion.div
-        animate={{ opacity: [1, 0, 1] }}
-        transition={{ duration: 1, repeat: Infinity }}
-        className="text-center mt-2 font-mono text-foreground/60"
+        className="absolute inset-0 blur-3xl rounded-full"
+        style={{
+          background: `radial-gradient(circle, rgba(255,255,255,${vibeIntensity[vibe].glow}) 0%, transparent 70%)`,
+        }}
+        animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Steam particles */}
+      <div className="absolute -top-8 left-0 right-0 h-16 overflow-hidden">
+        <AnimatePresence>
+          {steamParticles.map((particle) => (
+            <motion.div
+              key={particle.id}
+              initial={{ opacity: 0, y: 40, x: `${particle.x}%`, scale: 0.5 }}
+              animate={{ 
+                opacity: [0, vibeIntensity[vibe].steam, 0], 
+                y: -20, 
+                x: `${particle.x + (Math.random() - 0.5) * 20}%`,
+                scale: 1
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 2.5, delay: particle.delay, ease: 'easeOut' }}
+              className="absolute text-foreground/30 text-lg"
+            >
+              ~
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Coffee Cup SVG */}
+      <motion.svg
+        width="120"
+        height="140"
+        viewBox="0 0 120 140"
+        fill="none"
+        className="relative z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
-        ▋
-      </motion.div>
+        {/* Cup body */}
+        <path
+          d="M20 35 L25 125 C25 130 30 135 60 135 C90 135 95 130 95 125 L100 35 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="text-foreground/60"
+        />
+        
+        {/* Lid */}
+        <path
+          d="M15 30 C15 25 25 20 60 20 C95 20 105 25 105 30 L105 35 C105 38 95 42 60 42 C25 42 15 38 15 35 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="text-foreground/60"
+        />
+        
+        {/* Lid top bump */}
+        <ellipse
+          cx="60"
+          cy="20"
+          rx="15"
+          ry="5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="text-foreground/40"
+        />
+
+        {/* Cursor Logo - Geometric cube */}
+        <g transform="translate(38, 65)">
+          {/* Outer hexagon shape */}
+          <path
+            d="M22 0 L44 12 L44 36 L22 48 L0 36 L0 12 Z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-foreground/70"
+          />
+          {/* Inner triangle pointing down */}
+          <path
+            d="M22 8 L36 16 L22 40 L8 16 Z"
+            fill="currentColor"
+            className="text-foreground/20"
+          />
+          {/* Inner lines for 3D effect */}
+          <path
+            d="M22 8 L22 40 M22 8 L8 16 M22 8 L36 16"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-foreground/70"
+          />
+        </g>
+      </motion.svg>
 
       {/* Label */}
-      <p className="text-center mt-3 font-mono text-[10px] text-foreground/30 uppercase tracking-[0.3em]">
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="mt-4 font-mono text-[10px] text-foreground/30 uppercase tracking-[0.3em]"
+      >
         cafe cursor
-      </p>
+      </motion.p>
+
+      {/* Vibe indicator */}
+      <motion.div
+        className="mt-2 flex items-center gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        <motion.span
+          key={vibe}
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="text-lg"
+        >
+          {vibeEmoji[vibe]}
+        </motion.span>
+        <span className="font-mono text-[10px] text-foreground/20">{vibe} mode</span>
+      </motion.div>
     </div>
   );
 }
@@ -417,7 +409,7 @@ export default function PostGeneration() {
             transition={{ delay: 0.2 }}
             className="mb-8 flex justify-center"
           >
-            <AsciiCursorLogo vibe={vibe} />
+            <CoffeeCupLogo vibe={vibe} />
           </motion.div>
 
           {/* Preview */}
