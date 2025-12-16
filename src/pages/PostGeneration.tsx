@@ -42,153 +42,112 @@ const vibeTemplates: Record<Vibe, string[]> = {
 
 const MAX_CHARS = 280;
 
-// Premium Coffee Cup with Cursor Logo Component
+// ASCII Coffee Cup with Cursor Logo Component
 function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
-  const [steamParticles, setSteamParticles] = useState<{ id: number; x: number; size: number }[]>([]);
+  const [steamFrame, setSteamFrame] = useState(0);
 
+  // Animate steam
   useEffect(() => {
     const interval = setInterval(() => {
-      setSteamParticles(prev => {
-        const newParticle = {
-          id: Date.now(),
-          x: 35 + Math.random() * 30,
-          size: 0.5 + Math.random() * 0.5
-        };
-        return [...prev.slice(-8), newParticle];
-      });
-    }, vibe === 'hype' ? 250 : 500);
+      setSteamFrame(f => (f + 1) % 4);
+    }, vibe === 'hype' ? 150 : 300);
     return () => clearInterval(interval);
   }, [vibe]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSteamParticles(prev => prev.filter(p => Date.now() - p.id < 3500));
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
+  const steamFrames = [
+    ['    (  )', '   (    )', '  (  )'],
+    ['   (    )', '  (  )', '    ( )'],
+    ['  (  )', '    ( )', '   (   )'],
+    ['    ( )', '   (   )', '  (    )'],
+  ];
 
   const vibeGlow = {
-    chill: 'rgba(255,255,255,0.08)',
-    hype: 'rgba(255,200,150,0.15)',
-    dev: 'rgba(150,255,200,0.1)',
-    poetic: 'rgba(200,150,255,0.1)',
+    chill: 'rgba(255,255,255,0.06)',
+    hype: 'rgba(255,180,100,0.12)',
+    dev: 'rgba(100,255,180,0.08)',
+    poetic: 'rgba(180,100,255,0.08)',
   };
 
   return (
     <div className="relative flex flex-col items-center py-4">
       {/* Ambient glow */}
       <motion.div
-        className="absolute w-40 h-40 rounded-full blur-3xl"
+        className="absolute w-48 h-48 rounded-full blur-3xl"
         style={{ background: vibeGlow[vibe] }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+        animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Steam */}
-      <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-16 overflow-hidden">
-        <AnimatePresence>
-          {steamParticles.map((particle) => (
-            <motion.div
-              key={particle.id}
-              initial={{ opacity: 0, y: 50, x: `${particle.x - 50}%`, scale: particle.size }}
-              animate={{ 
-                opacity: [0, 0.6, 0], 
-                y: -30, 
-                x: `${particle.x - 50 + (Math.random() - 0.5) * 30}%`,
-                scale: particle.size * 1.5
-              }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 3, ease: 'easeOut' }}
-              className="absolute w-3 h-3 rounded-full bg-foreground/20 blur-sm"
-            />
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {/* Coffee Cup - Realistic takeaway style */}
       <motion.div
-        className="relative z-10"
+        className="relative z-10 font-mono text-foreground/70 select-none"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.5 }}
       >
-        <svg width="140" height="180" viewBox="0 0 140 180" fill="none">
-          {/* Cup shadow */}
-          <ellipse cx="70" cy="172" rx="35" ry="6" fill="currentColor" className="text-foreground/5" />
-          
-          {/* Cup body - tapered shape with gradient */}
-          <defs>
-            <linearGradient id="cupGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0.15" />
-              <stop offset="50%" stopColor="currentColor" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0.15" />
-            </linearGradient>
-            <linearGradient id="lidGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0.1" />
-            </linearGradient>
-          </defs>
-          
-          {/* Cup body */}
-          <path
-            d="M30 55 L38 165 C38 168 50 172 70 172 C90 172 102 168 102 165 L110 55 Z"
-            fill="url(#cupGradient)"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="text-foreground/30"
-          />
-          
-          {/* Horizontal ridges on cup */}
-          <path d="M32 80 L108 80" stroke="currentColor" strokeWidth="0.5" className="text-foreground/10" />
-          <path d="M34 105 L106 105" stroke="currentColor" strokeWidth="0.5" className="text-foreground/10" />
-          <path d="M36 130 L104 130" stroke="currentColor" strokeWidth="0.5" className="text-foreground/10" />
-          
-          {/* Cup sleeve */}
-          <path
-            d="M35 85 L37 135 C37 137 50 140 70 140 C90 140 103 137 103 135 L105 85 C105 83 92 80 70 80 C48 80 35 83 35 85 Z"
-            fill="currentColor"
-            fillOpacity="0.05"
-            stroke="currentColor"
-            strokeWidth="1"
-            className="text-foreground/20"
-          />
-          
-          {/* Lid */}
-          <ellipse cx="70" cy="55" rx="42" ry="10" fill="url(#lidGradient)" stroke="currentColor" strokeWidth="1.5" className="text-foreground/30" />
-          
-          {/* Lid rim */}
-          <path
-            d="M25 50 C25 42 45 35 70 35 C95 35 115 42 115 50 L115 55 C115 60 95 65 70 65 C45 65 25 60 25 55 Z"
-            fill="url(#lidGradient)"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="text-foreground/30"
-          />
-          
-          {/* Lid top detail */}
-          <ellipse cx="70" cy="42" rx="25" ry="6" fill="none" stroke="currentColor" strokeWidth="1" className="text-foreground/20" />
-          
-          {/* Sip hole */}
-          <ellipse cx="70" cy="42" rx="8" ry="3" fill="currentColor" className="text-foreground/15" />
-        </svg>
-
-        {/* Cursor Logo Image - positioned on the sleeve */}
-        <motion.div
-          className="absolute"
-          style={{ top: '85px', left: '50%', transform: 'translateX(-50%)' }}
-          animate={{ 
-            filter: vibe === 'hype' ? ['brightness(1)', 'brightness(1.2)', 'brightness(1)'] : 'brightness(1)'
-          }}
+        {/* Steam - animated */}
+        <motion.div 
+          className="text-foreground/30 text-xs leading-tight text-center h-8 flex flex-col items-center justify-end overflow-hidden"
+          animate={{ opacity: [0.3, 0.6, 0.3] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <img 
-            src={cursorLogo} 
-            alt="Cursor Logo" 
-            className="w-10 h-10 object-contain opacity-70"
-            style={{ filter: 'grayscale(100%) brightness(1.5)' }}
-          />
+          {steamFrames[steamFrame].map((line, i) => (
+            <div key={i} className="whitespace-pre">{line}</div>
+          ))}
         </motion.div>
+
+        {/* Lid - dark plastic style */}
+        <pre className="text-foreground/90 text-xs leading-none whitespace-pre text-center">
+{`    ╭──────────────────╮
+   ╭┴──────────────────┴╮
+   │ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │
+   │▓▓▓▓▓▓╭────╮▓▓▓▓▓▓▓▓│
+   ╰──────┴────┴────────╯`}
+        </pre>
+
+        {/* Cup body - kraft paper style */}
+        <pre className="text-foreground/60 text-xs leading-none whitespace-pre text-center">
+{`    │░░░░░░░░░░░░░░░░░░│
+    │░░░░░░░░░░░░░░░░░░│
+    │░░░░░░░░░░░░░░░░░░│
+    │░░                ░░│`}
+        </pre>
+
+        {/* Logo area */}
+        <div className="relative">
+          <pre className="text-foreground/60 text-xs leading-none whitespace-pre text-center">
+{`    │░░                ░░│
+    │░░                ░░│
+    │░░                ░░│`}
+          </pre>
+          {/* Cursor Logo Image - centered on cup */}
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
+            animate={{ 
+              filter: vibe === 'hype' ? ['brightness(1)', 'brightness(1.3)', 'brightness(1)'] : 'brightness(1)'
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <img 
+              src={cursorLogo} 
+              alt="Cursor Logo" 
+              className="w-8 h-8 object-contain"
+              style={{ filter: 'grayscale(100%) brightness(2) contrast(1.2)' }}
+            />
+          </motion.div>
+        </div>
+
+        {/* Lower cup body */}
+        <pre className="text-foreground/60 text-xs leading-none whitespace-pre text-center">
+{`    │░░                ░░│
+    │░░░░░░░░░░░░░░░░░░│
+    │░░░░░░░░░░░░░░░░░░│
+    │░░░░░░░░░░░░░░░░░░│
+     ╲░░░░░░░░░░░░░░░░╱
+      ╲░░░░░░░░░░░░░░╱
+       ╲▒▒▒▒▒▒▒▒▒▒▒╱
+        ╰──────────╯`}
+        </pre>
       </motion.div>
 
       {/* Label */}
@@ -196,7 +155,7 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="mt-6 font-mono text-[10px] text-foreground/30 uppercase tracking-[0.3em]"
+        className="mt-4 font-mono text-[10px] text-foreground/30 uppercase tracking-[0.3em]"
       >
         cafe cursor
       </motion.p>
