@@ -3,20 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, Check, Coffee, UtensilsCrossed, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Check, ArrowRight, Sparkles } from 'lucide-react';
 
 const MEALS = [
-  { id: 'rice-bowl', name: 'Rice Bowl', description: 'Jasmine rice with seasonal vegetables' },
-  { id: 'noodles', name: 'Signature Noodles', description: 'Hand-pulled noodles in rich broth' },
-  { id: 'sandwich', name: 'Artisan Sandwich', description: 'Fresh baked bread with premium fillings' },
-  { id: 'salad', name: 'Garden Salad', description: 'Organic greens with house dressing' },
+  { id: 'rice-bowl', name: 'rice-bowl', description: 'Jasmine rice with seasonal vegetables' },
+  { id: 'noodles', name: 'signature-noodles', description: 'Hand-pulled noodles in rich broth' },
+  { id: 'sandwich', name: 'artisan-sandwich', description: 'Fresh baked bread with premium fillings' },
+  { id: 'salad', name: 'garden-salad', description: 'Organic greens with house dressing' },
 ];
 
 const DRINKS = [
-  { id: 'coffee', name: 'Espresso', description: 'Double shot, rich & bold' },
-  { id: 'latte', name: 'Café Latte', description: 'Smooth espresso with steamed milk' },
-  { id: 'tea', name: 'Ceylon Tea', description: 'Premium Sri Lankan black tea' },
-  { id: 'juice', name: 'Fresh Juice', description: 'Seasonal fruit blend' },
+  { id: 'espresso', name: 'espresso', description: 'Double shot, rich & bold' },
+  { id: 'latte', name: 'cafe-latte', description: 'Smooth espresso with steamed milk' },
+  { id: 'ceylon-tea', name: 'ceylon-tea', description: 'Premium Sri Lankan black tea' },
+  { id: 'fresh-juice', name: 'fresh-juice', description: 'Seasonal fruit blend' },
 ];
 
 interface ClaimMealDialogProps {
@@ -25,6 +25,40 @@ interface ClaimMealDialogProps {
 }
 
 type Step = 'verify' | 'menu' | 'complete';
+
+interface CodeLineProps {
+  lineNumber: number;
+  children: React.ReactNode;
+  selectable?: boolean;
+  selected?: boolean;
+  onClick?: () => void;
+}
+
+function CodeLine({ lineNumber, children, selectable, selected, onClick }: CodeLineProps) {
+  return (
+    <motion.div
+      onClick={onClick}
+      whileHover={selectable ? { backgroundColor: 'rgba(255,255,255,0.05)' } : undefined}
+      className={`flex items-start gap-4 py-1 px-2 rounded transition-all ${
+        selectable ? 'cursor-pointer' : ''
+      } ${selected ? 'bg-foreground/10 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]' : ''}`}
+    >
+      <span className="text-muted-foreground/50 font-mono text-sm w-6 text-right select-none">
+        {lineNumber}
+      </span>
+      <div className="flex-1 font-mono text-sm">{children}</div>
+      {selected && (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="text-green-400 text-xs"
+        >
+          ✓
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}
 
 export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
   const [step, setStep] = useState<Step>('verify');
@@ -37,7 +71,6 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
   const handleVerify = async () => {
     if (!email) return;
     setIsVerifying(true);
-    // Simulate verification delay (frontend only)
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsVerifying(false);
     setVerified(true);
@@ -52,7 +85,6 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
 
   const handleClose = () => {
     onOpenChange(false);
-    // Reset after animation
     setTimeout(() => {
       setStep('verify');
       setEmail('');
@@ -65,7 +97,6 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl p-0 bg-transparent border-0 overflow-hidden">
-        {/* Glowing container */}
         <div className="relative">
           {/* Animated glow border */}
           <div className="absolute -inset-[1px] bg-gradient-to-r from-foreground/20 via-foreground/40 to-foreground/20 rounded-2xl blur-sm animate-pulse" />
@@ -75,7 +106,6 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
           <div className="absolute -top-1 -left-1 w-20 h-20 bg-foreground/20 rounded-full blur-2xl" />
           <div className="absolute -bottom-1 -right-1 w-20 h-20 bg-foreground/20 rounded-full blur-2xl" />
           
-          {/* Main content */}
           <motion.div
             layout
             className="relative bg-background/95 backdrop-blur-xl rounded-2xl border border-foreground/10 overflow-hidden"
@@ -142,7 +172,6 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                       />
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       
-                      {/* Verification success indicator */}
                       <AnimatePresence>
                         {verified && (
                           <motion.div
@@ -187,117 +216,123 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="p-6 md:p-8"
+                  className="overflow-hidden"
                 >
-                  <div className="text-center mb-8">
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                      Select Your Order
-                    </h2>
-                    <p className="text-muted-foreground">
-                      Choose one meal and one drink
-                    </p>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {/* Meals */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-4">
-                        <UtensilsCrossed className="w-5 h-5 text-foreground/70" />
-                        <span className="text-sm font-semibold text-foreground uppercase tracking-wider">
-                          Meals
-                        </span>
-                      </div>
-                      <div className="space-y-2">
-                        {MEALS.map((meal) => (
-                          <motion.button
-                            key={meal.id}
-                            onClick={() => setSelectedMeal(meal.id)}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className={`w-full p-4 rounded-xl border text-left transition-all ${
-                              selectedMeal === meal.id
-                                ? 'bg-foreground/10 border-foreground/40'
-                                : 'bg-foreground/5 border-foreground/10 hover:border-foreground/20'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="font-medium text-foreground">{meal.name}</p>
-                                <p className="text-sm text-muted-foreground">{meal.description}</p>
-                              </div>
-                              {selectedMeal === meal.id && (
-                                <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center"
-                                >
-                                  <Check className="w-4 h-4 text-background" />
-                                </motion.div>
-                              )}
-                            </div>
-                          </motion.button>
-                        ))}
+                  {/* Code editor header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/10 bg-foreground/5">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1.5">
+                        <div className="w-3 h-3 rounded-full bg-red-500/70" />
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
+                        <div className="w-3 h-3 rounded-full bg-green-500/70" />
                       </div>
                     </div>
-
-                    {/* Drinks */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-4">
-                        <Coffee className="w-5 h-5 text-foreground/70" />
-                        <span className="text-sm font-semibold text-foreground uppercase tracking-wider">
-                          Drinks
-                        </span>
-                      </div>
-                      <div className="space-y-2">
-                        {DRINKS.map((drink) => (
-                          <motion.button
-                            key={drink.id}
-                            onClick={() => setSelectedDrink(drink.id)}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className={`w-full p-4 rounded-xl border text-left transition-all ${
-                              selectedDrink === drink.id
-                                ? 'bg-foreground/10 border-foreground/40'
-                                : 'bg-foreground/5 border-foreground/10 hover:border-foreground/20'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="font-medium text-foreground">{drink.name}</p>
-                                <p className="text-sm text-muted-foreground">{drink.description}</p>
-                              </div>
-                              {selectedDrink === drink.id && (
-                                <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center"
-                                >
-                                  <Check className="w-4 h-4 text-background" />
-                                </motion.div>
-                              )}
-                            </div>
-                          </motion.button>
-                        ))}
-                      </div>
-                    </div>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      ~/cafe-cursor/menu.yml
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground/50">
+                      yml
+                    </span>
                   </div>
 
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="mt-8"
-                  >
+                  {/* Code content */}
+                  <div className="p-4 font-mono text-sm max-h-[60vh] overflow-y-auto">
+                    {/* Command line */}
+                    <div className="text-muted-foreground/60 text-xs mb-4 px-2">
+                      # Select one meal and one drink to complete your order
+                    </div>
+
+                    {/* Meals section */}
+                    <CodeLine lineNumber={1}>
+                      <span className="text-purple-400">meals</span>
+                      <span className="text-foreground/60">:</span>
+                      <span className="text-muted-foreground/50 ml-4 text-xs"># 4 options</span>
+                    </CodeLine>
+                    <CodeLine lineNumber={2}>
+                      <span className="text-muted-foreground/60 ml-4">type</span>
+                      <span className="text-foreground/60">: </span>
+                      <span className="text-green-400">"main-course"</span>
+                    </CodeLine>
+                    <CodeLine lineNumber={3}>
+                      <span className="text-muted-foreground/60 ml-4">options</span>
+                      <span className="text-foreground/60">:</span>
+                    </CodeLine>
+                    
+                    {MEALS.map((meal, index) => (
+                      <CodeLine
+                        key={meal.id}
+                        lineNumber={4 + index}
+                        selectable
+                        selected={selectedMeal === meal.id}
+                        onClick={() => setSelectedMeal(meal.id)}
+                      >
+                        <span className="text-foreground/60 ml-6">- </span>
+                        <span className="text-yellow-400">{meal.name}</span>
+                        <span className="text-foreground/60">:new</span>
+                        <span className="text-foreground/40"> | </span>
+                        <span className="text-foreground/70">{meal.description}</span>
+                      </CodeLine>
+                    ))}
+
+                    {/* Spacer */}
+                    <CodeLine lineNumber={8}>
+                      <span></span>
+                    </CodeLine>
+
+                    {/* Drinks section */}
+                    <CodeLine lineNumber={9}>
+                      <span className="text-purple-400">drinks</span>
+                      <span className="text-foreground/60">:</span>
+                      <span className="text-muted-foreground/50 ml-4 text-xs"># 4 options</span>
+                    </CodeLine>
+                    <CodeLine lineNumber={10}>
+                      <span className="text-muted-foreground/60 ml-4">size</span>
+                      <span className="text-foreground/60">: </span>
+                      <span className="text-green-400">"12oz"</span>
+                    </CodeLine>
+                    <CodeLine lineNumber={11}>
+                      <span className="text-muted-foreground/60 ml-4">options</span>
+                      <span className="text-foreground/60">:</span>
+                    </CodeLine>
+                    
+                    {DRINKS.map((drink, index) => (
+                      <CodeLine
+                        key={drink.id}
+                        lineNumber={12 + index}
+                        selectable
+                        selected={selectedDrink === drink.id}
+                        onClick={() => setSelectedDrink(drink.id)}
+                      >
+                        <span className="text-foreground/60 ml-6">- </span>
+                        <span className="text-cyan-400">{drink.name}</span>
+                        <span className="text-foreground/60">:hot</span>
+                        <span className="text-foreground/40"> | </span>
+                        <span className="text-foreground/70">{drink.description}</span>
+                      </CodeLine>
+                    ))}
+
+                    {/* Footer */}
+                    <CodeLine lineNumber={16}>
+                      <span></span>
+                    </CodeLine>
+                    <CodeLine lineNumber={17}>
+                      <span className="text-muted-foreground/50"># cafe-cursor:colombo</span>
+                      <span className="text-muted-foreground/30 ml-8">✓ Ready to serve</span>
+                    </CodeLine>
+                  </div>
+
+                  {/* Confirm button */}
+                  <div className="p-4 border-t border-foreground/10 bg-foreground/5">
                     <Button
                       onClick={handleConfirmOrder}
                       disabled={!selectedMeal || !selectedDrink}
-                      className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-semibold disabled:opacity-50"
+                      className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-mono font-semibold disabled:opacity-50"
                     >
                       <span className="flex items-center gap-2">
-                        Confirm Order <ArrowRight className="w-4 h-4" />
+                        $ confirm --order <ArrowRight className="w-4 h-4" />
                       </span>
                     </Button>
-                  </motion.div>
+                  </div>
                 </motion.div>
               )}
 
@@ -325,19 +360,32 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     Your meal will be ready shortly. Show this screen to collect your order.
                   </p>
 
-                  <div className="bg-foreground/5 border border-foreground/20 rounded-xl p-6 mb-6">
-                    <p className="text-sm text-muted-foreground mb-2">Your Order</p>
-                    <p className="text-lg font-medium text-foreground">
-                      {MEALS.find(m => m.id === selectedMeal)?.name} + {DRINKS.find(d => d.id === selectedDrink)?.name}
-                    </p>
+                  {/* Code-styled order summary */}
+                  <div className="bg-foreground/5 border border-foreground/20 rounded-xl p-4 mb-6 text-left font-mono text-sm">
+                    <div className="text-muted-foreground/50 mb-2"># order.receipt</div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-purple-400">meal</span>
+                      <span className="text-foreground/60">:</span>
+                      <span className="text-yellow-400">{MEALS.find(m => m.id === selectedMeal)?.name}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-purple-400">drink</span>
+                      <span className="text-foreground/60">:</span>
+                      <span className="text-cyan-400">{DRINKS.find(d => d.id === selectedDrink)?.name}</span>
+                    </div>
+                    <div className="flex items-start gap-2 mt-2 pt-2 border-t border-foreground/10">
+                      <span className="text-green-400">status</span>
+                      <span className="text-foreground/60">:</span>
+                      <span className="text-green-400">confirmed ✓</span>
+                    </div>
                   </div>
 
                   <Button
                     onClick={handleClose}
                     variant="outline"
-                    className="border-foreground/20 hover:bg-foreground/10"
+                    className="border-foreground/20 hover:bg-foreground/10 font-mono"
                   >
-                    Done
+                    $ exit
                   </Button>
                 </motion.div>
               )}
