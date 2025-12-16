@@ -17,33 +17,72 @@ interface Photo {
   driftDuration: number;
 }
 
-// Sample photos for demo
-const SAMPLE_PHOTOS: Omit<Photo, 'x' | 'y' | 'scale' | 'rotation' | 'driftX' | 'driftY' | 'driftDuration'>[] = [
-  { id: '1', url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=80' },
-  { id: '2', url: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&q=80' },
-  { id: '3', url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=80' },
-  { id: '4', url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80' },
-  { id: '5', url: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&q=80' },
-  { id: '6', url: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&q=80' },
-  { id: '7', url: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&q=80' },
-  { id: '8', url: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80' },
+// Generate 100 sample photos for demo using Unsplash
+const UNSPLASH_PHOTOS = [
+  'photo-1522071820081-009f0129c71c', 'photo-1515187029135-18ee286d815b', 'photo-1531482615713-2afd69097998',
+  'photo-1517245386807-bb43f82c33c4', 'photo-1543269865-cbf427effbad', 'photo-1552664730-d307ca884978',
+  'photo-1559136555-9303baea8ebd', 'photo-1556761175-5973dc0f32e7', 'photo-1542744173-8e7e53415bb0',
+  'photo-1553877522-43269d4ea984', 'photo-1551434678-e076c223a692', 'photo-1519389950473-47ba0277781c',
+  'photo-1522202176988-66273c2fd55f', 'photo-1517048676732-d65bc937f952', 'photo-1600880292203-757bb62b4baf',
+  'photo-1573497019940-1c28c88b4f3e', 'photo-1560472355-536de3962603', 'photo-1531545514256-b1400bc00f31',
+  'photo-1553484771-371a605b060b', 'photo-1529156069898-49953e39b3ac', 'photo-1511632765486-a01980e01a18',
+  'photo-1517457373958-b7bdd4587205', 'photo-1528605248644-14dd04022da1', 'photo-1539635278303-d4002c07eae3',
+  'photo-1496024840928-4c417adf211d', 'photo-1523240795612-9a054b0db644', 'photo-1556761175-b413da4baf72',
+  'photo-1504384308090-c894fdcc538d', 'photo-1498758536662-35b82cd15e29', 'photo-1515169067868-5387ec356754',
+  'photo-1521737604893-d14cc237f11d', 'photo-1522202757859-7472b0973dd4', 'photo-1532635241-17e820acc59f',
+  'photo-1473691955023-da1c49c95c78', 'photo-1516321497487-e288fb19713f', 'photo-1525547719571-a2d4ac8945e2',
+  'photo-1497032628192-86f99bcd76bc', 'photo-1557804506-669a67965ba0', 'photo-1542626991-cbc4e32524cc',
+  'photo-1518770660439-4636190af475', 'photo-1461749280684-dccba630e2f6', 'photo-1484417894907-623942c8ee29',
+  'photo-1516321318423-f06f85e504b3', 'photo-1573164713988-8665fc963095', 'photo-1486312338219-ce68d2c6f44d',
+  'photo-1517694712202-14dd9538aa97', 'photo-1498050108023-c5249f4df085', 'photo-1504639725590-34d0984388bd',
+  'photo-1555099962-4199c345e5dd', 'photo-1542831371-29b0f74f9713', 'photo-1544197150-b99a580bb7a8',
+  'photo-1488590528505-98d2b5aba04b', 'photo-1518770660439-4636190af475', 'photo-1581091226825-a6a2a5aee158',
+  'photo-1535303311164-664fc9ec6532', 'photo-1526628953301-3e589a6a8b74', 'photo-1551033406-611cf9a28f67',
+  'photo-1523800503107-5bc3ba2a6f81', 'photo-1559028012-481c04fa702d', 'photo-1531297484001-80022131f5a1',
+  'photo-1484807352052-23338990c6c6', 'photo-1536148935331-408321065b18', 'photo-1506905925346-21bda4d32df4',
+  'photo-1511988617509-a57c8a288659', 'photo-1506126613408-eca07ce68773', 'photo-1521737711867-e3b97375f902',
+  'photo-1517245386807-bb43f82c33c4', 'photo-1453738773917-9c3eff1db985', 'photo-1502945015378-0e284ca1a5be',
+  'photo-1507003211169-0a1dd7228f2d', 'photo-1494790108377-be9c29b29330', 'photo-1438761681033-6461ffad8d80',
+  'photo-1500648767791-00dcc994a43e', 'photo-1534528741775-53994a69daeb', 'photo-1506794778202-cad84cf45f1d',
+  'photo-1507591064344-4c6ce005b128', 'photo-1531746020798-e6953c6e8e04', 'photo-1544005313-94ddf0286df2',
+  'photo-1519085360753-af0119f7cbe7', 'photo-1472099645785-5658abf4ff4e', 'photo-1560250097-0b93528c311a',
+  'photo-1573496359142-b8d87734a5a2', 'photo-1580489944761-15a19d654956', 'photo-1567532939604-b6b5b0db2604',
+  'photo-1548142813-c348350df52b', 'photo-1547425260-76bcadfb4f2c', 'photo-1508214751196-bcfd4ca60f91',
+  'photo-1499952127939-9bbf5af6c51c', 'photo-1501196354995-cbb51c65adc8', 'photo-1517841905240-472988babdf9',
+  'photo-1539571696357-5a69c17a67c6', 'photo-1524504388940-b1c1722653e1', 'photo-1488426862026-3ee34a7d66df',
+  'photo-1463453091185-61582044d556', 'photo-1507003211169-0a1dd7228f2d', 'photo-1506277886164-e25aa3f4ef7f',
 ];
 
+const SAMPLE_PHOTOS: Omit<Photo, 'x' | 'y' | 'scale' | 'rotation' | 'driftX' | 'driftY' | 'driftDuration'>[] = 
+  UNSPLASH_PHOTOS.map((photoId, index) => ({
+    id: String(index + 1),
+    url: `https://images.unsplash.com/${photoId}?w=300&q=70`,
+  }));
+
 function generatePhotoPosition(index: number, total: number): Omit<Photo, 'id' | 'url'> {
-  // Create organic cloud positions
-  const angle = (index / total) * Math.PI * 2 + Math.random() * 0.5;
-  const radius = 20 + Math.random() * 25;
-  const x = 50 + Math.cos(angle) * radius;
-  const y = 50 + Math.sin(angle) * radius;
+  // Create organic cloud positions distributed across the entire area
+  const cols = Math.ceil(Math.sqrt(total * 1.5));
+  const rows = Math.ceil(total / cols);
+  
+  const col = index % cols;
+  const row = Math.floor(index / cols);
+  
+  // Base grid position with randomness
+  const baseX = (col / cols) * 80 + 10;
+  const baseY = (row / rows) * 70 + 15;
+  
+  // Add organic randomness
+  const randomX = (Math.random() - 0.5) * 15;
+  const randomY = (Math.random() - 0.5) * 12;
   
   return {
-    x: Math.max(10, Math.min(90, x)),
-    y: Math.max(15, Math.min(85, y)),
-    scale: 0.7 + Math.random() * 0.5,
-    rotation: (Math.random() - 0.5) * 15,
-    driftX: (Math.random() - 0.5) * 30,
-    driftY: (Math.random() - 0.5) * 20,
-    driftDuration: 15 + Math.random() * 15,
+    x: Math.max(5, Math.min(95, baseX + randomX)),
+    y: Math.max(10, Math.min(90, baseY + randomY)),
+    scale: 0.4 + Math.random() * 0.35, // Smaller scale for more photos
+    rotation: (Math.random() - 0.5) * 20,
+    driftX: (Math.random() - 0.5) * 15,
+    driftY: (Math.random() - 0.5) * 10,
+    driftDuration: 20 + Math.random() * 20,
   };
 }
 
@@ -180,7 +219,7 @@ export default function CursorMoments() {
       </div>
 
       {/* Photo Cloud */}
-      <div className="relative w-full h-[60vh] sm:h-[70vh] overflow-hidden">
+      <div className="relative w-full h-[150vh] sm:h-[200vh] overflow-visible">
         {/* Ambient gradient */}
         <div className="absolute inset-0 bg-gradient-radial from-foreground/5 via-transparent to-transparent opacity-50" />
         
@@ -202,6 +241,7 @@ export default function CursorMoments() {
               key={photo.id}
               photo={photo}
               index={index}
+              total={photos.length}
               onClick={() => setLightboxPhoto(photo)}
               reducedMotion={prefersReducedMotion.current}
             />
@@ -209,19 +249,12 @@ export default function CursorMoments() {
         )}
       </div>
 
-      {/* Empty state prompt */}
-      {photos.length > 0 && photos.length < 5 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-center py-8 px-4"
-        >
-          <p className="font-mono text-xs text-muted-foreground/40">
-            Add more moments to fill the cloud ✨
-          </p>
-        </motion.div>
-      )}
+      {/* Photo count indicator */}
+      <div className="text-center py-8 px-4">
+        <p className="font-mono text-xs text-muted-foreground/40">
+          {photos.length} moments captured ✨
+        </p>
+      </div>
 
       {/* Lightbox */}
       <AnimatePresence>
@@ -236,11 +269,12 @@ export default function CursorMoments() {
 interface FloatingPhotoProps {
   photo: Photo;
   index: number;
+  total: number;
   onClick: () => void;
   reducedMotion: boolean;
 }
 
-function FloatingPhoto({ photo, index, onClick, reducedMotion }: FloatingPhotoProps) {
+function FloatingPhoto({ photo, index, total, onClick, reducedMotion }: FloatingPhotoProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const baseStyle = {
@@ -286,7 +320,7 @@ function FloatingPhoto({ photo, index, onClick, reducedMotion }: FloatingPhotoPr
         className="relative group"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: index * 0.1, duration: 0.5, type: 'spring' }}
+        transition={{ delay: Math.min(index * 0.02, 1.5), duration: 0.4, type: 'spring' }}
       >
         {/* Glow effect on hover */}
         <div 
@@ -296,11 +330,11 @@ function FloatingPhoto({ photo, index, onClick, reducedMotion }: FloatingPhotoPr
         />
         
         {/* Photo */}
-        <div className="relative overflow-hidden rounded-lg sm:rounded-xl shadow-2xl">
+        <div className="relative overflow-hidden rounded-lg shadow-xl">
           <img
             src={photo.url}
             alt="Community moment"
-            className={`w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-cover transition-all duration-300 ${
+            className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover transition-all duration-300 ${
               isHovered ? 'brightness-110' : 'brightness-90'
             }`}
             loading="lazy"
