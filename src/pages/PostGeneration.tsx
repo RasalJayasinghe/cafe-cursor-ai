@@ -258,35 +258,42 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
           {/* Corner accents */}
           <path d="M25 45 L30 40 L35 45" stroke={config.primary} strokeWidth="1" fill="none" strokeOpacity="0.6" />
           <path d="M115 45 L110 40 L105 45" stroke={config.primary} strokeWidth="1" fill="none" strokeOpacity="0.6" />
-        </svg>
 
-        {/* Cursor Logo - centered on cup */}
-        <motion.div
-          className="absolute flex items-center justify-center"
-          style={{ top: 115, left: 70, transform: 'translate(-50%, -50%)' }}
-          animate={{ 
-            scale: vibe === 'hype' ? [1, 1.1, 1] : [1, 1.02, 1],
-            filter: vibe === 'hype' 
-              ? ['brightness(1)', 'brightness(1.5)', 'brightness(1)'] 
-              : 'brightness(1)'
-          }}
-          transition={{ duration: vibe === 'hype' ? 0.8 : 2, repeat: Infinity }}
-        >
-          <div 
-            className="rounded-lg p-1"
-            style={{ 
-              boxShadow: `0 0 20px ${config.glow}, 0 0 40px ${config.glow}`,
-              background: `linear-gradient(135deg, ${config.primary}20, transparent)`
+          {/* Cursor Logo - centered within cup body */}
+          <motion.g
+            style={{ transformOrigin: '70px 109px' }}
+            animate={{
+              scale: vibe === 'hype' ? [1, 1.1, 1] : [1, 1.02, 1],
+              filter:
+                vibe === 'hype'
+                  ? ['brightness(1)', 'brightness(1.5)', 'brightness(1)']
+                  : 'brightness(1)',
             }}
+            transition={{ duration: vibe === 'hype' ? 0.8 : 2, repeat: Infinity }}
           >
-            <img 
-              src={cursorLogo} 
-              alt="Cursor Logo" 
-              className="w-10 h-10 object-contain"
+            <rect
+              x="50"
+              y="89"
+              width="40"
+              height="40"
+              rx="10"
+              fill={config.primary}
+              fillOpacity="0.08"
+              stroke={config.primary}
+              strokeOpacity="0.25"
+            />
+            <image
+              href={cursorLogo}
+              x="50"
+              y="89"
+              width="40"
+              height="40"
+              preserveAspectRatio="xMidYMid meet"
               style={{ filter: `brightness(1.5) drop-shadow(0 0 8px ${config.primary})` }}
             />
-          </div>
-        </motion.div>
+          </motion.g>
+        </svg>
+
 
         {/* Scanlines overlay */}
         <div 
