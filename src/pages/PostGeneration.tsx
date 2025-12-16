@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   ArrowLeft, Copy, Check, Twitter, Linkedin, 
@@ -40,6 +40,159 @@ const vibeTemplates: Record<Vibe, string[]> = {
 };
 
 const MAX_CHARS = 280;
+
+// ASCII Art Cursor Logo Component
+function AsciiCursorLogo({ vibe }: { vibe: Vibe }) {
+  const [glitchFrame, setGlitchFrame] = useState(0);
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; char: string }[]>([]);
+
+  // Glitch effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (Math.random() > 0.7) {
+        setGlitchFrame(f => (f + 1) % 3);
+        setTimeout(() => setGlitchFrame(0), 100);
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Particle emission
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const chars = vibe === 'hype' ? ['*', '✦', '⚡', '▪'] : ['·', '°', '∘', '◦'];
+      setParticles(prev => {
+        const newParticle = {
+          id: Date.now(),
+          x: 45 + Math.random() * 30,
+          y: 20 + Math.random() * 10,
+          char: chars[Math.floor(Math.random() * chars.length)]
+        };
+        return [...prev.slice(-8), newParticle];
+      });
+    }, vibe === 'hype' ? 200 : 400);
+    return () => clearInterval(interval);
+  }, [vibe]);
+
+  // Remove old particles
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setParticles(prev => prev.filter(p => Date.now() - p.id < 2000));
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  const cursorFrames = [
+    // Normal
+    [
+      '    ▄▀▀▀▀▀▀▀▀▀▀▀▄    ',
+      '    █  ▄▀▀▀▀▀▄  █    ',
+      '    █  █     █  █    ',
+      '    █  █  ▄  █  █    ',
+      '    █  █  █  █  █    ',
+      '    █  █  █  █  █    ',
+      '    █  ▀▄▄█▄▄▀  █    ',
+      '    █           █    ',
+      '    ▀▄▄▄▄▄▄▄▄▄▄▄▀    ',
+    ],
+    // Glitch 1
+    [
+      '    ▄▀▀▀▀▀▀▀▀▀▀▀▄    ',
+      '    █░░▄▀▀▀▀▀▄░░█    ',
+      '    █  █ ░░░ █  █    ',
+      '    █  █  ▄  █  █    ',
+      '   ░█  █  █  █  █░   ',
+      '    █  █  █  █  █    ',
+      '    █  ▀▄▄█▄▄▀  █    ',
+      '    █░░░░░░░░░░░█    ',
+      '    ▀▄▄▄▄▄▄▄▄▄▄▄▀    ',
+    ],
+    // Glitch 2
+    [
+      '   ░▄▀▀▀▀▀▀▀▀▀▀▀▄░   ',
+      '    █  ▄▀▀▀▀▀▄  █    ',
+      '    █  █▒▒▒▒▒█  █    ',
+      '   ▒█  █  ▄  █  █▒   ',
+      '    █  █  █  █  █    ',
+      '    █  █  █  █  █    ',
+      '    █▒▒▀▄▄█▄▄▀▒▒█    ',
+      '    █           █    ',
+      '   ░▀▄▄▄▄▄▄▄▄▄▄▄▀░   ',
+    ],
+  ];
+
+  const currentFrame = cursorFrames[glitchFrame];
+  
+  const vibeColors: Record<Vibe, string> = {
+    chill: 'text-foreground/60',
+    hype: 'text-foreground',
+    dev: 'text-foreground/70',
+    poetic: 'text-foreground/50',
+  };
+
+  return (
+    <div className="relative select-none">
+      {/* Glow effect behind */}
+      <div 
+        className={`absolute inset-0 blur-xl transition-opacity duration-500 ${
+          vibe === 'hype' ? 'opacity-30' : 'opacity-10'
+        }`}
+        style={{
+          background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
+        }}
+      />
+      
+      {/* Main ASCII art */}
+      <pre 
+        className={`font-mono text-[10px] sm:text-xs leading-none tracking-tight transition-colors duration-300 ${vibeColors[vibe]}`}
+        style={{ 
+          textShadow: vibe === 'hype' ? '0 0 10px rgba(255,255,255,0.5)' : 'none',
+        }}
+      >
+        {currentFrame.map((line, i) => (
+          <motion.div
+            key={i}
+            animate={glitchFrame > 0 ? { x: [0, Math.random() * 4 - 2, 0] } : {}}
+            transition={{ duration: 0.05 }}
+          >
+            {line}
+          </motion.div>
+        ))}
+      </pre>
+
+      {/* Rising particles/steam */}
+      <AnimatePresence>
+        {particles.map((particle) => (
+          <motion.span
+            key={particle.id}
+            initial={{ opacity: 0.8, y: 0, x: particle.x }}
+            animate={{ opacity: 0, y: -40, x: particle.x + (Math.random() - 0.5) * 20 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 2, ease: 'easeOut' }}
+            className="absolute font-mono text-xs text-foreground/40 pointer-events-none"
+            style={{ top: particle.y, left: particle.x }}
+          >
+            {particle.char}
+          </motion.span>
+        ))}
+      </AnimatePresence>
+
+      {/* Blinking cursor line at bottom */}
+      <motion.div
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{ duration: 1, repeat: Infinity }}
+        className="text-center mt-2 font-mono text-foreground/60"
+      >
+        ▋
+      </motion.div>
+
+      {/* Label */}
+      <p className="text-center mt-3 font-mono text-[10px] text-foreground/30 uppercase tracking-[0.3em]">
+        cafe cursor
+      </p>
+    </div>
+  );
+}
 
 export default function PostGeneration() {
   const [vibe, setVibe] = useState<Vibe>('chill');
@@ -235,6 +388,16 @@ export default function PostGeneration() {
 
         {/* Right Panel - Preview & Actions */}
         <div className="lg:w-[420px] p-4 md:p-8 lg:p-12 bg-foreground/[0.02] flex flex-col">
+          {/* ASCII Logo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8 flex justify-center"
+          >
+            <AsciiCursorLogo vibe={vibe} />
+          </motion.div>
+
           {/* Preview */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
