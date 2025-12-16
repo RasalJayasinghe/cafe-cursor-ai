@@ -1,18 +1,29 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 import { Utensils, FileText, Share2, MessageCircle, MapPin, ChevronDown } from 'lucide-react';
 import globeColombo from '@/assets/globe-colombo.png';
+import { ClaimMealDialog } from '@/components/flows/ClaimMealDialog';
 
 const flowTiles = [
-  { icon: Utensils, label: 'Claim Meal' },
-  { icon: FileText, label: 'Post Gen' },
-  { icon: Share2, label: 'Share Project' },
-  { icon: MessageCircle, label: 'Ask Questions' },
+  { icon: Utensils, label: 'Claim Meal', action: 'claim-meal' },
+  { icon: FileText, label: 'Post Gen', action: 'post-gen' },
+  { icon: Share2, label: 'Share Project', action: 'share-project' },
+  { icon: MessageCircle, label: 'Ask Questions', action: 'ask-questions' },
 ];
 
 export function Hero() {
+  const [claimMealOpen, setClaimMealOpen] = useState(false);
+
+  const handleTileClick = (action: string) => {
+    if (action === 'claim-meal') {
+      setClaimMealOpen(true);
+    }
+  };
+
   return (
     <>
+      <ClaimMealDialog open={claimMealOpen} onOpenChange={setClaimMealOpen} />
+      
       {/* Full-screen title section */}
       <section id="hero" className="h-screen snap-section flex items-center justify-center relative overflow-hidden">
         {/* Globe background */}
@@ -162,6 +173,7 @@ export function Hero() {
                   y: -8,
                   transition: { duration: 0.2 }
                 }}
+                onClick={() => handleTileClick(tile.action)}
                 className="group relative"
               >
                 {/* Glow effect */}
