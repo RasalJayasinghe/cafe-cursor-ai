@@ -30,8 +30,8 @@ export function AboutEvent() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="about-event" ref={ref} className="min-h-screen snap-section flex items-center bg-background">
-      <div className="container mx-auto px-6 py-24">
+    <section id="about-event" ref={ref} className="snap-section flex items-center bg-background py-24">
+      <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
