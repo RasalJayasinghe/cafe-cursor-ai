@@ -263,7 +263,7 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
         {/* Cursor Logo - centered on cup */}
         <motion.div
           className="absolute flex items-center justify-center"
-          style={{ top: 109, left: 70, transform: 'translate(-50%, -50%)' }}
+          style={{ top: 100, left: 70, transform: 'translate(-50%, -50%)' }}
           animate={{ 
             scale: vibe === 'hype' ? [1, 1.1, 1] : [1, 1.02, 1],
             filter: vibe === 'hype' 
