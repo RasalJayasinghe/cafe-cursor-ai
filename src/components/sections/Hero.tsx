@@ -188,7 +188,7 @@ export function Hero() {
                 <div className="absolute -inset-1 bg-gradient-to-r from-foreground/20 to-foreground/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 {/* Card */}
-                <div className="relative bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 md:p-8 flex flex-col items-center gap-4 cursor-pointer overflow-hidden group-hover:border-foreground/30 transition-all duration-300">
+                <div className="relative bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 md:p-8 flex flex-col items-center gap-4 cursor-pointer overflow-hidden group-hover:border-foreground/30 transition-all duration-300 h-full min-h-[160px] md:min-h-[180px]">
                   {/* Animated gradient background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
