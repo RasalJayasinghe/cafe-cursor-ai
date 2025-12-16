@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import WorkersDashboard from "./pages/WorkersDashboard";
 import ShareProject from "./pages/ShareProject";
 import PostGeneration from "./pages/PostGeneration";
+import CursorMoments from "./pages/CursorMoments";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/dashboard" element={<WorkersDashboard />} />
             <Route path="/projects" element={<ShareProject />} />
             <Route path="/post-gen" element={<PostGeneration />} />
+            <Route path="/moments" element={<CursorMoments />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
