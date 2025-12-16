@@ -582,12 +582,12 @@ export default function PostGeneration() {
 
         {/* Right Panel - Preview & Actions */}
         <div className="lg:w-[420px] p-3 sm:p-4 md:p-8 lg:p-12 bg-foreground/[0.02] flex flex-col">
-          {/* ASCII Logo - hidden on small mobile */}
+          {/* Coffee Cup Logo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="mb-4 sm:mb-8 flex justify-center hidden sm:flex"
+            className="mb-4 sm:mb-8 flex justify-center scale-75 sm:scale-100"
           >
             <CoffeeCupLogo vibe={vibe} />
           </motion.div>
