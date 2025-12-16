@@ -100,72 +100,28 @@ export function Hero() {
           </motion.p>
         </div>
 
-        {/* Scroll indicator - Matrix drop style */}
+        {/* Scroll indicator - Minimal style */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-0 right-0 z-20 flex justify-center"
+          className="absolute bottom-10 left-0 right-0 z-20 flex justify-center"
         >
           <div 
-            className="flex flex-col items-center cursor-pointer group"
+            className="flex flex-col items-center gap-4 cursor-pointer group"
             onClick={() => document.getElementById('flows-preview')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            {/* Matrix rain container */}
-            <div className="relative w-20 h-24 overflow-hidden">
-              {/* Falling character columns */}
-              {[-2, -1, 0, 1, 2].map((col) => (
-                <div 
-                  key={col} 
-                  className="absolute top-0 flex flex-col items-center"
-                  style={{ 
-                    left: `calc(50% + ${col * 14}px)`,
-                    transform: 'translateX(-50%)'
-                  }}
-                >
-                  {[0, 1, 2, 3].map((row) => (
-                    <motion.span
-                      key={row}
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ 
-                        opacity: [0, 0.8, 0.4, 0],
-                        y: [-20, 80]
-                      }}
-                      transition={{
-                        duration: 1.8,
-                        repeat: Infinity,
-                        delay: (Math.abs(col) * 0.15) + (row * 0.2),
-                        ease: 'linear'
-                      }}
-                      className="font-mono text-xs text-foreground/70 leading-tight"
-                      style={{
-                        textShadow: '0 0 8px rgba(255,255,255,0.6)'
-                      }}
-                    >
-                      {['0', '1', '▼', '↓', '⌄', '∨'][Math.floor(Math.random() * 6)]}
-                    </motion.span>
-                  ))}
-                </div>
-              ))}
-              
-              {/* Arrow shape overlay - characters converge to arrow */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
-                <motion.div
-                  animate={{ 
-                    opacity: [0.5, 1, 0.5],
-                    y: [0, 3, 0]
-                  }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="flex flex-col items-center"
-                  style={{
-                    textShadow: '0 0 12px rgba(255,255,255,0.8)'
-                  }}
-                >
-                  <span className="font-mono text-foreground/60 text-[10px]">▼ ▼ ▼</span>
-                  <span className="font-mono text-foreground/70 text-xs -mt-1">▼ ▼</span>
-                  <span className="font-mono text-foreground/90 text-sm -mt-1">▼</span>
-                </motion.div>
-              </div>
+            {/* Minimal line with traveling dot */}
+            <div className="relative h-12 w-[1px] bg-foreground/20">
+              <motion.div
+                animate={{ y: [0, 40, 0] }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }}
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-foreground/60"
+              />
             </div>
           </div>
         </motion.div>
