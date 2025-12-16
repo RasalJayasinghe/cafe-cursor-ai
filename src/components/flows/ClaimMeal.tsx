@@ -1,13 +1,21 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useApp } from '@/context/AppContext';
-import { toast } from 'sonner';
-import { Check, X, Upload } from 'lucide-react';
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
+import { Textarea } from "@/src/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
+import { useApp } from "@/src/context/AppContext";
+import { toast } from "sonner";
+import { Check, X, Upload } from "lucide-react";
 
 const SAMPLE_CSV = `name,email
 John Doe,john@example.com
@@ -15,12 +23,15 @@ Jane Smith,jane@example.com
 Alice Wong,alice@example.com
 Bob Kumar,bob@example.com`;
 
-const FOODS = ['Rice', 'Noodles', 'Sandwich', 'Salad', 'Pasta'];
-const DRINKS = ['Water', 'Coffee', 'Juice', 'Tea', 'Soda'];
+const FOODS = ["Rice", "Noodles", "Sandwich", "Salad", "Pasta"];
+const DRINKS = ["Water", "Coffee", "Juice", "Tea", "Soda"];
 
 const generateToken = () => {
-  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  return Array.from(
+    { length: 8 },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
 };
 
 interface CSVRow {
@@ -31,29 +42,32 @@ interface CSVRow {
 export function ClaimMeal() {
   const { addToken, markTokenUsed } = useApp();
   const [csvData, setCsvData] = useState<CSVRow[]>([]);
-  const [csvText, setCsvText] = useState('');
-  const [name, setName] = useState('');
+  const [csvText, setCsvText] = useState("");
+  const [name, setName] = useState("");
   const [verified, setVerified] = useState<boolean | null>(null);
   const [matchedRow, setMatchedRow] = useState<CSVRow | null>(null);
-  const [food, setFood] = useState('');
-  const [drink, setDrink] = useState('');
+  const [food, setFood] = useState("");
+  const [drink, setDrink] = useState("");
   const [generatedToken, setGeneratedToken] = useState<string | null>(null);
   const [tokenId, setTokenId] = useState<string | null>(null);
 
   const parseCSV = (text: string) => {
-    const lines = text.trim().split('\n');
+    const lines = text.trim().split("\n");
     if (lines.length < 2) return [];
-    
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-    const nameIdx = headers.indexOf('name');
-    const emailIdx = headers.indexOf('email');
-    
+
+    const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+    const nameIdx = headers.indexOf("name");
+    const emailIdx = headers.indexOf("email");
+
     if (nameIdx === -1 || emailIdx === -1) return [];
-    
-    return lines.slice(1).map(line => {
-      const values = line.split(',').map(v => v.trim());
-      return { name: values[nameIdx] || '', email: values[emailIdx] || '' };
-    }).filter(row => row.name && row.email);
+
+    return lines
+      .slice(1)
+      .map((line) => {
+        const values = line.split(",").map((v) => v.trim());
+        return { name: values[nameIdx] || "", email: values[emailIdx] || "" };
+      })
+      .filter((row) => row.name && row.email);
   };
 
   const handleLoadCSV = (text: string) => {
@@ -63,7 +77,7 @@ export function ClaimMeal() {
     if (data.length > 0) {
       toast.success(`Loaded ${data.length} rows`);
     } else {
-      toast.error('Invalid CSV format');
+      toast.error("Invalid CSV format");
     }
   };
 
@@ -79,24 +93,24 @@ export function ClaimMeal() {
   };
 
   const handleVerify = () => {
-    const found = csvData.find(row => 
-      row.name.toLowerCase() === name.toLowerCase()
+    const found = csvData.find(
+      (row) => row.name.toLowerCase() === name.toLowerCase()
     );
     setVerified(!!found);
     setMatchedRow(found || null);
     if (found) {
-      toast.success('Name verified!');
+      toast.success("Name verified!");
     } else {
-      toast.error('Name not found in database');
+      toast.error("Name not found in database");
     }
   };
 
   const handleGenerateToken = () => {
     if (!matchedRow || !food || !drink) return;
-    
+
     const token = generateToken();
     const id = crypto.randomUUID();
-    
+
     addToken({
       id,
       token,
@@ -107,26 +121,28 @@ export function ClaimMeal() {
       createdAt: new Date().toISOString(),
       used: false,
     });
-    
+
     setGeneratedToken(token);
     setTokenId(id);
-    toast.success('Token generated!', { description: token });
+    toast.success("Token generated!", { description: token });
   };
 
   const handleSendToDashboard = () => {
     if (tokenId) {
       markTokenUsed(tokenId);
-      toast.success('Token sent to dashboard and marked as used');
-      document.querySelector('#dashboard')?.scrollIntoView({ behavior: 'smooth' });
+      toast.success("Token sent to dashboard and marked as used");
+      document
+        .querySelector("#dashboard")
+        ?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const resetForm = () => {
-    setName('');
+    setName("");
     setVerified(null);
     setMatchedRow(null);
-    setFood('');
-    setDrink('');
+    setFood("");
+    setDrink("");
     setGeneratedToken(null);
     setTokenId(null);
   };
@@ -141,10 +157,17 @@ export function ClaimMeal() {
             <div className="flex items-center gap-2 px-4 py-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
               <Upload className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                {csvData.length > 0 ? `${csvData.length} rows loaded` : 'Upload CSV file'}
+                {csvData.length > 0
+                  ? `${csvData.length} rows loaded`
+                  : "Upload CSV file"}
               </span>
             </div>
-            <input type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
           </label>
           <Button variant="outline" onClick={() => handleLoadCSV(SAMPLE_CSV)}>
             Load Sample
@@ -173,7 +196,10 @@ export function ClaimMeal() {
             }}
             disabled={csvData.length === 0}
           />
-          <Button onClick={handleVerify} disabled={!name || csvData.length === 0}>
+          <Button
+            onClick={handleVerify}
+            disabled={!name || csvData.length === 0}
+          >
             Verify
           </Button>
         </div>
@@ -183,10 +209,18 @@ export function ClaimMeal() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className={`flex items-center gap-2 text-sm ${verified ? 'text-green-600' : 'text-destructive'}`}
+              className={`flex items-center gap-2 text-sm ${
+                verified ? "text-green-600" : "text-destructive"
+              }`}
             >
-              {verified ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
-              {verified ? `Found: ${matchedRow?.name} (${matchedRow?.email})` : 'Name not found'}
+              {verified ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <X className="w-4 h-4" />
+              )}
+              {verified
+                ? `Found: ${matchedRow?.name} (${matchedRow?.email})`
+                : "Name not found"}
             </motion.div>
           )}
         </AnimatePresence>
@@ -206,8 +240,10 @@ export function ClaimMeal() {
                 <SelectValue placeholder="Choose food" />
               </SelectTrigger>
               <SelectContent>
-                {FOODS.map(f => (
-                  <SelectItem key={f} value={f}>{f}</SelectItem>
+                {FOODS.map((f) => (
+                  <SelectItem key={f} value={f}>
+                    {f}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -219,8 +255,10 @@ export function ClaimMeal() {
                 <SelectValue placeholder="Choose drink" />
               </SelectTrigger>
               <SelectContent>
-                {DRINKS.map(d => (
-                  <SelectItem key={d} value={d}>{d}</SelectItem>
+                {DRINKS.map((d) => (
+                  <SelectItem key={d} value={d}>
+                    {d}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -245,11 +283,11 @@ export function ClaimMeal() {
           className="p-4 bg-primary/5 border border-primary/20 rounded-xl text-center space-y-4"
         >
           <p className="text-sm text-muted-foreground">Your Token</p>
-          <p className="text-3xl font-mono font-bold text-primary tracking-widest">{generatedToken}</p>
+          <p className="text-3xl font-mono font-bold text-primary tracking-widest">
+            {generatedToken}
+          </p>
           <div className="flex gap-2 justify-center">
-            <Button onClick={handleSendToDashboard}>
-              Send to Dashboard
-            </Button>
+            <Button onClick={handleSendToDashboard}>Send to Dashboard</Button>
             <Button variant="outline" onClick={resetForm}>
               Create Another
             </Button>

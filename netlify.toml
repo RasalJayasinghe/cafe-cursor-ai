@@ -1,0 +1,22 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  # Enable Next.js compatibility
+  node_bundler = "esbuild"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Environment variables hint (set these in Netlify UI)
+# No variables needed - Netlify Blobs works automatically in Netlify environment
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Redirects for Next.js App Router
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

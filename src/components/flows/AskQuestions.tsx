@@ -1,19 +1,21 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { useApp } from '@/context/AppContext';
-import { toast } from 'sonner';
-import { Send, CheckCircle, Circle } from 'lucide-react';
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/src/components/ui/button";
+import { Textarea } from "@/src/components/ui/textarea";
+import { Label } from "@/src/components/ui/label";
+import { useApp } from "@/src/context/AppContext";
+import { toast } from "sonner";
+import { Send, CheckCircle, Circle } from "lucide-react";
 
 export function AskQuestions() {
   const { questions, addQuestion, toggleQuestionAnswered } = useApp();
-  const [question, setQuestion] = useState('');
+  const [question, setQuestion] = useState("");
 
   const handleSubmit = () => {
     if (!question.trim()) {
-      toast.error('Please enter a question');
+      toast.error("Please enter a question");
       return;
     }
 
@@ -24,12 +26,12 @@ export function AskQuestions() {
       answered: false,
     });
 
-    toast.success('Question submitted!');
-    setQuestion('');
+    toast.success("Question submitted!");
+    setQuestion("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       handleSubmit();
     }
   };
@@ -50,7 +52,11 @@ export function AskQuestions() {
         <p className="text-xs text-muted-foreground">Press ⌘+Enter to submit</p>
       </div>
 
-      <Button onClick={handleSubmit} className="w-full gap-2" disabled={!question.trim()}>
+      <Button
+        onClick={handleSubmit}
+        className="w-full gap-2"
+        disabled={!question.trim()}
+      >
         <Send className="w-4 h-4" />
         Submit Question
       </Button>
@@ -59,9 +65,11 @@ export function AskQuestions() {
       {questions.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium text-foreground">Recent Questions</h4>
+            <h4 className="text-sm font-medium text-foreground">
+              Recent Questions
+            </h4>
             <span className="text-xs text-muted-foreground">
-              {questions.filter(q => !q.answered).length} unanswered
+              {questions.filter((q) => !q.answered).length} unanswered
             </span>
           </div>
           <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -73,19 +81,25 @@ export function AskQuestions() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   className={`p-3 rounded-lg border transition-colors ${
-                    q.answered 
-                      ? 'bg-muted/50 border-border' 
-                      : 'bg-card border-primary/20'
+                    q.answered
+                      ? "bg-muted/50 border-border"
+                      : "bg-card border-primary/20"
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <button
                       onClick={() => {
                         toggleQuestionAnswered(q.id);
-                        toast.success(q.answered ? 'Marked as unanswered' : 'Marked as answered');
+                        toast.success(
+                          q.answered
+                            ? "Marked as unanswered"
+                            : "Marked as answered"
+                        );
                       }}
                       className="flex-shrink-0 mt-0.5"
-                      aria-label={q.answered ? 'Mark as unanswered' : 'Mark as answered'}
+                      aria-label={
+                        q.answered ? "Mark as unanswered" : "Mark as answered"
+                      }
                     >
                       {q.answered ? (
                         <CheckCircle className="w-5 h-5 text-primary" />
@@ -94,7 +108,13 @@ export function AskQuestions() {
                       )}
                     </button>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm ${q.answered ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+                      <p
+                        className={`text-sm ${
+                          q.answered
+                            ? "text-muted-foreground line-through"
+                            : "text-foreground"
+                        }`}
+                      >
                         {q.question}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">

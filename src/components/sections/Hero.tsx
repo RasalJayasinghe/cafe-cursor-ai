@@ -1,39 +1,52 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Utensils, FileText, Share2, Camera, MapPin, ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import globeColombo from '@/assets/globe-colombo.png';
-import { ClaimMealDialog } from '@/components/flows/ClaimMealDialog';
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Utensils,
+  FileText,
+  Share2,
+  Camera,
+  MapPin,
+  ChevronDown,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ClaimMealDialog } from "@/src/components/flows/ClaimMealDialog";
+
+const globeColombo = "/globe-colombo.png";
 
 const flowTiles = [
-  { icon: Utensils, label: 'Claim Meal', action: 'claim-meal' },
-  { icon: FileText, label: 'Post Gen', action: 'post-gen' },
-  { icon: Share2, label: 'Share Project', action: 'share-project' },
-  { icon: Camera, label: 'Cursor Moments', action: 'cursor-moments' },
+  { icon: Utensils, label: "Claim Meal", action: "claim-meal" },
+  { icon: FileText, label: "Post Gen", action: "post-gen" },
+  { icon: Share2, label: "Share Project", action: "share-project" },
+  { icon: Camera, label: "Cursor Moments", action: "cursor-moments" },
 ];
 
 export function Hero() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [claimMealOpen, setClaimMealOpen] = useState(false);
 
   const handleTileClick = (action: string) => {
-    if (action === 'claim-meal') {
+    if (action === "claim-meal") {
       setClaimMealOpen(true);
-    } else if (action === 'share-project') {
-      navigate('/projects');
-    } else if (action === 'post-gen') {
-      navigate('/post-gen');
-    } else if (action === 'cursor-moments') {
-      navigate('/moments');
+    } else if (action === "share-project") {
+      router.push("/projects");
+    } else if (action === "post-gen") {
+      router.push("/post-gen");
+    } else if (action === "cursor-moments") {
+      router.push("/moments");
     }
   };
 
   return (
     <>
       <ClaimMealDialog open={claimMealOpen} onOpenChange={setClaimMealOpen} />
-      
+
       {/* Full-screen title section */}
-      <section id="hero" className="h-screen snap-section flex items-center justify-center relative overflow-hidden">
+      <section
+        id="hero"
+        className="h-screen snap-section flex items-center justify-center relative overflow-hidden"
+      >
         {/* Globe background */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
@@ -41,22 +54,22 @@ export function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5 }}
         >
-        <img
-          src={globeColombo}
-          alt="Globe showing Colombo, Sri Lanka"
-          className="w-full h-full object-cover opacity-60"
-        />
-        {/* Sri Lanka beacon */}
-        <div className="absolute top-[58%] left-[48%] -translate-x-1/2 -translate-y-1/2">
-          <motion.div
-            animate={{ scale: [1, 1.5, 1], opacity: [0.8, 0.3, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-4 h-4 rounded-full bg-foreground/60 blur-sm"
+          <img
+            src={globeColombo}
+            alt="Globe showing Colombo, Sri Lanka"
+            className="w-full h-full object-cover opacity-60"
           />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-foreground" />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 to-transparent" />
+          {/* Sri Lanka beacon */}
+          <div className="absolute top-[58%] left-[48%] -translate-x-1/2 -translate-y-1/2">
+            <motion.div
+              animate={{ scale: [1, 1.5, 1], opacity: [0.8, 0.3, 0.8] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-4 h-4 rounded-full bg-foreground/60 blur-sm"
+            />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-foreground" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/80 to-transparent" />
         </motion.div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-6">
@@ -68,7 +81,9 @@ export function Hero() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-8"
           >
             <MapPin className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Based in Colombo, Sri Lanka</span>
+            <span className="text-sm font-medium text-primary">
+              Based in Colombo, Sri Lanka
+            </span>
           </motion.div>
 
           {/* Giant Heading */}
@@ -107,9 +122,13 @@ export function Hero() {
           transition={{ delay: 1.2 }}
           className="absolute bottom-10 left-0 right-0 z-20 flex justify-center"
         >
-          <div 
+          <div
             className="flex flex-col items-center gap-3 cursor-pointer group"
-            onClick={() => document.getElementById('flows-preview')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() =>
+              document
+                .getElementById("flows-preview")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
           >
             {/* Terminal command */}
             <div className="flex items-center gap-1 font-mono text-sm text-foreground/50 group-hover:text-foreground/70 transition-colors">
@@ -121,7 +140,7 @@ export function Hero() {
                 className="w-[2px] h-4 bg-foreground/60"
               />
             </div>
-            
+
             {/* Subtle arrow */}
             <motion.div
               animate={{ y: [0, 3, 0] }}
@@ -134,7 +153,10 @@ export function Hero() {
       </section>
 
       {/* Flow Cards Section */}
-      <section id="flows-preview" className="min-h-screen snap-section flex items-center justify-center relative py-24">
+      <section
+        id="flows-preview"
+        className="min-h-screen snap-section flex items-center justify-center relative py-24"
+      >
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -150,7 +172,7 @@ export function Hero() {
               Available Flows
             </h2>
           </motion.div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto">
             {flowTiles.map((tile, index) => (
               <motion.div
@@ -158,28 +180,28 @@ export function Hero() {
                 initial={{ opacity: 0, y: 50, scale: 0.9 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ 
-                  duration: 0.5, 
+                transition={{
+                  duration: 0.5,
                   delay: index * 0.1,
                   type: "spring",
-                  stiffness: 100
+                  stiffness: 100,
                 }}
-                whileHover={{ 
-                  scale: 1.08, 
+                whileHover={{
+                  scale: 1.08,
                   y: -8,
-                  transition: { duration: 0.2 }
+                  transition: { duration: 0.2 },
                 }}
                 onClick={() => handleTileClick(tile.action)}
                 className="group relative"
               >
                 {/* Glow effect */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-foreground/20 to-foreground/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
+
                 {/* Card */}
                 <div className="relative bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 md:p-8 flex flex-col items-center gap-4 cursor-pointer overflow-hidden group-hover:border-foreground/30 transition-all duration-300 h-full min-h-[160px] md:min-h-[180px]">
                   {/* Animated gradient background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
+
                   {/* Icon container with ring */}
                   <motion.div
                     whileHover={{ rotate: [0, -10, 10, 0] }}
@@ -191,7 +213,7 @@ export function Hero() {
                       <tile.icon className="w-7 h-7 md:w-8 md:h-8 text-foreground group-hover:scale-110 transition-transform duration-300" />
                     </div>
                   </motion.div>
-                  
+
                   {/* Label */}
                   <span className="relative text-base md:text-lg font-semibold text-foreground transition-colors duration-300 text-center">
                     {tile.label}

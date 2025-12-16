@@ -1,20 +1,29 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  ArrowLeft, Copy, Check, Twitter, Linkedin, 
-  Terminal, Zap, Coffee, Sparkles, RotateCcw
-} from 'lucide-react';
-import { toast } from 'sonner';
-import cursorLogo from '@/assets/cursor-logo.png';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  Copy,
+  Check,
+  Twitter,
+  Linkedin,
+  Terminal,
+  Zap,
+  Coffee,
+  Sparkles,
+  RotateCcw,
+} from "lucide-react";
+import { toast } from "sonner";
 
-type Vibe = 'chill' | 'hype' | 'dev' | 'poetic';
+const cursorLogo = "/cursor-logo.png";
+
+type Vibe = "chill" | "hype" | "dev" | "poetic";
 
 const vibeEmoji: Record<Vibe, string> = {
-  chill: '☕',
-  hype: '🔥',
-  dev: '⚡',
-  poetic: '✨',
+  chill: "☕",
+  hype: "🔥",
+  dev: "⚡",
+  poetic: "✨",
 };
 
 const vibeTemplates: Record<Vibe, string[]> = {
@@ -31,7 +40,7 @@ const vibeTemplates: Record<Vibe, string[]> = {
   dev: [
     "// attended: CafeCursor\n// location: Colombo\n// status: inspired\n// next_action: ship more code\n\nSolid event. Great discussions on system design and AI tooling. 10/10 would compile again.",
     "Bug fixed: loneliness. Solution: Cafe Cursor community. Deployed to production: my motivation. No regressions detected.",
-    "git commit -m \"Attended Cafe Cursor, merged new ideas into main branch\"\n\nPR approved by the community. Ready for deployment.",
+    'git commit -m "Attended Cafe Cursor, merged new ideas into main branch"\n\nPR approved by the community. Ready for deployment.',
   ],
   poetic: [
     "In the space between keystrokes, ideas bloom like steam from a fresh cup. Cafe Cursor — where code meets soul.",
@@ -44,41 +53,43 @@ const MAX_CHARS = 280;
 
 // Techy Coffee Cup with Cursor Logo Component
 function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
-  const [particles, setParticles] = useState<{ id: number; x: number; size: number; type: string }[]>([]);
+  const [particles, setParticles] = useState<
+    { id: number; x: number; size: number; type: string }[]
+  >([]);
   const [glitchOffset, setGlitchOffset] = useState(0);
   const [cursorVisible, setCursorVisible] = useState(true);
 
   // Vibe-specific configurations
   const vibeConfig = {
     chill: {
-      primary: '#6B9B8A',
-      secondary: '#4A7A6A', 
-      glow: 'rgba(107, 155, 138, 0.4)',
-      particleType: '•',
+      primary: "#6B9B8A",
+      secondary: "#4A7A6A",
+      glow: "rgba(107, 155, 138, 0.4)",
+      particleType: "•",
       particleSpeed: 3000,
       glitchIntensity: 0,
     },
     hype: {
-      primary: '#FF6B35',
-      secondary: '#FF4500',
-      glow: 'rgba(255, 107, 53, 0.5)',
-      particleType: '★',
+      primary: "#FF6B35",
+      secondary: "#FF4500",
+      glow: "rgba(255, 107, 53, 0.5)",
+      particleType: "★",
       particleSpeed: 800,
       glitchIntensity: 3,
     },
     dev: {
-      primary: '#00FF88',
-      secondary: '#00CC66',
-      glow: 'rgba(0, 255, 136, 0.4)',
-      particleType: '⚡',
+      primary: "#00FF88",
+      secondary: "#00CC66",
+      glow: "rgba(0, 255, 136, 0.4)",
+      particleType: "⚡",
       particleSpeed: 1500,
       glitchIntensity: 2,
     },
     poetic: {
-      primary: '#C9A0DC',
-      secondary: '#9B59B6',
-      glow: 'rgba(201, 160, 220, 0.4)',
-      particleType: '✦',
+      primary: "#C9A0DC",
+      secondary: "#9B59B6",
+      glow: "rgba(201, 160, 220, 0.4)",
+      particleType: "✦",
       particleSpeed: 2500,
       glitchIntensity: 0,
     },
@@ -89,7 +100,7 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
   // Particle emission
   useEffect(() => {
     const interval = setInterval(() => {
-      setParticles(prev => {
+      setParticles((prev) => {
         const newParticle = {
           id: Date.now() + Math.random(),
           x: 30 + Math.random() * 40,
@@ -105,7 +116,9 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
   // Clean old particles
   useEffect(() => {
     const interval = setInterval(() => {
-      setParticles(prev => prev.filter(p => Date.now() - p.id < config.particleSpeed));
+      setParticles((prev) =>
+        prev.filter((p) => Date.now() - p.id < config.particleSpeed)
+      );
     }, 300);
     return () => clearInterval(interval);
   }, [config.particleSpeed]);
@@ -127,7 +140,7 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
 
   // Blinking cursor
   useEffect(() => {
-    const interval = setInterval(() => setCursorVisible(v => !v), 530);
+    const interval = setInterval(() => setCursorVisible((v) => !v), 530);
     return () => clearInterval(interval);
   }, []);
 
@@ -139,11 +152,15 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
         className="absolute w-64 h-64 rounded-full blur-3xl"
         style={{ background: config.glow }}
         initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ 
-          scale: [1, 1.2, 1], 
-          opacity: vibe === 'hype' ? [0.6, 1, 0.6] : [0.3, 0.5, 0.3] 
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: vibe === "hype" ? [0.6, 1, 0.6] : [0.3, 0.5, 0.3],
         }}
-        transition={{ duration: vibe === 'hype' ? 1.5 : 4, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{
+          duration: vibe === "hype" ? 1.5 : 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
 
       {/* Rising particles */}
@@ -152,20 +169,30 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
           {particles.map((particle) => (
             <motion.div
               key={particle.id}
-              initial={{ opacity: 0, y: 90, x: `${particle.x - 50}%`, scale: particle.size * 0.5 }}
-              animate={{ 
-                opacity: [0, 1, 0], 
+              initial={{
+                opacity: 0,
+                y: 90,
+                x: `${particle.x - 50}%`,
+                scale: particle.size * 0.5,
+              }}
+              animate={{
+                opacity: [0, 1, 0],
                 y: -20,
-                x: vibe === 'poetic' 
-                  ? [`${particle.x - 50}%`, `${particle.x - 50 + Math.sin(particle.id) * 15}%`, `${particle.x - 50}%`]
-                  : `${particle.x - 50 + (Math.random() - 0.5) * 20}%`,
+                x:
+                  vibe === "poetic"
+                    ? [
+                        `${particle.x - 50}%`,
+                        `${particle.x - 50 + Math.sin(particle.id) * 15}%`,
+                        `${particle.x - 50}%`,
+                      ]
+                    : `${particle.x - 50 + (Math.random() - 0.5) * 20}%`,
                 scale: particle.size,
-                rotate: vibe === 'hype' ? [0, 180, 360] : 0,
+                rotate: vibe === "hype" ? [0, 180, 360] : 0,
               }}
               exit={{ opacity: 0 }}
-              transition={{ 
-                duration: config.particleSpeed / 1000, 
-                ease: vibe === 'poetic' ? 'easeInOut' : 'easeOut' 
+              transition={{
+                duration: config.particleSpeed / 1000,
+                ease: vibe === "poetic" ? "easeInOut" : "easeOut",
               }}
               style={{ color: config.primary }}
               className="absolute text-sm font-bold"
@@ -189,27 +216,46 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
             {/* Dynamic gradient based on vibe */}
             <linearGradient id="cupGlow" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor={config.primary} stopOpacity="0.2" />
-              <stop offset="50%" stopColor={config.secondary} stopOpacity="0.1" />
-              <stop offset="100%" stopColor={config.primary} stopOpacity="0.2" />
+              <stop
+                offset="50%"
+                stopColor={config.secondary}
+                stopOpacity="0.1"
+              />
+              <stop
+                offset="100%"
+                stopColor={config.primary}
+                stopOpacity="0.2"
+              />
             </linearGradient>
-            
+
             <linearGradient id="lidGlow" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor={config.primary} stopOpacity="0.3" />
-              <stop offset="100%" stopColor={config.secondary} stopOpacity="0.15" />
+              <stop
+                offset="100%"
+                stopColor={config.secondary}
+                stopOpacity="0.15"
+              />
             </linearGradient>
 
             {/* Glow filter */}
             <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
 
           {/* Shadow */}
-          <ellipse cx="70" cy="172" rx="35" ry="5" fill={config.primary} fillOpacity="0.1" />
+          <ellipse
+            cx="70"
+            cy="172"
+            rx="35"
+            ry="5"
+            fill={config.primary}
+            fillOpacity="0.1"
+          />
 
           {/* Cup body - dark with neon outline */}
           <path
@@ -219,19 +265,42 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
             strokeWidth="1.5"
             filter="url(#neonGlow)"
           />
-          
+
           {/* Circuit-like patterns on cup */}
           <g stroke={config.primary} strokeWidth="0.5" strokeOpacity="0.4">
             <path d="M35 70 L70 70 L75 75 L105 75" />
             <path d="M37 95 L50 95 L55 90 L85 90 L90 95 L103 95" />
             <path d="M39 120 L60 120 L65 125 L80 125 L85 120 L101 120" />
-            <circle cx="70" cy="70" r="2" fill={config.primary} fillOpacity="0.5" />
-            <circle cx="55" cy="90" r="1.5" fill={config.primary} fillOpacity="0.5" />
-            <circle cx="85" cy="90" r="1.5" fill={config.primary} fillOpacity="0.5" />
+            <circle
+              cx="70"
+              cy="70"
+              r="2"
+              fill={config.primary}
+              fillOpacity="0.5"
+            />
+            <circle
+              cx="55"
+              cy="90"
+              r="1.5"
+              fill={config.primary}
+              fillOpacity="0.5"
+            />
+            <circle
+              cx="85"
+              cy="90"
+              r="1.5"
+              fill={config.primary}
+              fillOpacity="0.5"
+            />
           </g>
 
           {/* Data stream lines - animated feel */}
-          <g stroke={config.primary} strokeWidth="0.3" strokeOpacity="0.2" strokeDasharray="2 4">
+          <g
+            stroke={config.primary}
+            strokeWidth="0.3"
+            strokeOpacity="0.2"
+            strokeDasharray="2 4"
+          >
             <path d="M32 60 L32 150" />
             <path d="M45 55 L42 155" />
             <path d="M95 55 L98 155" />
@@ -239,8 +308,17 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
           </g>
 
           {/* Lid - tech style */}
-          <ellipse cx="70" cy="50" rx="44" ry="10" fill="url(#lidGlow)" stroke={config.primary} strokeWidth="1" filter="url(#neonGlow)" />
-          
+          <ellipse
+            cx="70"
+            cy="50"
+            rx="44"
+            ry="10"
+            fill="url(#lidGlow)"
+            stroke={config.primary}
+            strokeWidth="1"
+            filter="url(#neonGlow)"
+          />
+
           <path
             d="M22 42 C22 32 42 24 70 24 C98 24 118 32 118 42 L118 50 C118 57 98 63 70 63 C42 63 22 57 22 50 Z"
             fill="url(#lidGlow)"
@@ -248,28 +326,61 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
             strokeWidth="1.5"
             filter="url(#neonGlow)"
           />
-          
+
           {/* Lid details */}
-          <ellipse cx="70" cy="35" rx="30" ry="6" fill="none" stroke={config.primary} strokeWidth="0.5" strokeOpacity="0.5" />
-          
+          <ellipse
+            cx="70"
+            cy="35"
+            rx="30"
+            ry="6"
+            fill="none"
+            stroke={config.primary}
+            strokeWidth="0.5"
+            strokeOpacity="0.5"
+          />
+
           {/* Sip opening - glowing */}
-          <ellipse cx="70" cy="35" rx="10" ry="4" fill={config.primary} fillOpacity="0.15" stroke={config.primary} strokeWidth="0.5" />
-          
+          <ellipse
+            cx="70"
+            cy="35"
+            rx="10"
+            ry="4"
+            fill={config.primary}
+            fillOpacity="0.15"
+            stroke={config.primary}
+            strokeWidth="0.5"
+          />
+
           {/* Corner accents */}
-          <path d="M25 45 L30 40 L35 45" stroke={config.primary} strokeWidth="1" fill="none" strokeOpacity="0.6" />
-          <path d="M115 45 L110 40 L105 45" stroke={config.primary} strokeWidth="1" fill="none" strokeOpacity="0.6" />
+          <path
+            d="M25 45 L30 40 L35 45"
+            stroke={config.primary}
+            strokeWidth="1"
+            fill="none"
+            strokeOpacity="0.6"
+          />
+          <path
+            d="M115 45 L110 40 L105 45"
+            stroke={config.primary}
+            strokeWidth="1"
+            fill="none"
+            strokeOpacity="0.6"
+          />
 
           {/* Cursor Logo - centered within cup body */}
           <motion.g
-            style={{ transformOrigin: '70px 109px' }}
+            style={{ transformOrigin: "70px 109px" }}
             animate={{
-              scale: vibe === 'hype' ? [1, 1.1, 1] : [1, 1.02, 1],
+              scale: vibe === "hype" ? [1, 1.1, 1] : [1, 1.02, 1],
               filter:
-                vibe === 'hype'
-                  ? ['brightness(1)', 'brightness(1.5)', 'brightness(1)']
-                  : 'brightness(1)',
+                vibe === "hype"
+                  ? ["brightness(1)", "brightness(1.5)", "brightness(1)"]
+                  : "brightness(1)",
             }}
-            transition={{ duration: vibe === 'hype' ? 0.8 : 2, repeat: Infinity }}
+            transition={{
+              duration: vibe === "hype" ? 0.8 : 2,
+              repeat: Infinity,
+            }}
           >
             <rect
               x="50"
@@ -289,32 +400,37 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
               width="40"
               height="40"
               preserveAspectRatio="xMidYMid meet"
-              style={{ filter: `brightness(1.5) drop-shadow(0 0 8px ${config.primary})` }}
+              style={{
+                filter: `brightness(1.5) drop-shadow(0 0 8px ${config.primary})`,
+              }}
             />
           </motion.g>
         </svg>
 
-
         {/* Scanlines overlay */}
-        <div 
+        <div
           className="absolute inset-0 pointer-events-none opacity-10"
           style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)',
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)",
           }}
         />
       </motion.div>
 
       {/* Blinking cursor */}
-      <motion.div 
+      <motion.div
         className="mt-3 flex items-center gap-1"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: config.primary }}>
+        <span
+          className="font-mono text-[10px] uppercase tracking-[0.3em]"
+          style={{ color: config.primary }}
+        >
           cafe cursor
         </span>
-        <motion.span 
+        <motion.span
           className="font-mono text-sm"
           style={{ color: config.primary }}
           animate={{ opacity: cursorVisible ? 1 : 0 }}
@@ -329,7 +445,7 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
         key={vibe}
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', stiffness: 300 }}
+        transition={{ type: "spring", stiffness: 300 }}
         className="mt-2 text-lg"
       >
         {vibeEmoji[vibe]}
@@ -338,9 +454,8 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
   );
 }
 
-
 export default function PostGeneration() {
-  const [vibe, setVibe] = useState<Vibe>('chill');
+  const [vibe, setVibe] = useState<Vibe>("chill");
   const [caption, setCaption] = useState(vibeTemplates.chill[0]);
   const [copied, setCopied] = useState(false);
   const [cursorVisible, setCursorVisible] = useState(true);
@@ -349,25 +464,25 @@ export default function PostGeneration() {
 
   // Screen-wide vibe colors
   const screenVibeConfig = {
-    chill: { 
-      accent: '#6B9B8A', 
-      glow: 'rgba(107, 155, 138, 0.08)',
-      border: 'rgba(107, 155, 138, 0.2)'
+    chill: {
+      accent: "#6B9B8A",
+      glow: "rgba(107, 155, 138, 0.08)",
+      border: "rgba(107, 155, 138, 0.2)",
     },
-    hype: { 
-      accent: '#FF6B35', 
-      glow: 'rgba(255, 107, 53, 0.1)',
-      border: 'rgba(255, 107, 53, 0.25)'
+    hype: {
+      accent: "#FF6B35",
+      glow: "rgba(255, 107, 53, 0.1)",
+      border: "rgba(255, 107, 53, 0.25)",
     },
-    dev: { 
-      accent: '#00FF88', 
-      glow: 'rgba(0, 255, 136, 0.08)',
-      border: 'rgba(0, 255, 136, 0.2)'
+    dev: {
+      accent: "#00FF88",
+      glow: "rgba(0, 255, 136, 0.08)",
+      border: "rgba(0, 255, 136, 0.2)",
     },
-    poetic: { 
-      accent: '#C9A0DC', 
-      glow: 'rgba(201, 160, 220, 0.08)',
-      border: 'rgba(201, 160, 220, 0.2)'
+    poetic: {
+      accent: "#C9A0DC",
+      glow: "rgba(201, 160, 220, 0.08)",
+      border: "rgba(201, 160, 220, 0.2)",
     },
   };
 
@@ -376,7 +491,7 @@ export default function PostGeneration() {
   // Blinking cursor effect
   useEffect(() => {
     const interval = setInterval(() => {
-      setCursorVisible(v => !v);
+      setCursorVisible((v) => !v);
     }, 530);
     return () => clearInterval(interval);
   }, []);
@@ -385,7 +500,7 @@ export default function PostGeneration() {
   useEffect(() => {
     if (isTyping) {
       let i = 0;
-      setDisplayedText('');
+      setDisplayedText("");
       const interval = setInterval(() => {
         if (i < caption.length) {
           setDisplayedText(caption.slice(0, i + 1));
@@ -407,7 +522,8 @@ export default function PostGeneration() {
   const handleVibeChange = (newVibe: Vibe) => {
     setVibe(newVibe);
     const templates = vibeTemplates[newVibe];
-    const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+    const randomTemplate =
+      templates[Math.floor(Math.random() * templates.length)];
     setCaption(randomTemplate);
     setIsTyping(true);
   };
@@ -418,30 +534,38 @@ export default function PostGeneration() {
     const nextIndex = (currentIndex + 1) % templates.length;
     setCaption(templates[nextIndex]);
     setIsTyping(true);
-    toast.success('Shuffled!');
+    toast.success("Shuffled!");
   };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(caption);
     setCopied(true);
-    toast.success('Copied to clipboard!');
+    toast.success("Copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShareX = () => {
-    const text = caption + '\n\n#CafeCursor #Colombo #TechCommunity';
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+    const text = caption + "\n\n#CafeCursor #Colombo #TechCommunity";
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
+      "_blank"
+    );
   };
 
   const handleShareLinkedIn = () => {
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://cafecursor.com')}`, '_blank');
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        "https://cafecursor.com"
+      )}`,
+      "_blank"
+    );
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden relative">
       {/* Vibe ambient glow - corners */}
       <motion.div
-        key={vibe + '-glow'}
+        key={vibe + "-glow"}
         className="fixed inset-0 pointer-events-none z-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -455,21 +579,27 @@ export default function PostGeneration() {
       />
 
       {/* Scanlines overlay */}
-      <div 
+      <div
         className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
         style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)",
         }}
       />
 
       {/* Header */}
-      <motion.header 
+      <motion.header
         className="relative z-10 px-3 py-3 sm:p-4 md:p-6 flex items-center justify-between border-b transition-colors duration-500"
         style={{ borderColor: currentScreenVibe.border }}
       >
-        <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
+        >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-xs font-mono hidden sm:inline">~/cafe-cursor</span>
+          <span className="text-xs font-mono hidden sm:inline">
+            ~/cafe-cursor
+          </span>
         </Link>
         <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-muted-foreground">
           <Terminal className="w-3 h-3" />
@@ -489,7 +619,9 @@ export default function PostGeneration() {
           >
             <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
               <Coffee className="w-4 h-4 sm:w-5 sm:h-5 text-foreground/60" />
-              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">Brew your post</span>
+              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">
+                Brew your post
+              </span>
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
               What's your <span className="text-foreground/60">vibe</span>?
@@ -509,8 +641,8 @@ export default function PostGeneration() {
                 onClick={() => handleVibeChange(v)}
                 className={`relative px-3 sm:px-5 py-2 sm:py-2.5 rounded-full font-mono text-xs sm:text-sm transition-all duration-300 ${
                   vibe === v
-                    ? 'bg-foreground text-background'
-                    : 'bg-transparent border border-foreground/20 text-foreground/60 hover:border-foreground/40 hover:text-foreground'
+                    ? "bg-foreground text-background"
+                    : "bg-transparent border border-foreground/20 text-foreground/60 hover:border-foreground/40 hover:text-foreground"
                 }`}
               >
                 <span className="mr-1 sm:mr-2">{vibeEmoji[v]}</span>
@@ -519,7 +651,7 @@ export default function PostGeneration() {
                   <motion.div
                     layoutId="vibeIndicator"
                     className="absolute inset-0 bg-foreground rounded-full -z-10"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
               </button>
@@ -562,11 +694,19 @@ export default function PostGeneration() {
                   onClick={handleCopy}
                   className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/5 hover:bg-foreground/10 rounded-lg transition-colors text-xs sm:text-sm font-mono"
                 >
-                  {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                  {copied ? 'copied!' : 'copy'}
+                  {copied ? (
+                    <Check className="w-3 h-3" />
+                  ) : (
+                    <Copy className="w-3 h-3" />
+                  )}
+                  {copied ? "copied!" : "copy"}
                 </button>
               </div>
-              <span className={`font-mono text-[10px] sm:text-xs ${isOverLimit ? 'text-red-400' : 'text-foreground/30'}`}>
+              <span
+                className={`font-mono text-[10px] sm:text-xs ${
+                  isOverLimit ? "text-red-400" : "text-foreground/30"
+                }`}
+              >
                 {charCount}/{MAX_CHARS}
               </span>
             </div>
@@ -574,10 +714,10 @@ export default function PostGeneration() {
         </div>
 
         {/* Divider */}
-        <motion.div 
+        <motion.div
           className="hidden lg:block w-px"
-          style={{ 
-            background: `linear-gradient(to bottom, transparent, ${currentScreenVibe.border}, transparent)` 
+          style={{
+            background: `linear-gradient(to bottom, transparent, ${currentScreenVibe.border}, transparent)`,
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -585,7 +725,10 @@ export default function PostGeneration() {
         />
 
         {/* Horizontal divider for mobile/tablet */}
-        <div className="lg:hidden h-px mx-3 sm:mx-4" style={{ background: currentScreenVibe.border }} />
+        <div
+          className="lg:hidden h-px mx-3 sm:mx-4"
+          style={{ background: currentScreenVibe.border }}
+        />
 
         {/* Right Panel - Preview & Actions */}
         <div className="lg:w-[420px] p-3 sm:p-4 md:p-8 lg:p-12 bg-foreground/[0.02] flex flex-col">
@@ -607,41 +750,73 @@ export default function PostGeneration() {
             className="flex-1"
           >
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
-              <Sparkles className="w-3 h-3" style={{ color: currentScreenVibe.accent, opacity: 0.6 }} />
-              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">Preview</span>
+              <Sparkles
+                className="w-3 h-3"
+                style={{ color: currentScreenVibe.accent, opacity: 0.6 }}
+              />
+              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">
+                Preview
+              </span>
             </div>
 
             {/* Terminal-style preview */}
-            <motion.div 
+            <motion.div
               className="relative bg-background rounded-lg sm:rounded-xl overflow-hidden transition-colors duration-500"
-              style={{ borderWidth: 1, borderStyle: 'solid', borderColor: currentScreenVibe.border }}
+              style={{
+                borderWidth: 1,
+                borderStyle: "solid",
+                borderColor: currentScreenVibe.border,
+              }}
             >
               {/* Terminal header */}
-              <div 
+              <div
                 className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-foreground/[0.02] transition-colors duration-500"
-                style={{ borderBottomWidth: 1, borderBottomStyle: 'solid', borderBottomColor: currentScreenVibe.border }}
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomStyle: "solid",
+                  borderBottomColor: currentScreenVibe.border,
+                }}
               >
-                <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style={{ backgroundColor: currentScreenVibe.accent, opacity: 0.4 }} />
+                <div
+                  className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full"
+                  style={{
+                    backgroundColor: currentScreenVibe.accent,
+                    opacity: 0.4,
+                  }}
+                />
                 <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-foreground/20" />
                 <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-foreground/20" />
-                <span className="ml-1 sm:ml-2 text-[8px] sm:text-[10px] font-mono text-foreground/30">your-post.txt</span>
+                <span className="ml-1 sm:ml-2 text-[8px] sm:text-[10px] font-mono text-foreground/30">
+                  your-post.txt
+                </span>
               </div>
-              
+
               {/* Content */}
               <div className="p-3 sm:p-4 min-h-[120px] sm:min-h-[200px] font-mono text-xs sm:text-sm leading-relaxed">
                 <span className="text-foreground/80">{displayedText}</span>
-                <span 
-                  className={`${cursorVisible ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                <span
+                  className={`${
+                    cursorVisible ? "opacity-100" : "opacity-0"
+                  } transition-opacity`}
                   style={{ color: currentScreenVibe.accent }}
-                >▋</span>
+                >
+                  ▋
+                </span>
               </div>
 
               {/* Footer */}
-              <div 
+              <div
                 className="px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/[0.02] flex items-center justify-between transition-colors duration-500"
-                style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: currentScreenVibe.border }}
+                style={{
+                  borderTopWidth: 1,
+                  borderTopStyle: "solid",
+                  borderTopColor: currentScreenVibe.border,
+                }}
               >
-                <span className="text-[8px] sm:text-[10px] font-mono" style={{ color: currentScreenVibe.accent, opacity: 0.6 }}>
+                <span
+                  className="text-[8px] sm:text-[10px] font-mono"
+                  style={{ color: currentScreenVibe.accent, opacity: 0.6 }}
+                >
                   {vibeEmoji[vibe]} {vibe}
                 </span>
                 <span className="text-[8px] sm:text-[10px] font-mono text-foreground/30">
@@ -658,8 +833,10 @@ export default function PostGeneration() {
             transition={{ delay: 0.4 }}
             className="mt-4 sm:mt-8 space-y-2 sm:space-y-3"
           >
-            <p className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest mb-2 sm:mb-4">Share</p>
-            
+            <p className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest mb-2 sm:mb-4">
+              Share
+            </p>
+
             <div className="flex gap-2 sm:flex-col sm:gap-3">
               <button
                 onClick={handleShareX}

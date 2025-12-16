@@ -1,25 +1,44 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
-import { Utensils, FileText, Share2, MessageCircle } from 'lucide-react';
-import { ClaimMeal } from '@/components/flows/ClaimMeal';
-import { PostGeneration } from '@/components/flows/PostGeneration';
-import { ShareProject } from '@/components/flows/ShareProject';
-import { AskQuestions } from '@/components/flows/AskQuestions';
+import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
+import { Utensils, FileText, Share2, MessageCircle } from "lucide-react";
+import { ClaimMealNew } from "@/src/components/flows/ClaimMealNew";
+import { PostGeneration } from "@/src/components/flows/PostGeneration";
+import { ShareProject } from "@/src/components/flows/ShareProject";
+import { AskQuestions } from "@/src/components/flows/AskQuestions";
 
 const flows = [
-  { id: 'claim', icon: Utensils, label: 'Claim Meal', component: ClaimMeal },
-  { id: 'post', icon: FileText, label: 'Post Generation', component: PostGeneration },
-  { id: 'share', icon: Share2, label: 'Share Project', component: ShareProject },
-  { id: 'ask', icon: MessageCircle, label: 'Ask Questions', component: AskQuestions },
+  { id: "claim", icon: Utensils, label: "Claim Meal", component: ClaimMealNew },
+  {
+    id: "post",
+    icon: FileText,
+    label: "Post Generation",
+    component: PostGeneration,
+  },
+  {
+    id: "share",
+    icon: Share2,
+    label: "Share Project",
+    component: ShareProject,
+  },
+  {
+    id: "ask",
+    icon: MessageCircle,
+    label: "Ask Questions",
+    component: AskQuestions,
+  },
 ];
 
 export function Flows() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [expandedFlow, setExpandedFlow] = useState<string | null>(null);
 
   return (
-    <section id="flows" ref={ref} className="min-h-screen snap-section flex items-center bg-surface">
+    <section
+      id="flows"
+      ref={ref}
+      className="min-h-screen snap-section flex items-center bg-surface"
+    >
       <div className="container mx-auto px-6 py-24">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -44,11 +63,13 @@ export function Flows() {
               <motion.div
                 key={flow.id}
                 initial={{ opacity: 0, y: 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+                }
                 transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
                 layout
                 className={`bg-card border border-border rounded-2xl overflow-hidden transition-shadow ${
-                  isExpanded ? 'md:col-span-2 shadow-xl' : 'hover:shadow-lg'
+                  isExpanded ? "md:col-span-2 shadow-xl" : "hover:shadow-lg"
                 }`}
               >
                 <motion.button
@@ -60,9 +81,11 @@ export function Flows() {
                     <flow.icon className="w-6 h-6 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-foreground">{flow.label}</h3>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {flow.label}
+                    </h3>
                     <p className="text-sm text-muted-foreground">
-                      {isExpanded ? 'Click to collapse' : 'Click to expand'}
+                      {isExpanded ? "Click to collapse" : "Click to expand"}
                     </p>
                   </div>
                 </motion.button>
@@ -70,7 +93,7 @@ export function Flows() {
                 {isExpanded && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
+                    animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
                     className="border-t border-border p-6"

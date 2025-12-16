@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clipboard Test</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        background: #0a66c2;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #004182;
+      }
+      .status {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧪 Clipboard API Test</h1>
+      <p>This tests if the clipboard functionality works in your browser.</p>
+
+      <textarea id="testContent">
+🚀 This is a test post from Cafe Cursor!
+
+#AI #Tech #Innovation
+
+— Posted via Cafe Cursor • Dec 16, 2025</textarea
+      >
+
+      <button onclick="testClipboard()">📋 Copy to Clipboard</button>
+      <button onclick="testLinkedInFlow()" style="background: #0a66c2">
+        🔗 Test LinkedIn Flow
+      </button>
+
+      <div id="status"></div>
+    </div>
+
+    <script>
+      async function testClipboard() {
+        const content = document.getElementById("testContent").value;
+        const statusDiv = document.getElementById("status");
+
+        try {
+          await navigator.clipboard.writeText(content);
+          statusDiv.className = "status success";
+          statusDiv.innerHTML = `
+          ✅ <strong>Success!</strong> Content copied to clipboard.<br>
+          Press Ctrl+V (or Cmd+V) to paste it anywhere.
+        `;
+        } catch (error) {
+          statusDiv.className = "status error";
+          statusDiv.innerHTML = `
+          ❌ <strong>Failed!</strong> ${error.message}<br><br>
+          <strong>Possible causes:</strong><br>
+          • Browser doesn't support Clipboard API<br>
+          • Page is not served over HTTPS or localhost<br>
+          • Clipboard permission denied<br><br>
+          <strong>Current URL:</strong> ${window.location.href}
+        `;
+        }
+      }
+
+      async function testLinkedInFlow() {
+        const content = document.getElementById("testContent").value;
+        const statusDiv = document.getElementById("status");
+
+        try {
+          // Step 1: Copy to clipboard
+          await navigator.clipboard.writeText(content);
+
+          statusDiv.className = "status success";
+          statusDiv.innerHTML = `
+          ✅ <strong>Content copied!</strong><br><br>
+          Opening LinkedIn... Press Ctrl+V (or Cmd+V) to paste!
+        `;
+
+          // Step 2: Open LinkedIn after a short delay
+          setTimeout(() => {
+            window.open(
+              "https://www.linkedin.com/feed/?shareActive=true",
+              "_blank"
+            );
+          }, 1000);
+        } catch (error) {
+          statusDiv.className = "status error";
+          statusDiv.innerHTML = `
+          ❌ <strong>Failed!</strong> ${error.message}<br><br>
+          Try copying manually instead.
+        `;
+        }
+      }
+
+      // Check clipboard API support on page load
+      window.addEventListener("load", () => {
+        const statusDiv = document.getElementById("status");
+        if (!navigator.clipboard) {
+          statusDiv.className = "status error";
+          statusDiv.innerHTML = `
+          ⚠️ <strong>Warning:</strong> Clipboard API not supported in this browser.<br>
+          Make sure you're using HTTPS or localhost.
+        `;
+        }
+      });
+    </script>
+  </body>
+</html>

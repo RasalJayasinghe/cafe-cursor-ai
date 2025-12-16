@@ -1,25 +1,27 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useApp } from '@/context/AppContext';
-import { toast } from 'sonner';
-import { Copy, ExternalLink, Check } from 'lucide-react';
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
+import { Textarea } from "@/src/components/ui/textarea";
+import { useApp } from "@/src/context/AppContext";
+import { toast } from "sonner";
+import { Copy, ExternalLink, Check } from "lucide-react";
 
 export function ShareProject() {
   const { sharedProjects, addSharedProject } = useApp();
-  const [projectName, setProjectName] = useState('');
-  const [personName, setPersonName] = useState('');
-  const [linkedinUrl, setLinkedinUrl] = useState('');
-  const [githubUrl, setGithubUrl] = useState('');
-  const [description, setDescription] = useState('');
+  const [projectName, setProjectName] = useState("");
+  const [personName, setPersonName] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
+  const [description, setDescription] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleShare = () => {
     if (!projectName.trim() || !personName.trim()) {
-      toast.error('Please fill in required fields');
+      toast.error("Please fill in required fields");
       return;
     }
 
@@ -37,25 +39,25 @@ export function ShareProject() {
       createdAt: new Date().toISOString(),
     });
 
-    toast.success('Project shared!', { description: shortLink });
+    toast.success("Project shared!", { description: shortLink });
 
     // Reset form
-    setProjectName('');
-    setPersonName('');
-    setLinkedinUrl('');
-    setGithubUrl('');
-    setDescription('');
+    setProjectName("");
+    setPersonName("");
+    setLinkedinUrl("");
+    setGithubUrl("");
+    setDescription("");
   };
 
   const handleCopy = async (link: string, id: string) => {
     await navigator.clipboard.writeText(link);
     setCopiedId(id);
-    toast.success('Link copied!');
+    toast.success("Link copied!");
     setTimeout(() => setCopiedId(null), 2000);
   };
 
   const handleOpen = (link: string) => {
-    toast.info('Demo link opened (simulated)');
+    toast.info("Demo link opened (simulated)");
   };
 
   return (
@@ -116,14 +118,20 @@ export function ShareProject() {
         </div>
       </div>
 
-      <Button onClick={handleShare} className="w-full" disabled={!projectName.trim() || !personName.trim()}>
+      <Button
+        onClick={handleShare}
+        className="w-full"
+        disabled={!projectName.trim() || !personName.trim()}
+      >
         Share Project
       </Button>
 
       {/* Shared Projects List */}
       {sharedProjects.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Shared Projects</h4>
+          <h4 className="text-sm font-medium text-foreground">
+            Shared Projects
+          </h4>
           <div className="space-y-2 max-h-60 overflow-y-auto">
             <AnimatePresence>
               {sharedProjects.map((project, index) => (
@@ -136,15 +144,23 @@ export function ShareProject() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground truncate">{project.projectName}</p>
-                      <p className="text-sm text-muted-foreground truncate">{project.personName}</p>
-                      <p className="text-xs text-primary font-mono truncate mt-1">{project.shortLink}</p>
+                      <p className="font-medium text-foreground truncate">
+                        {project.projectName}
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {project.personName}
+                      </p>
+                      <p className="text-xs text-primary font-mono truncate mt-1">
+                        {project.shortLink}
+                      </p>
                     </div>
                     <div className="flex gap-1 flex-shrink-0">
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleCopy(project.shortLink, project.id)}
+                        onClick={() =>
+                          handleCopy(project.shortLink, project.id)
+                        }
                         className="h-8 w-8 p-0"
                       >
                         {copiedId === project.id ? (

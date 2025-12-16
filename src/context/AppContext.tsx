@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+"use client";
+
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 export interface Token {
   id: string;
@@ -46,68 +54,85 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  tokens: 'cafecursor_tokens',
-  projects: 'cafecursor_projects',
-  questions: 'cafecursor_questions',
+  tokens: "cafecursor_tokens",
+  projects: "cafecursor_projects",
+  questions: "cafecursor_questions",
 };
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [tokens, setTokens] = useState<Token[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.tokens);
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [tokens, setTokens] = useState<Token[]>([]);
+  const [sharedProjects, setSharedProjects] = useState<SharedProject[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [activeSection, setActiveSection] = useState("hero");
+  const [mounted, setMounted] = useState(false);
 
-  const [sharedProjects, setSharedProjects] = useState<SharedProject[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.projects);
-    return saved ? JSON.parse(saved) : [];
-  });
+  // Initialize from localStorage after component mounts (client-side only)
+  useEffect(() => {
+    setMounted(true);
+    const savedTokens = localStorage.getItem(STORAGE_KEYS.tokens);
+    const savedProjects = localStorage.getItem(STORAGE_KEYS.projects);
+    const savedQuestions = localStorage.getItem(STORAGE_KEYS.questions);
 
-  const [questions, setQuestions] = useState<Question[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.questions);
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [activeSection, setActiveSection] = useState('hero');
+    if (savedTokens) setTokens(JSON.parse(savedTokens));
+    if (savedProjects) setSharedProjects(JSON.parse(savedProjects));
+    if (savedQuestions) setQuestions(JSON.parse(savedQuestions));
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.tokens, JSON.stringify(tokens));
-  }, [tokens]);
+    if (mounted) {
+      localStorage.setItem(STORAGE_KEYS.tokens, JSON.stringify(tokens));
+    }
+  }, [tokens, mounted]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(sharedProjects));
-  }, [sharedProjects]);
+    if (mounted) {
+      localStorage.setItem(
+        STORAGE_KEYS.projects,
+        JSON.stringify(sharedProjects)
+      );
+    }
+  }, [sharedProjects, mounted]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.questions, JSON.stringify(questions));
-  }, [questions]);
+    if (mounted) {
+      localStorage.setItem(STORAGE_KEYS.questions, JSON.stringify(questions));
+    }
+  }, [questions, mounted]);
 
-  const addToken = (token: Token) => setTokens(prev => [token, ...prev]);
-  const markTokenUsed = (id: string) => setTokens(prev => 
-    prev.map(t => t.id === id ? { ...t, used: true } : t)
-  );
-  const deleteToken = (id: string) => setTokens(prev => prev.filter(t => t.id !== id));
+  const addToken = (token: Token) => setTokens((prev) => [token, ...prev]);
+  const markTokenUsed = (id: string) =>
+    setTokens((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, used: true } : t))
+    );
+  const deleteToken = (id: string) =>
+    setTokens((prev) => prev.filter((t) => t.id !== id));
 
-  const addSharedProject = (project: SharedProject) => setSharedProjects(prev => [project, ...prev]);
+  const addSharedProject = (project: SharedProject) =>
+    setSharedProjects((prev) => [project, ...prev]);
 
-  const addQuestion = (question: Question) => setQuestions(prev => [question, ...prev]);
-  const toggleQuestionAnswered = (id: string) => setQuestions(prev =>
-    prev.map(q => q.id === id ? { ...q, answered: !q.answered } : q)
-  );
+  const addQuestion = (question: Question) =>
+    setQuestions((prev) => [question, ...prev]);
+  const toggleQuestionAnswered = (id: string) =>
+    setQuestions((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, answered: !q.answered } : q))
+    );
 
   return (
-    <AppContext.Provider value={{
-      tokens,
-      addToken,
-      markTokenUsed,
-      deleteToken,
-      sharedProjects,
-      addSharedProject,
-      questions,
-      addQuestion,
-      toggleQuestionAnswered,
-      activeSection,
-      setActiveSection,
-    }}>
+    <AppContext.Provider
+      value={{
+        tokens,
+        addToken,
+        markTokenUsed,
+        deleteToken,
+        sharedProjects,
+        addSharedProject,
+        questions,
+        addQuestion,
+        toggleQuestionAnswered,
+        activeSection,
+        setActiveSection,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
@@ -115,6 +140,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 export function useApp() {
   const context = useContext(AppContext);
-  if (!context) throw new Error('useApp must be used within AppProvider');
+  if (!context) throw new Error("useApp must be used within AppProvider");
   return context;
 }
