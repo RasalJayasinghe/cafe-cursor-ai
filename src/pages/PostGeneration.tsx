@@ -317,33 +317,16 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
         </motion.span>
       </motion.div>
 
-      {/* Vibe indicator with animation */}
-      <motion.div
-        className="mt-2 flex items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
+      {/* Vibe emoji only */}
+      <motion.span
+        key={vibe}
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+        className="mt-2 text-lg"
       >
-        <motion.span
-          key={vibe}
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ 
-            scale: 1, 
-            rotate: 0,
-            filter: vibe === 'hype' ? ['brightness(1)', 'brightness(1.5)', 'brightness(1)'] : 'brightness(1)'
-          }}
-          transition={{ 
-            scale: { type: 'spring', stiffness: 300 },
-            filter: { duration: 0.5, repeat: vibe === 'hype' ? Infinity : 0 }
-          }}
-          className="text-lg"
-        >
-          {vibeEmoji[vibe]}
-        </motion.span>
-        <span className="font-mono text-[10px]" style={{ color: config.primary, opacity: 0.6 }}>
-          {vibe} mode
-        </span>
-      </motion.div>
+        {vibeEmoji[vibe]}
+      </motion.span>
     </div>
   );
 }
@@ -356,6 +339,32 @@ export default function PostGeneration() {
   const [cursorVisible, setCursorVisible] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [displayedText, setDisplayedText] = useState(caption);
+
+  // Screen-wide vibe colors
+  const screenVibeConfig = {
+    chill: { 
+      accent: '#6B9B8A', 
+      glow: 'rgba(107, 155, 138, 0.08)',
+      border: 'rgba(107, 155, 138, 0.2)'
+    },
+    hype: { 
+      accent: '#FF6B35', 
+      glow: 'rgba(255, 107, 53, 0.1)',
+      border: 'rgba(255, 107, 53, 0.25)'
+    },
+    dev: { 
+      accent: '#00FF88', 
+      glow: 'rgba(0, 255, 136, 0.08)',
+      border: 'rgba(0, 255, 136, 0.2)'
+    },
+    poetic: { 
+      accent: '#C9A0DC', 
+      glow: 'rgba(201, 160, 220, 0.08)',
+      border: 'rgba(201, 160, 220, 0.2)'
+    },
+  };
+
+  const currentScreenVibe = screenVibeConfig[vibe];
 
   // Blinking cursor effect
   useEffect(() => {
@@ -422,7 +431,22 @@ export default function PostGeneration() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground overflow-hidden relative">
+      {/* Vibe ambient glow - corners */}
+      <motion.div
+        key={vibe + '-glow'}
+        className="fixed inset-0 pointer-events-none z-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        style={{
+          background: `
+            radial-gradient(ellipse at top left, ${currentScreenVibe.glow} 0%, transparent 50%),
+            radial-gradient(ellipse at bottom right, ${currentScreenVibe.glow} 0%, transparent 50%)
+          `,
+        }}
+      />
+
       {/* Scanlines overlay */}
       <div 
         className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
@@ -432,7 +456,10 @@ export default function PostGeneration() {
       />
 
       {/* Header */}
-      <header className="relative z-10 p-4 md:p-6 flex items-center justify-between border-b border-border/20">
+      <motion.header 
+        className="relative z-10 p-4 md:p-6 flex items-center justify-between border-b transition-colors duration-500"
+        style={{ borderColor: currentScreenVibe.border }}
+      >
         <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-xs font-mono hidden sm:inline">~/cafe-cursor</span>
@@ -441,7 +468,7 @@ export default function PostGeneration() {
           <Terminal className="w-3 h-3" />
           <span>post-gen v1.0</span>
         </div>
-      </header>
+      </motion.header>
 
       <main className="relative z-10 min-h-[calc(100vh-73px)] flex flex-col lg:flex-row">
         {/* Left Panel - Editor */}
@@ -539,7 +566,15 @@ export default function PostGeneration() {
         </div>
 
         {/* Divider */}
-        <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-foreground/10 to-transparent" />
+        <motion.div 
+          className="hidden lg:block w-px"
+          style={{ 
+            background: `linear-gradient(to bottom, transparent, ${currentScreenVibe.border}, transparent)` 
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        />
 
         {/* Right Panel - Preview & Actions */}
         <div className="lg:w-[420px] p-4 md:p-8 lg:p-12 bg-foreground/[0.02] flex flex-col">
@@ -561,15 +596,21 @@ export default function PostGeneration() {
             className="flex-1"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-3 h-3 text-foreground/40" />
+              <Sparkles className="w-3 h-3" style={{ color: currentScreenVibe.accent, opacity: 0.6 }} />
               <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">Preview</span>
             </div>
 
             {/* Terminal-style preview */}
-            <div className="relative bg-background border border-foreground/10 rounded-xl overflow-hidden">
+            <motion.div 
+              className="relative bg-background rounded-xl overflow-hidden transition-colors duration-500"
+              style={{ borderWidth: 1, borderStyle: 'solid', borderColor: currentScreenVibe.border }}
+            >
               {/* Terminal header */}
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-foreground/10 bg-foreground/[0.02]">
-                <div className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
+              <div 
+                className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02] transition-colors duration-500"
+                style={{ borderBottomWidth: 1, borderBottomStyle: 'solid', borderBottomColor: currentScreenVibe.border }}
+              >
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: currentScreenVibe.accent, opacity: 0.4 }} />
                 <div className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
                 <div className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
                 <span className="ml-2 text-[10px] font-mono text-foreground/30">your-post.txt</span>
@@ -578,19 +619,25 @@ export default function PostGeneration() {
               {/* Content */}
               <div className="p-4 min-h-[200px] font-mono text-sm leading-relaxed">
                 <span className="text-foreground/80">{displayedText}</span>
-                <span className={`${cursorVisible ? 'opacity-100' : 'opacity-0'} text-foreground transition-opacity`}>▋</span>
+                <span 
+                  className={`${cursorVisible ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                  style={{ color: currentScreenVibe.accent }}
+                >▋</span>
               </div>
 
               {/* Footer */}
-              <div className="px-4 py-2 border-t border-foreground/10 bg-foreground/[0.02] flex items-center justify-between">
-                <span className="text-[10px] font-mono text-foreground/30">
-                  {vibeEmoji[vibe]} {vibe} mode
+              <div 
+                className="px-4 py-2 bg-foreground/[0.02] flex items-center justify-between transition-colors duration-500"
+                style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: currentScreenVibe.border }}
+              >
+                <span className="text-[10px] font-mono" style={{ color: currentScreenVibe.accent, opacity: 0.6 }}>
+                  {vibeEmoji[vibe]} {vibe}
                 </span>
                 <span className="text-[10px] font-mono text-foreground/30">
                   {charCount} chars
                 </span>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Share buttons */}
