@@ -1,5 +1,6 @@
 import { Hero } from '@/components/sections/Hero';
 import { AboutEvent } from '@/components/sections/AboutEvent';
+import { Footer } from '@/components/layout/Footer';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard } from 'lucide-react';
 
@@ -8,6 +9,7 @@ const Index = () => {
     <div className="scroll-snap-y h-screen overflow-y-auto">
       <Hero />
       <AboutEvent />
+      <Footer />
       
       {/* Small worker dashboard link */}
       <Link
