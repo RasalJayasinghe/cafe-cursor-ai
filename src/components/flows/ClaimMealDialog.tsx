@@ -355,54 +355,136 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
               {step === 'complete' && (
                 <motion.div
                   key="complete"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="p-8 md:p-12 text-center"
+                  className="p-6 md:p-10"
                 >
+                  {/* Header */}
                   <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', delay: 0.2 }}
-                    className="w-20 h-20 mx-auto mb-6 rounded-full bg-foreground/10 border border-foreground/20 flex items-center justify-center"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-center mb-6"
                   >
-                    <Sparkles className="w-10 h-10 text-foreground" />
+                    <span className="font-mono text-xs text-muted-foreground/60 tracking-widest uppercase">
+                      Cafe Cursor • Colombo
+                    </span>
                   </motion.div>
-                  
-                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                    Order Confirmed!
-                  </h2>
-                  <p className="text-muted-foreground mb-8">
-                    Your meal will be ready shortly. Show this screen to collect your order.
-                  </p>
 
-                  {/* Code-styled order summary */}
-                  <div className="bg-foreground/5 border border-foreground/20 rounded-xl p-4 mb-6 text-left font-mono text-sm">
-                    <div className="text-muted-foreground/50 mb-2"># order.receipt</div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-purple-400">meal</span>
-                      <span className="text-foreground/60">:</span>
-                      <span className="text-yellow-400">{MEALS.find(m => m.id === selectedMeal)?.name}</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-purple-400">drink</span>
-                      <span className="text-foreground/60">:</span>
-                      <span className="text-cyan-400">{DRINKS.find(d => d.id === selectedDrink)?.name}</span>
-                    </div>
-                    <div className="flex items-start gap-2 mt-2 pt-2 border-t border-foreground/10">
-                      <span className="text-green-400">status</span>
-                      <span className="text-foreground/60">:</span>
-                      <span className="text-green-400">confirmed ✓</span>
-                    </div>
-                  </div>
-
-                  <Button
-                    onClick={handleClose}
-                    variant="outline"
-                    className="border-foreground/20 hover:bg-foreground/10 font-mono"
+                  {/* Main Token Card */}
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: 'spring', delay: 0.2, stiffness: 200 }}
+                    className="relative"
                   >
-                    $ exit
-                  </Button>
+                    {/* Animated glow behind token */}
+                    <motion.div
+                      animate={{ 
+                        opacity: [0.3, 0.6, 0.3],
+                        scale: [1, 1.02, 1]
+                      }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                      className="absolute -inset-4 bg-gradient-to-b from-foreground/20 via-foreground/10 to-transparent rounded-3xl blur-xl"
+                    />
+                    
+                    {/* Token container */}
+                    <div className="relative bg-gradient-to-b from-foreground/10 to-foreground/5 rounded-2xl border border-foreground/20 overflow-hidden">
+                      {/* Dotted edge decoration (like a ticket) */}
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-8 bg-background rounded-r-full" />
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-8 bg-background rounded-l-full" />
+                      
+                      {/* Horizontal dashed line */}
+                      <div className="absolute left-6 right-6 top-1/2 border-t border-dashed border-foreground/20" />
+
+                      {/* Top section - Token */}
+                      <div className="p-6 pb-10 text-center">
+                        <span className="font-mono text-xs text-muted-foreground/50 tracking-wider">
+                          YOUR TOKEN
+                        </span>
+                        
+                        {/* Big Token Display */}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.4, type: 'spring', stiffness: 300 }}
+                          className="mt-4 mb-2"
+                        >
+                          <div className="relative inline-block">
+                            {/* Token glow */}
+                            <motion.div
+                              animate={{ opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 1.5, repeat: Infinity }}
+                              className="absolute inset-0 bg-foreground/20 blur-2xl rounded-full"
+                            />
+                            <span className="relative font-mono text-4xl md:text-5xl font-bold tracking-[0.2em] text-foreground">
+                              CC-7842
+                            </span>
+                          </div>
+                        </motion.div>
+                        
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.6 }}
+                          className="text-muted-foreground/60 text-sm font-mono"
+                        >
+                          Show this token to claim your meal
+                        </motion.p>
+                      </div>
+
+                      {/* Bottom section - Order details */}
+                      <div className="p-6 pt-10 bg-foreground/5">
+                        <div className="font-mono text-xs space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground/50">MEAL</span>
+                            <span className="text-yellow-400">{MEALS.find(m => m.id === selectedMeal)?.name}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground/50">DRINK</span>
+                            <span className="text-cyan-400">{DRINKS.find(d => d.id === selectedDrink)?.name}</span>
+                          </div>
+                          <div className="flex justify-between items-center pt-2 border-t border-foreground/10">
+                            <span className="text-muted-foreground/50">STATUS</span>
+                            <span className="text-green-400 flex items-center gap-1">
+                              <motion.span
+                                animate={{ opacity: [1, 0.5, 1] }}
+                                transition={{ duration: 1, repeat: Infinity }}
+                                className="w-1.5 h-1.5 rounded-full bg-green-400"
+                              />
+                              READY TO CLAIM
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Scanlines effect overlay */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.03 }}
+                    transition={{ delay: 0.5 }}
+                    className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.03)_2px,rgba(255,255,255,0.03)_4px)]"
+                  />
+
+                  {/* Footer */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                    className="mt-6 text-center"
+                  >
+                    <Button
+                      onClick={handleClose}
+                      variant="outline"
+                      className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs tracking-wider"
+                    >
+                      <Sparkles className="w-3 h-3 mr-2" />
+                      DONE
+                    </Button>
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
