@@ -42,8 +42,10 @@ const vibeTemplates: Record<Vibe, string[]> = {
 
 const MAX_CHARS = 280;
 
-// Realistic Coffee Cup Component with animated coffee
+// Techy Coffee Cup with Cursor Logo Component
 function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
+  const [particles, setParticles] = useState<{ id: number; x: number; size: number; type: string }[]>([]);
+  const [glitchOffset, setGlitchOffset] = useState(0);
   const [cursorVisible, setCursorVisible] = useState(true);
 
   // Vibe-specific configurations
@@ -52,33 +54,76 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
       primary: '#6B9B8A',
       secondary: '#4A7A6A', 
       glow: 'rgba(107, 155, 138, 0.4)',
-      coffeeColor: '#3D2314',
-      coffeeHighlight: '#5C3A2A',
+      particleType: '•',
+      particleSpeed: 3000,
+      glitchIntensity: 0,
     },
     hype: {
       primary: '#FF6B35',
       secondary: '#FF4500',
       glow: 'rgba(255, 107, 53, 0.5)',
-      coffeeColor: '#2A1810',
-      coffeeHighlight: '#4A2820',
+      particleType: '★',
+      particleSpeed: 800,
+      glitchIntensity: 3,
     },
     dev: {
       primary: '#00FF88',
       secondary: '#00CC66',
       glow: 'rgba(0, 255, 136, 0.4)',
-      coffeeColor: '#1A2A1A',
-      coffeeHighlight: '#2A4A2A',
+      particleType: '⚡',
+      particleSpeed: 1500,
+      glitchIntensity: 2,
     },
     poetic: {
       primary: '#C9A0DC',
       secondary: '#9B59B6',
       glow: 'rgba(201, 160, 220, 0.4)',
-      coffeeColor: '#2A1A2A',
-      coffeeHighlight: '#4A2A4A',
+      particleType: '✦',
+      particleSpeed: 2500,
+      glitchIntensity: 0,
     },
   };
 
   const config = vibeConfig[vibe];
+
+  // Particle emission
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setParticles(prev => {
+        const newParticle = {
+          id: Date.now() + Math.random(),
+          x: 30 + Math.random() * 40,
+          size: 0.6 + Math.random() * 0.6,
+          type: config.particleType,
+        };
+        return [...prev.slice(-10), newParticle];
+      });
+    }, config.particleSpeed / 5);
+    return () => clearInterval(interval);
+  }, [vibe, config.particleSpeed, config.particleType]);
+
+  // Clean old particles
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setParticles(prev => prev.filter(p => Date.now() - p.id < config.particleSpeed));
+    }, 300);
+    return () => clearInterval(interval);
+  }, [config.particleSpeed]);
+
+  // Glitch effect
+  useEffect(() => {
+    if (config.glitchIntensity === 0) {
+      setGlitchOffset(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      if (Math.random() > 0.7) {
+        setGlitchOffset((Math.random() - 0.5) * config.glitchIntensity * 2);
+        setTimeout(() => setGlitchOffset(0), 50 + Math.random() * 100);
+      }
+    }, 150);
+    return () => clearInterval(interval);
+  }, [config.glitchIntensity]);
 
   // Blinking cursor
   useEffect(() => {
@@ -91,219 +136,177 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
       {/* Ambient glow */}
       <motion.div
         key={vibe}
-        className="absolute w-48 h-48 rounded-full blur-3xl"
+        className="absolute w-64 h-64 rounded-full blur-3xl"
         style={{ background: config.glow }}
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ 
-          scale: [1, 1.15, 1], 
-          opacity: vibe === 'hype' ? [0.5, 0.8, 0.5] : [0.25, 0.4, 0.25] 
+          scale: [1, 1.2, 1], 
+          opacity: vibe === 'hype' ? [0.6, 1, 0.6] : [0.3, 0.5, 0.3] 
         }}
         transition={{ duration: vibe === 'hype' ? 1.5 : 4, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Steam particles */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-16 overflow-hidden z-20">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-8 rounded-full opacity-30"
-            style={{ 
-              background: `linear-gradient(to top, ${config.primary}40, transparent)`,
-              left: `${30 + i * 20}%`,
-            }}
-            animate={{
-              y: [-10, -50],
-              x: [0, (i - 1) * 8, 0],
-              opacity: [0, 0.4, 0],
-              scaleY: [0.5, 1.2, 0.8],
-            }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              delay: i * 0.4,
-              ease: 'easeOut',
-            }}
-          />
-        ))}
+      {/* Rising particles */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-28 overflow-hidden z-20">
+        <AnimatePresence>
+          {particles.map((particle) => (
+            <motion.div
+              key={particle.id}
+              initial={{ opacity: 0, y: 90, x: `${particle.x - 50}%`, scale: particle.size * 0.5 }}
+              animate={{ 
+                opacity: [0, 1, 0], 
+                y: -20,
+                x: vibe === 'poetic' 
+                  ? [`${particle.x - 50}%`, `${particle.x - 50 + Math.sin(particle.id) * 15}%`, `${particle.x - 50}%`]
+                  : `${particle.x - 50 + (Math.random() - 0.5) * 20}%`,
+                scale: particle.size,
+                rotate: vibe === 'hype' ? [0, 180, 360] : 0,
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ 
+                duration: config.particleSpeed / 1000, 
+                ease: vibe === 'poetic' ? 'easeInOut' : 'easeOut' 
+              }}
+              style={{ color: config.primary }}
+              className="absolute text-sm font-bold"
+            >
+              {particle.type}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
-      {/* Coffee Cup SVG */}
+      {/* Coffee Cup SVG - Techy Style */}
       <motion.div
         className="relative z-10"
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.03 }}
+        animate={{ opacity: 1, y: 0, x: glitchOffset }}
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.4 }}
       >
-        <svg width="120" height="160" viewBox="0 0 120 160" fill="none">
+        <svg width="140" height="180" viewBox="0 0 140 180" fill="none">
           <defs>
-            {/* Cup body gradient - paper texture */}
-            <linearGradient id="cupBody" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#F5F0E8" />
-              <stop offset="15%" stopColor="#FFFDF8" />
-              <stop offset="85%" stopColor="#FFFDF8" />
-              <stop offset="100%" stopColor="#E8E0D5" />
+            {/* Dynamic gradient based on vibe */}
+            <linearGradient id="cupGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={config.primary} stopOpacity="0.2" />
+              <stop offset="50%" stopColor={config.secondary} stopOpacity="0.1" />
+              <stop offset="100%" stopColor={config.primary} stopOpacity="0.2" />
             </linearGradient>
             
-            {/* Lid gradient */}
-            <linearGradient id="lidGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#4A4540" />
-              <stop offset="50%" stopColor="#3A3530" />
-              <stop offset="100%" stopColor="#2A2520" />
-            </linearGradient>
-            
-            {/* Coffee liquid gradient */}
-            <linearGradient id="coffeeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={config.coffeeHighlight} />
-              <stop offset="100%" stopColor={config.coffeeColor} />
+            <linearGradient id="lidGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={config.primary} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={config.secondary} stopOpacity="0.15" />
             </linearGradient>
 
-            {/* Sleeve gradient with vibe color */}
-            <linearGradient id="sleeveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={config.primary} stopOpacity="0.9" />
-              <stop offset="50%" stopColor={config.secondary} stopOpacity="0.95" />
-              <stop offset="100%" stopColor={config.primary} stopOpacity="0.9" />
-            </linearGradient>
-
-            {/* Shadow */}
-            <radialGradient id="shadow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#000" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#000" stopOpacity="0" />
-            </radialGradient>
-
-            {/* Clip path for coffee */}
-            <clipPath id="cupClip">
-              <path d="M30 45 L35 140 C35 145 45 150 60 150 C75 150 85 145 85 140 L90 45 Z" />
-            </clipPath>
+            {/* Glow filter */}
+            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
           </defs>
 
           {/* Shadow */}
-          <ellipse cx="60" cy="155" rx="30" ry="4" fill="url(#shadow)" />
+          <ellipse cx="70" cy="172" rx="35" ry="5" fill={config.primary} fillOpacity="0.1" />
 
-          {/* Cup body */}
+          {/* Cup body - dark with neon outline */}
           <path
-            d="M28 40 L35 142 C35 148 45 152 60 152 C75 152 85 148 85 142 L92 40 Z"
-            fill="url(#cupBody)"
-            stroke="#D5CCC0"
-            strokeWidth="1"
+            d="M28 50 L36 158 C36 163 48 168 70 168 C92 168 104 163 104 158 L112 50 Z"
+            fill="url(#cupGlow)"
+            stroke={config.primary}
+            strokeWidth="1.5"
+            filter="url(#neonGlow)"
           />
-
-          {/* Coffee liquid with wave animation */}
-          <g clipPath="url(#cupClip)">
-            <motion.ellipse
-              cx="60"
-              cy="55"
-              rx="28"
-              ry="6"
-              fill="url(#coffeeGradient)"
-              animate={{
-                cy: [55, 53, 55, 57, 55],
-                rx: [28, 29, 28, 27, 28],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-            {/* Coffee surface highlight */}
-            <motion.ellipse
-              cx="55"
-              cy="53"
-              rx="8"
-              ry="2"
-              fill={config.coffeeHighlight}
-              opacity="0.4"
-              animate={{
-                cx: [55, 65, 55],
-                opacity: [0.3, 0.5, 0.3],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
+          
+          {/* Circuit-like patterns on cup */}
+          <g stroke={config.primary} strokeWidth="0.5" strokeOpacity="0.4">
+            <path d="M35 70 L70 70 L75 75 L105 75" />
+            <path d="M37 95 L50 95 L55 90 L85 90 L90 95 L103 95" />
+            <path d="M39 120 L60 120 L65 125 L80 125 L85 120 L101 120" />
+            <circle cx="70" cy="70" r="2" fill={config.primary} fillOpacity="0.5" />
+            <circle cx="55" cy="90" r="1.5" fill={config.primary} fillOpacity="0.5" />
+            <circle cx="85" cy="90" r="1.5" fill={config.primary} fillOpacity="0.5" />
           </g>
 
-          {/* Cup rim */}
-          <ellipse cx="60" cy="40" rx="34" ry="8" fill="#FFFDF8" stroke="#D5CCC0" strokeWidth="1" />
-
-          {/* Lid */}
-          <ellipse cx="60" cy="38" rx="32" ry="7" fill="url(#lidGradient)" />
-          <path
-            d="M26 32 C26 24 40 18 60 18 C80 18 94 24 94 32 L94 38 C94 44 80 48 60 48 C40 48 26 44 26 38 Z"
-            fill="url(#lidGradient)"
-          />
-          
-          {/* Lid top detail */}
-          <ellipse cx="60" cy="25" rx="22" ry="5" fill="#3A3530" />
-          
-          {/* Sip hole */}
-          <ellipse cx="60" cy="25" rx="6" ry="2.5" fill="#1A1510" />
-          
-          {/* Lid ridge */}
-          <ellipse cx="60" cy="35" rx="28" ry="4" fill="none" stroke="#5A5550" strokeWidth="0.5" />
-
-          {/* Sleeve with vibe color */}
-          <path
-            d="M32 75 L34 125 C34 128 45 130 60 130 C75 130 86 128 86 125 L88 75 C88 72 75 70 60 70 C45 70 32 72 32 75 Z"
-            fill="url(#sleeveGradient)"
-            opacity="0.95"
-          />
-          
-          {/* Sleeve texture lines */}
-          <g stroke={config.primary} strokeWidth="0.3" strokeOpacity="0.3">
-            <path d="M35 80 L35 120" />
-            <path d="M45 78 L44 122" />
-            <path d="M55 77 L54 123" />
-            <path d="M65 77 L66 123" />
-            <path d="M75 78 L76 122" />
-            <path d="M85 80 L85 120" />
+          {/* Data stream lines - animated feel */}
+          <g stroke={config.primary} strokeWidth="0.3" strokeOpacity="0.2" strokeDasharray="2 4">
+            <path d="M32 60 L32 150" />
+            <path d="M45 55 L42 155" />
+            <path d="M95 55 L98 155" />
+            <path d="M108 60 L108 150" />
           </g>
 
-          {/* Cursor Logo on sleeve */}
+          {/* Lid - tech style */}
+          <ellipse cx="70" cy="50" rx="44" ry="10" fill="url(#lidGlow)" stroke={config.primary} strokeWidth="1" filter="url(#neonGlow)" />
+          
+          <path
+            d="M22 42 C22 32 42 24 70 24 C98 24 118 32 118 42 L118 50 C118 57 98 63 70 63 C42 63 22 57 22 50 Z"
+            fill="url(#lidGlow)"
+            stroke={config.primary}
+            strokeWidth="1.5"
+            filter="url(#neonGlow)"
+          />
+          
+          {/* Lid details */}
+          <ellipse cx="70" cy="35" rx="30" ry="6" fill="none" stroke={config.primary} strokeWidth="0.5" strokeOpacity="0.5" />
+          
+          {/* Sip opening - glowing */}
+          <ellipse cx="70" cy="35" rx="10" ry="4" fill={config.primary} fillOpacity="0.15" stroke={config.primary} strokeWidth="0.5" />
+          
+          {/* Corner accents */}
+          <path d="M25 45 L30 40 L35 45" stroke={config.primary} strokeWidth="1" fill="none" strokeOpacity="0.6" />
+          <path d="M115 45 L110 40 L105 45" stroke={config.primary} strokeWidth="1" fill="none" strokeOpacity="0.6" />
+
+          {/* Cursor Logo - centered within cup body */}
           <motion.g
+            style={{ transformOrigin: '70px 109px' }}
             animate={{
-              filter: vibe === 'hype' 
-                ? ['brightness(1)', 'brightness(1.3)', 'brightness(1)']
-                : 'brightness(1)',
+              scale: vibe === 'hype' ? [1, 1.1, 1] : [1, 1.02, 1],
+              filter:
+                vibe === 'hype'
+                  ? ['brightness(1)', 'brightness(1.5)', 'brightness(1)']
+                  : 'brightness(1)',
             }}
             transition={{ duration: vibe === 'hype' ? 0.8 : 2, repeat: Infinity }}
           >
             <rect
-              x="42"
-              y="88"
-              width="36"
-              height="36"
-              rx="8"
-              fill="rgba(0,0,0,0.3)"
+              x="50"
+              y="89"
+              width="40"
+              height="40"
+              rx="10"
+              fill={config.primary}
+              fillOpacity="0.08"
+              stroke={config.primary}
+              strokeOpacity="0.25"
             />
             <image
               href={cursorLogo}
-              x="44"
-              y="90"
-              width="32"
-              height="32"
+              x="50"
+              y="89"
+              width="40"
+              height="40"
               preserveAspectRatio="xMidYMid meet"
-              style={{ filter: 'brightness(1.8) contrast(1.1)' }}
+              style={{ filter: `brightness(1.5) drop-shadow(0 0 8px ${config.primary})` }}
             />
           </motion.g>
-
-          {/* Cup subtle shine */}
-          <path
-            d="M35 50 L37 135"
-            stroke="white"
-            strokeWidth="2"
-            strokeOpacity="0.15"
-            strokeLinecap="round"
-          />
         </svg>
+
+
+        {/* Scanlines overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-10"
+          style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)',
+          }}
+        />
       </motion.div>
 
-      {/* Blinking cursor text */}
+      {/* Blinking cursor */}
       <motion.div 
-        className="mt-4 flex items-center gap-1"
+        className="mt-3 flex items-center gap-1"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
@@ -321,7 +324,7 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
         </motion.span>
       </motion.div>
 
-      {/* Vibe emoji */}
+      {/* Vibe emoji only */}
       <motion.span
         key={vibe}
         initial={{ scale: 0, rotate: -180 }}
