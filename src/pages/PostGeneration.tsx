@@ -57,20 +57,20 @@ function AsciiCursorLogo({ vibe }: { vibe: Vibe }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Particle emission
+  // Particle emission (steam from cup)
   useEffect(() => {
     const interval = setInterval(() => {
-      const chars = vibe === 'hype' ? ['*', '✦', '⚡', '▪'] : ['·', '°', '∘', '◦'];
+      const chars = vibe === 'hype' ? ['*', '✦', '♨', '~'] : ['·', '°', '~', '○'];
       setParticles(prev => {
         const newParticle = {
           id: Date.now(),
-          x: 45 + Math.random() * 30,
-          y: 20 + Math.random() * 10,
+          x: 70 + Math.random() * 40,
+          y: 0,
           char: chars[Math.floor(Math.random() * chars.length)]
         };
-        return [...prev.slice(-8), newParticle];
+        return [...prev.slice(-12), newParticle];
       });
-    }, vibe === 'hype' ? 200 : 400);
+    }, vibe === 'hype' ? 150 : 300);
     return () => clearInterval(interval);
   }, [vibe]);
 
@@ -82,46 +82,64 @@ function AsciiCursorLogo({ vibe }: { vibe: Vibe }) {
     return () => clearInterval(interval);
   }, []);
 
-  const cursorFrames = [
+  const cupFrames = [
     // Normal
     [
-      '    ▄▀▀▀▀▀▀▀▀▀▀▀▄    ',
-      '    █  ▄▀▀▀▀▀▄  █    ',
-      '    █  █     █  █    ',
-      '    █  █  ▄  █  █    ',
-      '    █  █  █  █  █    ',
-      '    █  █  █  █  █    ',
-      '    █  ▀▄▄█▄▄▀  █    ',
-      '    █           █    ',
-      '    ▀▄▄▄▄▄▄▄▄▄▄▄▀    ',
+      '         ) )  )        ',
+      '        ( ( (         ',
+      '         ) )  )        ',
+      '      .─────────.      ',
+      '     /           \\     ',
+      '    │   ╱─────╲   │    ',
+      '    │  ╱ ╲   ╱ ╲  │    ',
+      '    │ ╱   ╲ ╱   ╲ │    ',
+      '    │ ╲   ╱ ╲   ╱ │    ',
+      '    │  ╲ ╱   ╲ ╱  │    ',
+      '    │   ╲─────╱   │    ',
+      '    │             │────╮',
+      '    │             │    │',
+      '     \\           /────╯',
+      '      `─────────´      ',
     ],
     // Glitch 1
     [
-      '    ▄▀▀▀▀▀▀▀▀▀▀▀▄    ',
-      '    █░░▄▀▀▀▀▀▄░░█    ',
-      '    █  █ ░░░ █  █    ',
-      '    █  █  ▄  █  █    ',
-      '   ░█  █  █  █  █░   ',
-      '    █  █  █  █  █    ',
-      '    █  ▀▄▄█▄▄▀  █    ',
-      '    █░░░░░░░░░░░█    ',
-      '    ▀▄▄▄▄▄▄▄▄▄▄▄▀    ',
+      '         ) )  )        ',
+      '        ( ( (         ',
+      '        ░) )  )░       ',
+      '      .─────────.      ',
+      '     /           \\     ',
+      '    │   ╱─────╲   │    ',
+      '   ░│  ╱ ╲   ╱ ╲  │░   ',
+      '    │ ╱   ╲ ╱   ╲ │    ',
+      '    │ ╲   ╱ ╲   ╱ │    ',
+      '    │  ╲ ╱   ╲ ╱  │    ',
+      '    │   ╲─────╱   │    ',
+      '    │░░░░░░░░░░░░░│────╮',
+      '    │             │    │',
+      '     \\           /────╯',
+      '      `─────────´      ',
     ],
     // Glitch 2
     [
-      '   ░▄▀▀▀▀▀▀▀▀▀▀▀▄░   ',
-      '    █  ▄▀▀▀▀▀▄  █    ',
-      '    █  █▒▒▒▒▒█  █    ',
-      '   ▒█  █  ▄  █  █▒   ',
-      '    █  █  █  █  █    ',
-      '    █  █  █  █  █    ',
-      '    █▒▒▀▄▄█▄▄▀▒▒█    ',
-      '    █           █    ',
-      '   ░▀▄▄▄▄▄▄▄▄▄▄▄▀░   ',
+      '        ░) )  )░       ',
+      '        ( ( (         ',
+      '         ) )  )        ',
+      '     ░.─────────.░     ',
+      '     /           \\     ',
+      '    │   ╱─────╲   │    ',
+      '    │  ╱ ╲   ╱ ╲  │    ',
+      '   ▒│ ╱   ╲ ╱   ╲ │▒   ',
+      '    │ ╲   ╱ ╲   ╱ │    ',
+      '    │  ╲ ╱   ╲ ╱  │    ',
+      '    │   ╲─────╱   │    ',
+      '    │             │────╮',
+      '   ░│             │    │',
+      '     \\           /────╯',
+      '     ░`─────────´░     ',
     ],
   ];
 
-  const currentFrame = cursorFrames[glitchFrame];
+  const currentFrame = cupFrames[glitchFrame];
   
   const vibeColors: Record<Vibe, string> = {
     chill: 'text-foreground/60',
@@ -160,16 +178,20 @@ function AsciiCursorLogo({ vibe }: { vibe: Vibe }) {
         ))}
       </pre>
 
-      {/* Rising particles/steam */}
+      {/* Rising steam particles */}
       <AnimatePresence>
         {particles.map((particle) => (
           <motion.span
             key={particle.id}
-            initial={{ opacity: 0.8, y: 0, x: particle.x }}
-            animate={{ opacity: 0, y: -40, x: particle.x + (Math.random() - 0.5) * 20 }}
+            initial={{ opacity: 0.9, y: particle.y, x: particle.x }}
+            animate={{ 
+              opacity: 0, 
+              y: particle.y - 60, 
+              x: particle.x + (Math.random() - 0.5) * 30 
+            }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 2, ease: 'easeOut' }}
-            className="absolute font-mono text-xs text-foreground/40 pointer-events-none"
+            transition={{ duration: 2.5, ease: 'easeOut' }}
+            className="absolute font-mono text-xs text-foreground/50 pointer-events-none"
             style={{ top: particle.y, left: particle.x }}
           >
             {particle.char}
