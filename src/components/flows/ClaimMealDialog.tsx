@@ -39,21 +39,37 @@ function CodeLine({ lineNumber, children, selectable, selected, onClick }: CodeL
     <motion.div
       onClick={onClick}
       whileHover={selectable ? { backgroundColor: 'rgba(255,255,255,0.05)' } : undefined}
-      className={`flex items-start gap-4 py-1 px-2 rounded transition-all ${
+      className={`flex items-start gap-4 py-1.5 px-2 rounded-md transition-all relative ${
         selectable ? 'cursor-pointer' : ''
-      } ${selected ? 'bg-foreground/10 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]' : ''}`}
+      } ${selected ? 'bg-foreground/15' : ''}`}
     >
-      <span className="text-muted-foreground/50 font-mono text-sm w-6 text-right select-none">
+      {/* Selection glow effect */}
+      {selected && (
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          className="absolute inset-0 rounded-md border border-foreground/30 shadow-[0_0_15px_rgba(255,255,255,0.15),inset_0_0_20px_rgba(255,255,255,0.05)]"
+        />
+      )}
+      
+      {/* Line number - highlighted when selected */}
+      <span className={`font-mono text-sm w-6 text-right select-none relative z-10 ${
+        selected ? 'text-foreground/80' : 'text-muted-foreground/50'
+      }`}>
         {lineNumber}
       </span>
-      <div className="flex-1 font-mono text-sm">{children}</div>
+      
+      <div className="flex-1 font-mono text-sm relative z-10">{children}</div>
+      
+      {/* Selected indicator */}
       {selected && (
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-green-400 text-xs"
+          className="relative z-10 flex items-center gap-1"
         >
-          ✓
+          <span className="text-green-400 text-xs font-mono">selected</span>
+          <span className="text-green-400">✓</span>
         </motion.div>
       )}
     </motion.div>
