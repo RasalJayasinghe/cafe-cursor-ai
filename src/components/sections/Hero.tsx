@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Utensils, FileText, Share2, MessageCircle, MapPin, ChevronDown } from 'lucide-react';
+import { Utensils, FileText, Share2, Camera, MapPin, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import globeColombo from '@/assets/globe-colombo.png';
 import { ClaimMealDialog } from '@/components/flows/ClaimMealDialog';
@@ -9,7 +9,7 @@ const flowTiles = [
   { icon: Utensils, label: 'Claim Meal', action: 'claim-meal' },
   { icon: FileText, label: 'Post Gen', action: 'post-gen' },
   { icon: Share2, label: 'Share Project', action: 'share-project' },
-  { icon: MessageCircle, label: 'Ask Questions', action: 'ask-questions' },
+  { icon: Camera, label: 'Cursor Moments', action: 'cursor-moments' },
 ];
 
 export function Hero() {
@@ -23,6 +23,8 @@ export function Hero() {
       navigate('/projects');
     } else if (action === 'post-gen') {
       navigate('/post-gen');
+    } else if (action === 'cursor-moments') {
+      navigate('/moments');
     }
   };
 
