@@ -112,7 +112,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl p-0 bg-transparent border-0 overflow-hidden max-h-[90vh] sm:max-h-[85vh]">
+      <DialogContent className="max-w-2xl w-[calc(100%-2rem)] sm:w-full p-0 bg-transparent border-0 overflow-hidden max-h-[90vh] sm:max-h-[85vh]">
         <div className="relative">
           {/* Animated glow border */}
           <div className="absolute -inset-[1px] bg-gradient-to-r from-foreground/20 via-foreground/40 to-foreground/20 rounded-2xl blur-sm animate-pulse" />
