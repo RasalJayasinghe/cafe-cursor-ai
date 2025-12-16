@@ -1,20 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Upload, X, Camera, ImagePlus } from 'lucide-react';
+import { ArrowLeft, X, ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 interface Photo {
   id: string;
   url: string;
-  x: number;
-  y: number;
-  scale: number;
-  rotation: number;
-  driftX: number;
-  driftY: number;
-  driftDuration: number;
+  height: 'short' | 'medium' | 'tall';
 }
 
 // Generate 100 sample photos for demo using Unsplash
@@ -53,57 +47,20 @@ const UNSPLASH_PHOTOS = [
   'photo-1463453091185-61582044d556', 'photo-1507003211169-0a1dd7228f2d', 'photo-1506277886164-e25aa3f4ef7f',
 ];
 
-const SAMPLE_PHOTOS: Omit<Photo, 'x' | 'y' | 'scale' | 'rotation' | 'driftX' | 'driftY' | 'driftDuration'>[] = 
-  UNSPLASH_PHOTOS.map((photoId, index) => ({
-    id: String(index + 1),
-    url: `https://images.unsplash.com/${photoId}?w=300&q=70`,
-  }));
+const heights: Photo['height'][] = ['short', 'medium', 'tall'];
 
-function generatePhotoPosition(index: number, total: number): Omit<Photo, 'id' | 'url'> {
-  // Create organic cloud positions distributed across the entire area
-  const cols = Math.ceil(Math.sqrt(total * 1.5));
-  const rows = Math.ceil(total / cols);
-  
-  const col = index % cols;
-  const row = Math.floor(index / cols);
-  
-  // Base grid position with randomness
-  const baseX = (col / cols) * 80 + 10;
-  const baseY = (row / rows) * 70 + 15;
-  
-  // Add organic randomness
-  const randomX = (Math.random() - 0.5) * 15;
-  const randomY = (Math.random() - 0.5) * 12;
-  
-  return {
-    x: Math.max(5, Math.min(95, baseX + randomX)),
-    y: Math.max(10, Math.min(90, baseY + randomY)),
-    scale: 0.4 + Math.random() * 0.35, // Smaller scale for more photos
-    rotation: (Math.random() - 0.5) * 20,
-    driftX: (Math.random() - 0.5) * 15,
-    driftY: (Math.random() - 0.5) * 10,
-    driftDuration: 20 + Math.random() * 20,
-  };
-}
+const SAMPLE_PHOTOS: Photo[] = UNSPLASH_PHOTOS.map((photoId, index) => ({
+  id: String(index + 1),
+  url: `https://images.unsplash.com/${photoId}?w=400&q=80`,
+  height: heights[index % 3],
+}));
 
 export default function CursorMoments() {
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>(SAMPLE_PHOTOS);
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const prefersReducedMotion = useRef(false);
-
-  useEffect(() => {
-    prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    // Initialize with sample photos
-    const initialPhotos = SAMPLE_PHOTOS.map((photo, index) => ({
-      ...photo,
-      ...generatePhotoPosition(index, SAMPLE_PHOTOS.length),
-    }));
-    setPhotos(initialPhotos);
-  }, []);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -117,7 +74,6 @@ export default function CursorMoments() {
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
     const progressInterval = setInterval(() => {
       setUploadProgress(prev => {
         if (prev >= 90) {
@@ -128,10 +84,7 @@ export default function CursorMoments() {
       });
     }, 100);
 
-    // Create object URL for preview
     const url = URL.createObjectURL(file);
-    
-    // Simulate upload delay
     await new Promise(resolve => setTimeout(resolve, 1200));
     
     clearInterval(progressInterval);
@@ -140,10 +93,10 @@ export default function CursorMoments() {
     const newPhoto: Photo = {
       id: Date.now().toString(),
       url,
-      ...generatePhotoPosition(photos.length, photos.length + 1),
+      height: heights[Math.floor(Math.random() * 3)],
     };
 
-    setPhotos(prev => [...prev, newPhoto]);
+    setPhotos(prev => [newPhoto, ...prev]);
     
     setTimeout(() => {
       setIsUploading(false);
@@ -157,16 +110,15 @@ export default function CursorMoments() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 px-3 py-3 sm:p-4 md:p-6">
+      <header className="fixed top-0 left-0 right-0 z-40 px-3 py-3 sm:p-4 md:p-6 bg-background/80 backdrop-blur-md border-b border-foreground/5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span className="text-xs font-mono hidden sm:inline">~/cafe-cursor</span>
           </Link>
           
-          {/* Upload Button */}
           <div className="relative">
             <input
               ref={fileInputRef}
@@ -203,7 +155,7 @@ export default function CursorMoments() {
       </header>
 
       {/* Hero Section */}
-      <div className="pt-20 sm:pt-24 pb-8 text-center px-4">
+      <div className="pt-24 sm:pt-28 pb-8 text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -218,42 +170,25 @@ export default function CursorMoments() {
         </motion.div>
       </div>
 
-      {/* Photo Cloud */}
-      <div className="relative w-full h-[150vh] sm:h-[200vh] overflow-visible">
-        {/* Ambient gradient */}
-        <div className="absolute inset-0 bg-gradient-radial from-foreground/5 via-transparent to-transparent opacity-50" />
-        
-        {photos.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute inset-0 flex flex-col items-center justify-center text-center px-4"
-          >
-            <div className="w-20 h-20 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center mb-4">
-              <Camera className="w-8 h-8 text-muted-foreground/50" />
-            </div>
-            <p className="font-mono text-muted-foreground/60 mb-2">No moments yet</p>
-            <p className="font-mono text-xs text-muted-foreground/40">Be the first to share!</p>
-          </motion.div>
-        ) : (
-          photos.map((photo, index) => (
-            <FloatingPhoto
+      {/* Masonry Grid */}
+      <div className="px-3 sm:px-6 md:px-8 pb-12 max-w-7xl mx-auto">
+        <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3 sm:gap-4">
+          {photos.map((photo, index) => (
+            <MasonryPhoto
               key={photo.id}
               photo={photo}
               index={index}
-              total={photos.length}
               onClick={() => setLightboxPhoto(photo)}
-              reducedMotion={prefersReducedMotion.current}
             />
-          ))
-        )}
-      </div>
-
-      {/* Photo count indicator */}
-      <div className="text-center py-8 px-4">
-        <p className="font-mono text-xs text-muted-foreground/40">
-          {photos.length} moments captured ✨
-        </p>
+          ))}
+        </div>
+        
+        {/* Photo count */}
+        <div className="text-center py-12">
+          <p className="font-mono text-xs text-muted-foreground/40">
+            {photos.length} moments captured
+          </p>
+        </div>
       </div>
 
       {/* Lightbox */}
@@ -266,82 +201,52 @@ export default function CursorMoments() {
   );
 }
 
-interface FloatingPhotoProps {
+interface MasonryPhotoProps {
   photo: Photo;
   index: number;
-  total: number;
   onClick: () => void;
-  reducedMotion: boolean;
 }
 
-function FloatingPhoto({ photo, index, total, onClick, reducedMotion }: FloatingPhotoProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const baseStyle = {
-    left: `${photo.x}%`,
-    top: `${photo.y}%`,
-    transform: `translate(-50%, -50%) rotate(${photo.rotation}deg) scale(${photo.scale})`,
+function MasonryPhoto({ photo, index, onClick }: MasonryPhotoProps) {
+  const heightClasses = {
+    short: 'h-40 sm:h-48',
+    medium: 'h-52 sm:h-64',
+    tall: 'h-64 sm:h-80',
   };
 
   return (
     <motion.div
-      className="absolute cursor-pointer"
-      style={baseStyle}
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{
-        opacity: isHovered ? 1 : 0.85,
-        scale: isHovered ? photo.scale * 1.15 : photo.scale,
-        x: reducedMotion || isHovered ? 0 : [0, photo.driftX, 0],
-        y: reducedMotion || isHovered ? 0 : [0, photo.driftY, 0],
-        zIndex: isHovered ? 30 : index,
-      }}
-      transition={{
-        opacity: { duration: 0.3 },
-        scale: { duration: 0.3 },
-        x: {
-          duration: photo.driftDuration,
-          repeat: Infinity,
-          repeatType: 'reverse',
-          ease: 'easeInOut',
-        },
-        y: {
-          duration: photo.driftDuration * 1.2,
-          repeat: Infinity,
-          repeatType: 'reverse',
-          ease: 'easeInOut',
-        },
-      }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      onClick={onClick}
-      whileTap={{ scale: photo.scale * 0.95 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.03, 1), duration: 0.4 }}
+      className="mb-3 sm:mb-4 break-inside-avoid"
     >
       <motion.div
-        className="relative group"
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: Math.min(index * 0.02, 1.5), duration: 0.4, type: 'spring' }}
+        className="relative group cursor-pointer overflow-hidden rounded-xl"
+        onClick={onClick}
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.2 }}
       >
-        {/* Glow effect on hover */}
-        <div 
-          className={`absolute -inset-2 bg-foreground/20 rounded-xl blur-xl transition-opacity duration-300 ${
-            isHovered ? 'opacity-100' : 'opacity-0'
-          }`} 
-        />
+        {/* Glow effect */}
+        <div className="absolute -inset-1 bg-gradient-to-br from-foreground/20 via-foreground/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
         
-        {/* Photo */}
-        <div className="relative overflow-hidden rounded-lg shadow-xl">
+        {/* Image container */}
+        <div className={`relative ${heightClasses[photo.height]} overflow-hidden rounded-xl`}>
           <img
             src={photo.url}
             alt="Community moment"
-            className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover transition-all duration-300 ${
-              isHovered ? 'brightness-110' : 'brightness-90'
-            }`}
+            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 group-hover:brightness-110"
             loading="lazy"
           />
           
-          {/* Subtle border */}
-          <div className="absolute inset-0 rounded-lg sm:rounded-xl border border-foreground/10" />
+          {/* Gradient overlay on hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          
+          {/* Border */}
+          <div className="absolute inset-0 rounded-xl border border-foreground/10 group-hover:border-foreground/20 transition-colors duration-300" />
+          
+          {/* Corner accent */}
+          <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-foreground/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
       </motion.div>
     </motion.div>
@@ -375,13 +280,13 @@ function Lightbox({ photo, onClose }: LightboxProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-background/95 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/95 backdrop-blur-md"
       />
       
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 p-2 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors"
+        className="absolute top-4 right-4 z-10 p-3 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors border border-foreground/10"
       >
         <X className="w-5 h-5 text-foreground" />
       </button>
@@ -392,23 +297,25 @@ function Lightbox({ photo, onClose }: LightboxProps) {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="relative max-w-4xl max-h-[80vh] w-full"
+        className="relative max-w-4xl max-h-[85vh] w-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={photo.url}
-          alt="Community moment"
-          className="w-full h-full object-contain rounded-xl sm:rounded-2xl shadow-2xl"
-        />
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-foreground/10">
+          <img
+            src={photo.url}
+            alt="Community moment"
+            className="w-full h-full object-contain"
+          />
+        </div>
         
         {/* Subtle info */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="absolute bottom-4 left-4 right-4 text-center"
+          className="absolute -bottom-8 left-0 right-0 text-center"
         >
-          <p className="font-mono text-xs text-foreground/40">
+          <p className="font-mono text-xs text-foreground/30">
             Captured at Cafe Cursor
           </p>
         </motion.div>
