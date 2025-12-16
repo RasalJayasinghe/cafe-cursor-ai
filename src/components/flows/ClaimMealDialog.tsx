@@ -193,7 +193,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                           <motion.div
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="absolute right-4 top-1/2 -translate-y-1/2"
+                            className="absolute right-4 inset-y-0 flex items-center justify-center"
                           >
                             <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
                               <Check className="w-4 h-4 text-green-500" />
