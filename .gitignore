@@ -60,3 +60,6 @@ bun.lockb
 
 # Local Netlify folder
 .netlify
+
+# Local development data
+.data

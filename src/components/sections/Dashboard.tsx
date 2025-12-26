@@ -1,7 +1,9 @@
+"use client";
+
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { useApp } from '@/context/AppContext';
-import { Button } from '@/components/ui/button';
+import { useApp } from '@/src/context/AppContext';
+import { Button } from '@/src/components/ui/button';
 import { Trash2, Send } from 'lucide-react';
 import { toast } from 'sonner';
 

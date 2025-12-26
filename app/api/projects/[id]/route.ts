@@ -25,7 +25,7 @@ export async function GET(
   }
 }
 
-// PUT /api/projects/[id] - Update project
+// PUT /api/projects/[id] - Update project or like
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -34,7 +34,16 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    // Validate input
+    // Check if this is a like action
+    if (body.action === "like") {
+      const updatedProject = await projectsDb.incrementLikes(id);
+      if (!updatedProject) {
+        return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      }
+      return NextResponse.json(updatedProject);
+    }
+
+    // Validate input for regular update
     const validatedData = updateProjectSchema.parse(body);
 
     // Update project

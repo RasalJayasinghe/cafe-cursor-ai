@@ -32,8 +32,8 @@ export const updateOrderSchema = z.object({
 
 // Project validation schemas
 export const createProjectSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  description: z.string().default(""),
   author: z.string().min(2, "Author name must be at least 2 characters"),
   githubUrl: z.string().url("Invalid GitHub URL").optional().or(z.literal("")),
   liveUrl: z.string().url("Invalid live URL").optional().or(z.literal("")),

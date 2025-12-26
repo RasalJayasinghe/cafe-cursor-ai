@@ -432,12 +432,41 @@ export default function PostGeneration() {
   };
 
   const handleShareX = () => {
-    const text = caption + '\n\n#CafeCursor #Colombo #TechCommunity';
+    const text = caption;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  const handleShareLinkedIn = () => {
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://cafecursor.com')}`, '_blank');
+  const handleShareLinkedIn = async () => {
+    // Copy text to clipboard first
+    await navigator.clipboard.writeText(caption);
+    
+    // LinkedIn has limited support for pre-filled text
+    // Method 1: Try the feed share with text parameter (works on some browsers)
+    // Method 2: Fallback to opening compose page (user pastes from clipboard)
+    
+    // Using the newer LinkedIn sharing URL format
+    const text = encodeURIComponent(caption);
+    
+    // This URL format opens LinkedIn with compose active
+    // The text parameter may pre-fill on some devices/browsers
+    const linkedInUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${text}`;
+    
+    toast.success('Text copied to clipboard!', {
+      description: 'Paste in LinkedIn if text is not pre-filled',
+      duration: 4000,
+    });
+    
+    // Open in a popup window for better UX
+    const width = 600;
+    const height = 600;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+    
+    window.open(
+      linkedInUrl,
+      'linkedin-share',
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no`
+    );
   };
 
   return (

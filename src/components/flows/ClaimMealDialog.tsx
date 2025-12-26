@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Mail, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Mail, Check, ArrowRight, Sparkles, AlertCircle, X } from "lucide-react";
+import { toast } from "sonner";
 
 const MEALS = [
   {
@@ -54,7 +55,7 @@ interface ClaimMealDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-type Step = "verify" | "menu" | "complete";
+type Step = "verify" | "menu" | "complete" | "already-claimed" | "not-registered";
 
 interface CodeLineProps {
   lineNumber: number;
@@ -123,19 +124,101 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
   const [verified, setVerified] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
   const [selectedDrink, setSelectedDrink] = useState<string | null>(null);
+  const [attendeeName, setAttendeeName] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [existingOrder, setExistingOrder] = useState<any>(null);
+  const [orderToken, setOrderToken] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleVerify = async () => {
-    if (!email) return;
+    if (!email || !email.includes("@")) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+    
     setIsVerifying(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsVerifying(false);
-    setVerified(true);
-    setTimeout(() => setStep("menu"), 800);
+    setErrorMessage("");
+    
+    try {
+      const response = await fetch("/api/attendees/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.registered && !data.alreadyClaimed) {
+        // Email is registered and hasn't claimed yet
+        setAttendeeName(data.attendee.name);
+        setVerified(true);
+        toast.success(`Welcome, ${data.attendee.name}!`);
+        setTimeout(() => setStep("menu"), 800);
+      } else if (response.status === 403) {
+        // Email not registered
+        setErrorMessage("This email is not registered for the event.");
+        setStep("not-registered");
+        toast.error("Email not registered");
+      } else if (response.status === 409) {
+        // Already claimed
+        setExistingOrder(data.existingOrder);
+        setErrorMessage("You have already claimed your meal. You can't buy again.");
+        setStep("already-claimed");
+        toast.error("Already claimed");
+      } else {
+        toast.error(data.error || "Verification failed");
+      }
+    } catch (error) {
+      console.error("Verification error:", error);
+      toast.error("Verification failed. Please try again.");
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
-  const handleConfirmOrder = () => {
-    if (selectedMeal && selectedDrink) {
-      setStep("complete");
+  const handleConfirmOrder = async () => {
+    if (!selectedMeal || !selectedDrink) {
+      toast.error("Please select both meal and drink");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch("/api/tokens/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          foodItem: selectedMeal,
+          drinkItem: selectedDrink,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setOrderToken(data.token);
+        setStep("complete");
+        toast.success("Order confirmed!", {
+          description: `Your token: ${data.token}`,
+        });
+      } else if (response.status === 409) {
+        // Already claimed (race condition safety)
+        setExistingOrder(data.existingOrder);
+        setStep("already-claimed");
+        toast.error("You've already claimed your meal");
+      } else if (response.status === 403) {
+        setStep("not-registered");
+        toast.error("Email not registered");
+      } else {
+        toast.error(data.error || "Failed to claim meal");
+      }
+    } catch (error) {
+      console.error("Claim error:", error);
+      toast.error("Failed to claim meal. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -147,6 +230,10 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
       setVerified(false);
       setSelectedMeal(null);
       setSelectedDrink(null);
+      setAttendeeName("");
+      setErrorMessage("");
+      setExistingOrder(null);
+      setOrderToken(null);
     }, 300);
   };
 
@@ -405,11 +492,26 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                   <div className="p-4 border-t border-foreground/10 bg-foreground/5">
                     <Button
                       onClick={handleConfirmOrder}
-                      disabled={!selectedMeal || !selectedDrink}
+                      disabled={!selectedMeal || !selectedDrink || isSubmitting}
                       className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-mono font-semibold disabled:opacity-50"
                     >
                       <span className="flex items-center gap-2">
-                        $ confirm --order <ArrowRight className="w-4 h-4" />
+                        {isSubmitting ? (
+                          <>
+                            <motion.span
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              className="inline-block"
+                            >
+                              ⟳
+                            </motion.span>
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            $ confirm --order <ArrowRight className="w-4 h-4" />
+                          </>
+                        )}
                       </span>
                     </Button>
                   </div>
@@ -491,7 +593,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                               className="absolute inset-0 bg-foreground/20 blur-2xl rounded-full"
                             />
                             <span className="relative font-mono text-4xl md:text-5xl font-bold tracking-[0.2em] text-foreground">
-                              CC-7842
+                              {orderToken || "CC-0000"}
                             </span>
                           </div>
                         </motion.div>
@@ -565,6 +667,118 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     >
                       <Sparkles className="w-3 h-3 mr-2" />
                       DONE
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Not Registered Error */}
+              {step === "not-registered" && (
+                <motion.div
+                  key="not-registered"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="p-6 md:p-10"
+                >
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className="text-center"
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center">
+                      <X className="w-10 h-10 text-red-500" />
+                    </div>
+                    
+                    <h3 className="font-mono text-xl font-bold text-red-400 mb-2">
+                      EMAIL NOT REGISTERED
+                    </h3>
+                    
+                    <p className="text-muted-foreground/70 text-sm font-mono mb-2">
+                      {email}
+                    </p>
+                    
+                    <p className="text-muted-foreground/50 text-xs font-mono mb-6 max-w-sm mx-auto">
+                      This email is not registered for the event. Please check your email address and try again.
+                    </p>
+
+                    <Button
+                      onClick={() => {
+                        setStep("verify");
+                        setEmail("");
+                        setErrorMessage("");
+                      }}
+                      variant="outline"
+                      className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs tracking-wider"
+                    >
+                      TRY AGAIN
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Already Claimed Error */}
+              {step === "already-claimed" && existingOrder && (
+                <motion.div
+                  key="already-claimed"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="p-6 md:p-10"
+                >
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className="text-center"
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-orange-500/10 border border-orange-500/30 flex items-center justify-center">
+                      <AlertCircle className="w-10 h-10 text-orange-500" />
+                    </div>
+                    
+                    <h3 className="font-mono text-xl font-bold text-orange-400 mb-2">
+                      ALREADY CLAIMED
+                    </h3>
+                    
+                    <p className="text-muted-foreground/70 text-sm font-mono mb-1">
+                      You can't buy again
+                    </p>
+                    
+                    <p className="text-muted-foreground/50 text-xs font-mono mb-6">
+                      Claimed on {new Date(existingOrder.claimedAt).toLocaleDateString()} at {new Date(existingOrder.claimedAt).toLocaleTimeString()}
+                    </p>
+
+                    {/* Existing Order Token */}
+                    <div className="bg-foreground/5 border border-foreground/10 rounded-xl p-4 mb-6">
+                      <span className="font-mono text-xs text-muted-foreground/50 tracking-wider">
+                        YOUR TOKEN
+                      </span>
+                      <div className="font-mono text-3xl font-bold tracking-[0.15em] text-orange-400 mt-2">
+                        {existingOrder.token}
+                      </div>
+                      
+                      <div className="mt-4 space-y-1 text-left">
+                        <p className="font-mono text-xs text-muted-foreground/50">YOUR ORDER:</p>
+                        {existingOrder.items.map((item: any, idx: number) => (
+                          <p key={idx} className="font-mono text-sm text-foreground/70">
+                            ✓ {item.name}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+
+                    <p className="text-muted-foreground/40 text-xs font-mono mb-4">
+                      If you haven't collected your meal yet, show this token at the counter.
+                    </p>
+
+                    <Button
+                      onClick={handleClose}
+                      variant="outline"
+                      className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs tracking-wider"
+                    >
+                      <Sparkles className="w-3 h-3 mr-2" />
+                      CLOSE
                     </Button>
                   </motion.div>
                 </motion.div>

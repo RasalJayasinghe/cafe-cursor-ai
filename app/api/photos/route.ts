@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { photosDb } from "@/lib/db";
-import { createPhotoSchema } from "@/lib/validations";
+import { z } from "zod";
 
-// GET /api/photos - Get all photos
-export async function GET() {
+// GET /api/photos - Get photos (approved only for public, all for admin)
+export async function GET(request: NextRequest) {
   try {
-    const photos = await photosDb.getAll();
+    const { searchParams } = new URL(request.url);
+    const showAll = searchParams.get("all") === "true";
+    const showPending = searchParams.get("pending") === "true";
+
+    let photos;
+    if (showPending) {
+      photos = await photosDb.getPending();
+    } else if (showAll) {
+      photos = await photosDb.getAll();
+    } else {
+      photos = await photosDb.getApproved();
+    }
+
     // Sort by upload date (newest first)
     const sorted = photos.sort(
       (a, b) =>
@@ -21,18 +33,35 @@ export async function GET() {
   }
 }
 
-// POST /api/photos - Upload new photo
+// Validation schema for photo upload
+const uploadPhotoSchema = z.object({
+  url: z.string().url("Invalid image URL"),
+  publicId: z.string().optional(),
+  caption: z.string().max(200).optional(),
+  uploadedBy: z.string().min(1, "Name is required").max(50),
+});
+
+// POST /api/photos - Upload new photo (goes to pending)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const validatedData = uploadPhotoSchema.parse(body);
 
-    // Validate input
-    const validatedData = createPhotoSchema.parse(body);
+    // Create photo record with pending status
+    const newPhoto = await photosDb.create({
+      url: validatedData.url,
+      publicId: validatedData.publicId,
+      caption: validatedData.caption || "",
+      uploadedBy: validatedData.uploadedBy,
+    });
 
-    // Create photo record
-    const newPhoto = await photosDb.create(validatedData);
-
-    return NextResponse.json(newPhoto, { status: 201 });
+    return NextResponse.json(
+      {
+        ...newPhoto,
+        message: "Photo uploaded! It will appear after admin approval.",
+      },
+      { status: 201 }
+    );
   } catch (error: any) {
     console.error("Error uploading photo:", error);
 

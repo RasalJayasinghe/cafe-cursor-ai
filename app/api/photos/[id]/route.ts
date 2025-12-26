@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { photosDb } from "@/lib/db";
+import { z } from "zod";
 
 // GET /api/photos/[id] - Get single photo
 export async function GET(
@@ -42,6 +43,49 @@ export async function DELETE(
     console.error("Error deleting photo:", error);
     return NextResponse.json(
       { error: "Failed to delete photo" },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT /api/photos/[id] - Update photo status (admin approval)
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+
+    const updateSchema = z.object({
+      status: z.enum(["pending", "approved", "rejected"]),
+      reviewedBy: z.string().optional(),
+    });
+
+    const { status, reviewedBy } = updateSchema.parse(body);
+
+    const updatedPhoto = await photosDb.updateStatus(id, status, reviewedBy);
+
+    if (!updatedPhoto) {
+      return NextResponse.json({ error: "Photo not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      ...updatedPhoto,
+      message: `Photo ${status === "approved" ? "approved" : status === "rejected" ? "rejected" : "set to pending"}`,
+    });
+  } catch (error: any) {
+    console.error("Error updating photo status:", error);
+
+    if (error.name === "ZodError") {
+      return NextResponse.json(
+        { error: "Validation failed", details: error.errors },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: "Failed to update photo status" },
       { status: 500 }
     );
   }
