@@ -2,31 +2,42 @@ import { getStore } from "@netlify/blobs";
 import * as fs from "fs";
 import * as path from "path";
 
-// Use Netlify Blobs for production, file-based for local development
-const isDev = process.env.NODE_ENV === "development";
+// Check for various Netlify environment indicators
+const hasNetlifyContext = !!process.env.NETLIFY_BLOBS_CONTEXT;
+const hasManualConfig = !!(process.env.MY_SITE_ID && process.env.BLOB_TOKEN);
+const isNetlifyEnv = !!process.env.NETLIFY;
+
+// Use Blobs if we have context OR manual config OR we're on Netlify
+const canUseBlobs = hasNetlifyContext || hasManualConfig || isNetlifyEnv;
+
 const DATA_DIR = path.join(process.cwd(), ".data");
 
-// Ensure data directory exists for local development
-if (isDev) {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-  } catch (error) {
-    console.warn("Could not create data directory:", error);
+// Ensure data directory exists for local/fallback development
+try {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
   }
+} catch (error) {
+  // Ignore - may fail in serverless environments
 }
 
 function getBlobStore(storeName: string) {
-  if (isDev && !process.env.NETLIFY_BLOBS_CONTEXT) {
-    // Local development fallback - use file system
-    return null;
+  // If we have automatic Netlify Blobs context, use it
+  if (hasNetlifyContext) {
+    return getStore({ name: storeName });
   }
-  return getStore({
-    name: storeName,
-    siteID: process.env.SITE_ID || "",
-    token: process.env.NETLIFY_BLOBS_TOKEN || "",
-  });
+  
+  // If we have manual configuration (set in Netlify UI), use it
+  if (hasManualConfig) {
+    return getStore({
+      name: storeName,
+      siteID: process.env.MY_SITE_ID!,
+      token: process.env.BLOB_TOKEN!,
+    });
+  }
+  
+  // Fallback to file-based storage (local development)
+  return null;
 }
 
 // File-based storage for local development
