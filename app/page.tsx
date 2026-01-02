@@ -2,6 +2,8 @@
 
 import { Hero } from "@/src/components/sections/Hero";
 import { AboutEvent } from "@/src/components/sections/AboutEvent";
+import { Community } from "@/src/components/sections/Community";
+import { Team } from "@/src/components/sections/Team";
 import Link from "next/link";
 import { LayoutDashboard } from "lucide-react";
 
@@ -10,6 +12,8 @@ export default function HomePage() {
     <div className="scroll-snap-y h-screen overflow-y-auto">
       <Hero />
       <AboutEvent />
+      <Community />
+      <Team />
 
       {/* Small worker dashboard link */}
       <Link

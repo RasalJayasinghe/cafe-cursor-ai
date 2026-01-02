@@ -91,20 +91,44 @@ export async function PUT(
   }
 }
 
-// PATCH /api/photos/[id] - Increment likes
+// PATCH /api/photos/[id] - Increment likes (with user tracking)
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const updatedPhoto = await photosDb.incrementLikes(id);
+    
+    // Get or create user ID from cookies
+    let userId = request.cookies.get("userId")?.value;
+    if (!userId) {
+      // Generate a new user ID if it doesn't exist
+      userId = crypto.randomUUID();
+    }
 
-    if (!updatedPhoto) {
+    const result = await photosDb.incrementLikes(id, userId);
+
+    if (!result) {
       return NextResponse.json({ error: "Photo not found" }, { status: 404 });
     }
 
-    return NextResponse.json(updatedPhoto);
+    if ('error' in result) {
+      return NextResponse.json(
+        { error: result.error, alreadyLiked: true },
+        { status: 400 }
+      );
+    }
+
+    // Set the userId cookie for future requests
+    const response = NextResponse.json(result.photo);
+    response.cookies.set("userId", userId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 365 * 24 * 60 * 60, // 1 year
+    });
+
+    return response;
   } catch (error) {
     console.error("Error incrementing likes:", error);
     return NextResponse.json(

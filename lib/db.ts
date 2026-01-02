@@ -88,10 +88,12 @@ export interface Project {
   description: string;
   author: string;
   githubUrl?: string;
+  linkedinUrl?: string;
   liveUrl?: string;
   tags: string[];
   imageUrl?: string;
   likes: number;
+  likedBy: string[]; // Array of user IDs who liked this project
   createdAt: string;
 }
 
@@ -103,6 +105,7 @@ export interface Photo {
   uploadedBy: string;
   uploadedAt: string;
   likes: number;
+  likedBy: string[]; // Array of user IDs who liked this photo
   status: "pending" | "approved" | "rejected";
   reviewedAt?: string;
   reviewedBy?: string;
@@ -250,15 +253,27 @@ export const projectsDb = {
     return true;
   },
 
-  incrementLikes: async (id: string) => {
+  incrementLikes: async (id: string, userId: string) => {
     const projects = await readData<Project>("projects");
     const index = projects.findIndex((project) => project.id === id);
 
     if (index === -1) return null;
 
+    // Initialize likedBy array if it doesn't exist
+    if (!projects[index].likedBy) {
+      projects[index].likedBy = [];
+    }
+
+    // Check if user already liked
+    if (projects[index].likedBy.includes(userId)) {
+      return { error: "Already liked", project: projects[index] };
+    }
+
+    // Add user to likedBy array and increment likes
+    projects[index].likedBy.push(userId);
     projects[index].likes += 1;
     await writeData("projects", projects);
-    return projects[index];
+    return { project: projects[index] };
   },
 };
 
@@ -305,15 +320,27 @@ export const photosDb = {
     return true;
   },
 
-  incrementLikes: async (id: string) => {
+  incrementLikes: async (id: string, userId: string) => {
     const photos = await readData<Photo>("photos");
     const index = photos.findIndex((photo) => photo.id === id);
 
     if (index === -1) return null;
 
+    // Initialize likedBy array if it doesn't exist
+    if (!photos[index].likedBy) {
+      photos[index].likedBy = [];
+    }
+
+    // Check if user already liked
+    if (photos[index].likedBy.includes(userId)) {
+      return { error: "Already liked", photo: photos[index] };
+    }
+
+    // Add user to likedBy array and increment likes
+    photos[index].likedBy.push(userId);
     photos[index].likes += 1;
     await writeData("photos", photos);
-    return photos[index];
+    return { photo: photos[index] };
   },
 
   updateStatus: async (id: string, status: "pending" | "approved" | "rejected", reviewedBy?: string) => {

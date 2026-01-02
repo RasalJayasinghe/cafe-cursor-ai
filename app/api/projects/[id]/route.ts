@@ -36,11 +36,35 @@ export async function PUT(
 
     // Check if this is a like action
     if (body.action === "like") {
-      const updatedProject = await projectsDb.incrementLikes(id);
-      if (!updatedProject) {
+      // Get or create user ID from cookies
+      let userId = request.cookies.get("userId")?.value;
+      if (!userId) {
+        userId = crypto.randomUUID();
+      }
+
+      const result = await projectsDb.incrementLikes(id, userId);
+      
+      if (!result) {
         return NextResponse.json({ error: "Project not found" }, { status: 404 });
       }
-      return NextResponse.json(updatedProject);
+
+      if ('error' in result) {
+        return NextResponse.json(
+          { error: result.error, alreadyLiked: true },
+          { status: 400 }
+        );
+      }
+
+      // Set the userId cookie for future requests
+      const response = NextResponse.json(result.project);
+      response.cookies.set("userId", userId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 365 * 24 * 60 * 60, // 1 year
+      });
+
+      return response;
     }
 
     // Validate input for regular update

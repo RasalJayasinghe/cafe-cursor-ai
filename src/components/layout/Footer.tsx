@@ -1,16 +1,23 @@
 import { motion } from 'framer-motion';
 
-export function Footer() {
-  // Generate random binary strings
-  const binaryStrings = Array.from({ length: 8 }, () => 
-    Array.from({ length: 20 }, () => Math.round(Math.random())).join('')
-  );
+// Deterministic binary patterns (avoids hydration mismatch)
+const binaryPatterns = [
+  '10110010110100110101',
+  '01101001011010110010',
+  '11001010011011001101',
+  '00110110100101100101',
+  '10101100110010110011',
+  '01010011001101001010',
+  '11010100101011010110',
+  '00101011010100101001',
+];
 
+export function Footer() {
   return (
-    <footer className="relative py-8 border-t border-border/30 overflow-hidden">
+    <footer className="relative py-8 border-t border-border/30 overflow-hidden bg-background">
       {/* Binary stream background */}
       <div className="absolute inset-0 flex items-center justify-center overflow-hidden opacity-10">
-        {binaryStrings.map((binary, i) => (
+        {binaryPatterns.map((binary, i) => (
           <motion.div
             key={i}
             initial={{ x: '-100%' }}
@@ -45,7 +52,7 @@ export function Footer() {
           >
             <div className="flex items-center gap-2 font-mono text-sm">
               <span className="text-foreground/40">&gt;</span>
-              <span className="text-foreground/70">2025</span>
+              <span className="text-foreground/70">2026</span>
               <span className="text-foreground font-medium">Cafe Cursor</span>
               <span className="text-foreground/50">Colombo</span>
             </div>

@@ -27,23 +27,23 @@ const generateTemplate = (
   });
 
   if (platform === "x") {
-    return `🚀 ${caption}
+    return `${caption}
 
-${imageName ? `[Image: ${imageName}]\n\n` : ""}#AI #Tech #Innovation
+${imageName ? `[📸 ${imageName}]\n\n` : ""}#CafeCursor #TechCommunity #Colombo
 
-— Posted via Cafe Cursor • ${date}`;
+— vibing at Cafe Cursor ☕️✨ • ${date}`;
   }
 
   return `${caption}
 
-${imageName ? `📸 [Image: ${imageName}]\n\n` : ""}---
+${imageName ? `📸 [${imageName}]\n\n` : ""}---
 
-🔹 What do you think? Drop your thoughts in the comments!
-🔹 If this resonates, consider sharing with your network.
+💭 thoughts? drop 'em below
+🔄 found this interesting? pass it on
 
-#AI #Technology #Innovation #Community
+#CafeCursor #TechCommunity #Colombo #BuildInPublic
 
-Posted via Cafe Cursor • ${date}`;
+— made at Cafe Cursor ☕️ • ${date}`;
 };
 
 export function PostGeneration() {
@@ -156,12 +156,12 @@ export function PostGeneration() {
     <div className="space-y-6" aria-live="polite">
       {/* Platform Selection */}
       <div className="space-y-2">
-        <Label>Platform</Label>
+        <Label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">where you posting? 📱</Label>
         <Select
           value={platform}
           onValueChange={(v) => setPlatform(v as Platform)}
         >
-          <SelectTrigger>
+          <SelectTrigger className="bg-foreground/5 border-foreground/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -182,24 +182,24 @@ export function PostGeneration() {
 
       {/* Caption Input */}
       <div className="space-y-2">
-        <Label htmlFor="caption">Caption</Label>
+        <Label htmlFor="caption" className="text-xs font-mono text-muted-foreground uppercase tracking-wider">drop your thoughts ✍️</Label>
         <Textarea
           id="caption"
-          placeholder="Write your post content here..."
+          placeholder="what's on your mind? spill the tea..."
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
-          className="min-h-[100px]"
+          className="min-h-[100px] bg-foreground/5 border-foreground/20"
         />
       </div>
 
       {/* Image Upload */}
       <div className="space-y-2">
-        <Label>Image (Optional)</Label>
+        <Label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">add a pic (optional) 📸</Label>
         <label className="block">
-          <div className="flex items-center gap-2 px-4 py-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+          <div className="flex items-center gap-2 px-4 py-3 border border-foreground/20 bg-foreground/5 rounded-lg cursor-pointer hover:bg-foreground/10 transition-colors">
             <Upload className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              {imageName || "Upload an image"}
+            <span className="text-sm text-muted-foreground font-mono">
+              {imageName || "tap to upload something fire 🔥"}
             </span>
           </div>
           <input
@@ -212,9 +212,9 @@ export function PostGeneration() {
         {imageName && (
           <button
             onClick={() => setImageName(null)}
-            className="text-sm text-muted-foreground hover:text-foreground"
+            className="text-sm text-muted-foreground hover:text-foreground font-mono"
           >
-            Remove image
+            ❌ remove
           </button>
         )}
       </div>
@@ -223,10 +223,10 @@ export function PostGeneration() {
       {!generatedTemplate && (
         <Button
           onClick={handleGenerate}
-          className="w-full"
+          className="w-full bg-foreground text-background hover:bg-foreground/90 font-mono"
           disabled={!caption.trim()}
         >
-          Generate Template
+          ✨ make it happen
         </Button>
       )}
 
@@ -239,41 +239,41 @@ export function PostGeneration() {
             exit={{ opacity: 0, y: 10 }}
             className="space-y-4"
           >
-            <div className="p-4 bg-muted rounded-xl">
+            <div className="p-4 bg-foreground/5 border border-foreground/10 rounded-xl">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-foreground flex items-center gap-2">
+                <span className="text-xs font-mono font-medium text-foreground/70 flex items-center gap-2 uppercase tracking-wider">
                   {platform === "x" ? (
                     <Twitter className="w-4 h-4" />
                   ) : (
                     <Linkedin className="w-4 h-4" />
                   )}
-                  Preview
+                  preview looks fire 🔥
                 </span>
               </div>
-              <pre className="whitespace-pre-wrap text-sm text-foreground font-sans leading-relaxed">
+              <pre className="whitespace-pre-wrap text-sm text-foreground font-mono leading-relaxed">
                 {generatedTemplate}
               </pre>
             </div>
 
             {/* LinkedIn Helper Info */}
             {platform === "linkedin" && (
-              <div className="flex gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                <div className="text-sm text-blue-900 dark:text-blue-100">
-                  <p className="font-medium mb-1">How to share on LinkedIn:</p>
-                  <ol className="list-decimal list-inside space-y-1 text-blue-800 dark:text-blue-200">
-                    <li>Click "Share to LinkedIn" button</li>
-                    <li>Content will be copied automatically</li>
+              <div className="flex gap-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+                <div className="text-sm text-blue-100/80">
+                  <p className="font-mono font-medium mb-1 text-blue-400">quick linkedin hack:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-blue-200/70 font-mono text-xs">
+                    <li>hit "share to linkedin" below</li>
+                    <li>we'll copy it for you automatically 😎</li>
                     <li>
-                      Press{" "}
-                      <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900 rounded text-xs font-mono">
+                      just{" "}
+                      <kbd className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded text-xs font-mono">
                         Ctrl+V
                       </kbd>{" "}
-                      (or{" "}
-                      <kbd className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900 rounded text-xs font-mono">
+                      or{" "}
+                      <kbd className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded text-xs font-mono">
                         ⌘+V
-                      </kbd>
-                      ) to paste
+                      </kbd>{" "}
+                      to paste
                     </li>
                   </ol>
                 </div>
@@ -284,36 +284,40 @@ export function PostGeneration() {
               <Button
                 onClick={handleCopy}
                 variant="outline"
-                className="flex-1 gap-2"
+                className="flex-1 gap-2 border-foreground/20 hover:bg-foreground/10 font-mono text-xs"
               >
                 {copied ? (
                   <Check className="w-4 h-4" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
-                {copied ? "Copied!" : "Copy"}
+                {copied ? "copied! ✨" : "copy"}
               </Button>
 
               {platform === "x" ? (
                 <Button
                   onClick={handleShareToTwitter}
-                  className="flex-1 gap-2 bg-black hover:bg-black/90"
+                  className="flex-1 gap-2 bg-black hover:bg-black/90 font-mono text-xs"
                 >
                   <Twitter className="w-4 h-4" />
-                  Share to X
+                  post to X
                 </Button>
               ) : (
                 <Button
                   onClick={handleShareToLinkedIn}
-                  className="flex-1 gap-2 bg-[#0A66C2] hover:bg-[#0A66C2]/90"
+                  className="flex-1 gap-2 bg-[#0A66C2] hover:bg-[#0A66C2]/90 font-mono text-xs"
                 >
                   <Linkedin className="w-4 h-4" />
-                  Share to LinkedIn
+                  share to linkedin
                 </Button>
               )}
 
-              <Button variant="outline" onClick={handleReset}>
-                New Post
+              <Button 
+                variant="outline" 
+                onClick={handleReset}
+                className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs"
+              >
+                🔄 new
               </Button>
             </div>
           </motion.div>

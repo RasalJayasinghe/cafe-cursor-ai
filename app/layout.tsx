@@ -21,7 +21,16 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Cafe Cursor Colombo</title>
+        <meta name="description" content="Where developers, builders and creators gather as a community to share, network and build in Colombo, Sri Lanka" />
+        
+        {/* Favicons */}
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+        
+        {/* Theme color */}
+        <meta name="theme-color" content="#000000" />
       </head>
       <body>
         <QueryClientProvider client={queryClient}>

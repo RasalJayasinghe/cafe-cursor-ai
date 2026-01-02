@@ -471,6 +471,31 @@ export default function PostGeneration() {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden relative">
+      {/* Subtle diagonal lines pattern */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.012] -z-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 40px,
+              currentColor 40px,
+              currentColor 41px
+            )
+          `,
+        }} />
+      </div>
+
+      {/* Minimal corner accents */}
+      <div className="fixed top-0 left-0 w-32 h-32 pointer-events-none -z-10">
+        <div className="absolute top-8 left-8 w-16 h-[1px] bg-foreground/[0.03]" />
+        <div className="absolute top-8 left-8 w-[1px] h-16 bg-foreground/[0.03]" />
+      </div>
+      <div className="fixed bottom-0 right-0 w-32 h-32 pointer-events-none -z-10">
+        <div className="absolute bottom-8 right-8 w-16 h-[1px] bg-foreground/[0.03]" />
+        <div className="absolute bottom-8 right-8 w-[1px] h-16 bg-foreground/[0.03]" />
+      </div>
+
       {/* Vibe ambient glow - corners */}
       <motion.div
         key={vibe + '-glow'}
@@ -496,21 +521,83 @@ export default function PostGeneration() {
 
       {/* Header */}
       <motion.header 
-        className="relative z-10 px-3 py-3 sm:p-4 md:p-6 flex items-center justify-between border-b transition-colors duration-500"
+        className="relative z-10 overflow-hidden border-b transition-colors duration-500"
         style={{ borderColor: currentScreenVibe.border }}
       >
-        <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-xs font-mono hidden sm:inline">~/cafe-cursor</span>
-        </Link>
-        <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-muted-foreground">
-          <Terminal className="w-3 h-3" />
-          <span className="hidden sm:inline">post-gen v1.0</span>
-          <span className="sm:hidden">v1.0</span>
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/10" />
+        <motion.div 
+          className="absolute inset-0"
+          animate={{ 
+            background: [
+              "radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)",
+              "radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)",
+              "radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)",
+            ]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-8">
+          {/* Back button */}
+          <Link href="/" className="inline-block mb-2 sm:mb-6">
+            <button className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-mono text-muted-foreground hover:text-foreground transition-colors h-7 sm:h-8 group px-2 sm:px-3">
+              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 group-hover:-translate-x-1 transition-transform" />
+              back to cafe
+            </button>
+          </Link>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2 sm:gap-6">
+            <div className="w-full sm:w-auto">
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-foreground/10 border border-foreground/20 mb-1.5 sm:mb-4"
+              >
+                <Sparkles className="w-2 h-2 sm:w-3 sm:h-3 text-foreground/70" />
+                <span className="text-[9px] sm:text-xs font-mono text-foreground/70">caption generator</span>
+              </motion.div>
+
+              {/* Title */}
+              <motion.h1 
+                className="text-xl sm:text-3xl md:text-5xl font-bold mb-1 sm:mb-3 leading-tight"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <span className="bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+                  brew captions
+                </span>
+                <br />
+                <span className="text-foreground/80 text-base sm:text-xl md:text-3xl">for your moments</span>
+              </motion.h1>
+
+              {/* Subtitle */}
+              <motion.p 
+                className="font-mono text-[10px] sm:text-sm text-muted-foreground max-w-md"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                choose your vibe, generate captions
+              </motion.p>
+            </div>
+
+            {/* Actions */}
+            <motion.div 
+              className="flex items-center gap-2 w-full sm:w-auto mt-1 sm:mt-0"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+            
+            </motion.div>
+          </div>
         </div>
       </motion.header>
 
-      <main className="relative z-10 min-h-[calc(100vh-60px)] sm:min-h-[calc(100vh-73px)] flex flex-col lg:flex-row">
+      <main className="relative z-10 min-h-[calc(100vh-130px)] sm:min-h-[calc(100vh-180px)] flex flex-col lg:flex-row">
         {/* Left Panel - Editor */}
         <div className="flex-1 p-3 sm:p-4 md:p-8 lg:p-12 flex flex-col">
           {/* Title area */}

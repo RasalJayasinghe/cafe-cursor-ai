@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
@@ -31,6 +31,8 @@ import {
   Zap,
   Heart,
   ExternalLink,
+  CheckSquare,
+  Square,
 } from "lucide-react";
 
 // ==================== TYPES ====================
@@ -89,6 +91,8 @@ export default function AdminPage() {
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [previewPhoto, setPreviewPhoto] = useState<Photo | null>(null);
+  const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set());
+  const [bulkProcessing, setBulkProcessing] = useState(false);
 
   // ==================== DATA FETCHING ====================
   const fetchAllData = async (showToast = false) => {
@@ -183,6 +187,89 @@ export default function AdminPage() {
     }
   };
 
+  const togglePhotoSelection = (id: string) => {
+    setSelectedPhotos((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    const pendingIds = photos.filter((p) => p.status === "pending").map((p) => p.id);
+    if (selectedPhotos.size === pendingIds.length && pendingIds.length > 0) {
+      setSelectedPhotos(new Set());
+    } else {
+      setSelectedPhotos(new Set(pendingIds));
+    }
+  };
+
+  const handleBulkApprove = async () => {
+    if (selectedPhotos.size === 0) return;
+    if (!confirm(`Approve ${selectedPhotos.size} selected photo(s)?`)) return;
+    
+    setBulkProcessing(true);
+    const ids = Array.from(selectedPhotos);
+    let successCount = 0;
+    
+    try {
+      await Promise.all(
+        ids.map(async (id) => {
+          const res = await fetch(`/api/photos/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "approved" }),
+          });
+          if (res.ok) {
+            successCount++;
+            setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, status: "approved" } : p)));
+          }
+        })
+      );
+      toast.success(`${successCount} photo(s) approved`);
+      setSelectedPhotos(new Set());
+    } catch (error) {
+      toast.error("Some photos failed to approve");
+    } finally {
+      setBulkProcessing(false);
+    }
+  };
+
+  const handleBulkReject = async () => {
+    if (selectedPhotos.size === 0) return;
+    if (!confirm(`Reject ${selectedPhotos.size} selected photo(s)?`)) return;
+    
+    setBulkProcessing(true);
+    const ids = Array.from(selectedPhotos);
+    let successCount = 0;
+    
+    try {
+      await Promise.all(
+        ids.map(async (id) => {
+          const res = await fetch(`/api/photos/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "rejected" }),
+          });
+          if (res.ok) {
+            successCount++;
+            setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, status: "rejected" } : p)));
+          }
+        })
+      );
+      toast.success(`${successCount} photo(s) rejected`);
+      setSelectedPhotos(new Set());
+    } catch (error) {
+      toast.error("Some photos failed to reject");
+    } finally {
+      setBulkProcessing(false);
+    }
+  };
+
   const handleDeleteProject = async (id: string) => {
     if (!confirm("Delete this project?")) return;
     setDeletingId(id);
@@ -251,6 +338,15 @@ export default function AdminPage() {
   }
 
   // ==================== RENDER ====================
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const navItems = [
+    { id: "overview", icon: BarChart3, label: "Overview" },
+    { id: "meals", icon: UtensilsCrossed, label: "Meals", badge: stats.pendingMeals },
+    { id: "photos", icon: Camera, label: "Photos", badge: stats.pendingPhotos, highlight: stats.pendingPhotos > 0 },
+    { id: "projects", icon: FolderGit2, label: "Projects" },
+  ];
+  
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Ambient background */}
@@ -259,9 +355,64 @@ export default function AdminPage() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-foreground/3 rounded-full blur-3xl" />
       </div>
 
+      {/* Mobile Header */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/50 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Shield className="w-5 h-5" />
+            <span className="font-bold">Admin</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => fetchAllData(true)}
+              disabled={refreshing}
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border/50 px-2 py-2 safe-area-pb">
+        <div className="flex items-center justify-around">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveSection(item.id as Section)}
+              className={`relative flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
+                activeSection === item.id
+                  ? "text-foreground"
+                  : "text-muted-foreground"
+              }`}
+            >
+              <div className="relative">
+                <item.icon className="w-5 h-5" />
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span className={`absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center rounded-full text-[8px] font-bold ${
+                    item.highlight ? "bg-amber-500 text-black" : "bg-foreground/20"
+                  }`}>
+                    {item.badge > 9 ? "9+" : item.badge}
+                  </span>
+                )}
+              </div>
+              <span className="text-[10px] font-mono">{item.label}</span>
+              {activeSection === item.id && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-foreground/10 rounded-xl -z-10"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      </nav>
+
       <div className="relative z-10 flex">
-        {/* Sidebar */}
-        <aside className="fixed left-0 top-0 bottom-0 w-64 bg-card/40 backdrop-blur-2xl border-r border-border/50 p-6 flex flex-col">
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-card/40 backdrop-blur-2xl border-r border-border/50 p-6 flex-col">
           {/* Logo */}
           <div className="mb-8">
             <Link href="/" className="flex items-center gap-3 group">
@@ -277,12 +428,7 @@ export default function AdminPage() {
 
           {/* Navigation */}
           <nav className="flex-1 space-y-1">
-            {[
-              { id: "overview", icon: BarChart3, label: "Overview" },
-              { id: "meals", icon: UtensilsCrossed, label: "Meal Claims", badge: stats.pendingMeals },
-              { id: "photos", icon: Camera, label: "Photos", badge: stats.pendingPhotos, highlight: stats.pendingPhotos > 0 },
-              { id: "projects", icon: FolderGit2, label: "Projects" },
-            ].map((item) => (
+            {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id as Section)}
@@ -336,7 +482,7 @@ export default function AdminPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 ml-64 p-8">
+        <main className="flex-1 lg:ml-64 p-4 pt-20 pb-24 lg:p-8 lg:pt-8 lg:pb-8">
           <AnimatePresence mode="wait">
             {/* ==================== OVERVIEW ==================== */}
             {activeSection === "overview" && (
@@ -345,20 +491,20 @@ export default function AdminPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-8"
+                className="space-y-6 lg:space-y-8"
               >
                 <div>
-                  <h2 className="text-3xl font-bold mb-2">Dashboard Overview</h2>
-                  <p className="text-muted-foreground font-mono text-sm">Real-time event statistics</p>
+                  <h2 className="text-2xl lg:text-3xl font-bold mb-1 lg:mb-2">Dashboard Overview</h2>
+                  <p className="text-muted-foreground font-mono text-xs lg:text-sm">Real-time event statistics</p>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                   {[
                     { label: "Registered", value: stats.totalAttendees, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10" },
-                    { label: "Meals Claimed", value: stats.claimedMeals, icon: CheckCircle2, color: "text-green-400", bg: "bg-green-500/10" },
-                    { label: "Claim Rate", value: `${stats.claimRate}%`, icon: TrendingUp, color: "text-purple-400", bg: "bg-purple-500/10" },
-                    { label: "Pending Photos", value: stats.pendingPhotos, icon: Camera, color: stats.pendingPhotos > 0 ? "text-amber-400" : "text-muted-foreground", bg: stats.pendingPhotos > 0 ? "bg-amber-500/10" : "bg-foreground/5" },
+                    { label: "Claimed", value: stats.claimedMeals, icon: CheckCircle2, color: "text-green-400", bg: "bg-green-500/10" },
+                    { label: "Rate", value: `${stats.claimRate}%`, icon: TrendingUp, color: "text-purple-400", bg: "bg-purple-500/10" },
+                    { label: "Pending", value: stats.pendingPhotos, icon: Camera, color: stats.pendingPhotos > 0 ? "text-amber-400" : "text-muted-foreground", bg: stats.pendingPhotos > 0 ? "bg-amber-500/10" : "bg-foreground/5" },
                   ].map((stat, i) => (
                     <motion.div
                       key={stat.label}
@@ -368,43 +514,43 @@ export default function AdminPage() {
                       className="relative group"
                     >
                       <div className="absolute -inset-px bg-gradient-to-br from-foreground/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
-                      <div className="relative p-6 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/50 hover:border-foreground/20 transition-all">
-                        <div className={`w-12 h-12 rounded-xl ${stat.bg} flex items-center justify-center mb-4`}>
-                          <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                      <div className="relative p-4 lg:p-6 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/50 hover:border-foreground/20 transition-all">
+                        <div className={`w-10 lg:w-12 h-10 lg:h-12 rounded-xl ${stat.bg} flex items-center justify-center mb-3 lg:mb-4`}>
+                          <stat.icon className={`w-5 lg:w-6 h-5 lg:h-6 ${stat.color}`} />
                         </div>
-                        <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-                        <p className="text-sm text-muted-foreground font-mono mt-1">{stat.label}</p>
+                        <p className={`text-2xl lg:text-3xl font-bold ${stat.color}`}>{stat.value}</p>
+                        <p className="text-xs lg:text-sm text-muted-foreground font-mono mt-1">{stat.label}</p>
                       </div>
                     </motion.div>
                   ))}
                 </div>
 
                 {/* Quick Stats Row */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-card/40 border border-border/50">
-                    <div className="flex items-center gap-3">
+                <div className="grid grid-cols-3 gap-2 lg:gap-4">
+                  <div className="p-3 lg:p-4 rounded-xl bg-card/40 border border-border/50">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 lg:gap-3">
                       <FolderGit2 className="w-5 h-5 text-cyan-400" />
-                      <div>
-                        <p className="text-xl font-bold">{stats.totalProjects}</p>
-                        <p className="text-xs text-muted-foreground font-mono">Projects Shared</p>
+                      <div className="text-center sm:text-left">
+                        <p className="text-lg lg:text-xl font-bold">{stats.totalProjects}</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground font-mono">Projects</p>
                       </div>
                     </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-card/40 border border-border/50">
-                    <div className="flex items-center gap-3">
+                  <div className="p-3 lg:p-4 rounded-xl bg-card/40 border border-border/50">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 lg:gap-3">
                       <ImageIcon className="w-5 h-5 text-pink-400" />
-                      <div>
-                        <p className="text-xl font-bold">{stats.approvedPhotos}</p>
-                        <p className="text-xs text-muted-foreground font-mono">Photos Live</p>
+                      <div className="text-center sm:text-left">
+                        <p className="text-lg lg:text-xl font-bold">{stats.approvedPhotos}</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground font-mono">Photos</p>
                       </div>
                     </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-card/40 border border-border/50">
-                    <div className="flex items-center gap-3">
+                  <div className="p-3 lg:p-4 rounded-xl bg-card/40 border border-border/50">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 lg:gap-3">
                       <Heart className="w-5 h-5 text-red-400" />
-                      <div>
-                        <p className="text-xl font-bold">{stats.totalLikes}</p>
-                        <p className="text-xs text-muted-foreground font-mono">Total Likes</p>
+                      <div className="text-center sm:text-left">
+                        <p className="text-lg lg:text-xl font-bold">{stats.totalLikes}</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground font-mono">Likes</p>
                       </div>
                     </div>
                   </div>
@@ -476,16 +622,16 @@ export default function AdminPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
+                className="space-y-4 lg:space-y-6"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-3xl font-bold mb-2">Meal Claims</h2>
-                    <p className="text-muted-foreground font-mono text-sm">
+                    <h2 className="text-2xl lg:text-3xl font-bold mb-1">Meal Claims</h2>
+                    <p className="text-muted-foreground font-mono text-xs lg:text-sm">
                       {stats.claimedMeals} of {stats.totalAttendees} claimed ({stats.claimRate}%)
                     </p>
                   </div>
-                  <div className="relative w-64">
+                  <div className="relative w-full sm:w-64">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       placeholder="Search attendees..."
@@ -506,8 +652,16 @@ export default function AdminPage() {
                   />
                 </div>
 
-                {/* Attendees List */}
-                <div className="rounded-2xl bg-card/40 border border-border/50 overflow-hidden">
+                {/* Mobile Export Button */}
+                <div className="flex lg:hidden justify-end">
+                  <Button variant="outline" size="sm" onClick={exportToCsv} className="font-mono text-xs">
+                    <Download className="w-4 h-4 mr-2" />
+                    Export CSV
+                  </Button>
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden lg:block rounded-2xl bg-card/40 border border-border/50 overflow-hidden">
                   <div className="grid grid-cols-12 gap-4 p-4 border-b border-border/50 font-mono text-xs text-muted-foreground">
                     <div className="col-span-3">Attendee</div>
                     <div className="col-span-3">Email</div>
@@ -585,6 +739,75 @@ export default function AdminPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Mobile Card View */}
+                <div className="lg:hidden space-y-3 max-h-[60vh] overflow-y-auto">
+                  {filteredAttendees.map((attendee) => (
+                    <motion.div
+                      key={attendee.email}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className={`p-4 rounded-xl border transition-colors ${
+                        attendee.hasClaimed 
+                          ? "bg-green-500/5 border-green-500/20" 
+                          : "bg-card/40 border-border/50"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
+                            attendee.hasClaimed ? "bg-green-500/20 text-green-400" : "bg-foreground/10 text-muted-foreground"
+                          }`}>
+                            {attendee.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium truncate">{attendee.name}</p>
+                            <p className="font-mono text-xs text-muted-foreground truncate">{attendee.email}</p>
+                          </div>
+                        </div>
+                        {attendee.hasClaimed ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-mono bg-green-500/10 text-green-400 flex-shrink-0">
+                            <CheckCircle2 className="w-3 h-3" />
+                            Claimed
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-mono bg-orange-500/10 text-orange-400 flex-shrink-0">
+                            <Clock className="w-3 h-3" />
+                            Pending
+                          </span>
+                        )}
+                      </div>
+                      
+                      {attendee.hasClaimed && attendee.claim && (
+                        <div className="flex items-center justify-between pt-3 border-t border-border/30">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-sm font-bold text-primary">{attendee.claim.token}</span>
+                            <div className="flex gap-1">
+                              {attendee.claim.items.map((item, idx) => (
+                                <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded bg-foreground/5">
+                                  {idx === 0 ? <UtensilsCrossed className="w-3 h-3 text-yellow-400" /> : <Coffee className="w-3 h-3 text-cyan-400" />}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteClaim(attendee.email)}
+                            disabled={deletingId === attendee.email}
+                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          >
+                            {deletingId === attendee.email ? (
+                              <RefreshCw className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </Button>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
               </motion.div>
             )}
 
@@ -595,31 +818,107 @@ export default function AdminPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
+                className="space-y-4 lg:space-y-6"
               >
                 <div>
-                  <h2 className="text-3xl font-bold mb-2">Photo Moderation</h2>
-                  <p className="text-muted-foreground font-mono text-sm">
+                  <h2 className="text-2xl lg:text-3xl font-bold mb-1 lg:mb-2">Photo Moderation</h2>
+                  <p className="text-muted-foreground font-mono text-xs lg:text-sm">
                     {stats.pendingPhotos} pending • {stats.approvedPhotos} approved • {photos.length} total
                   </p>
                 </div>
 
                 {/* Pending Photos Section */}
                 {pendingPhotos.length > 0 && (
-                  <div className="space-y-4">
+                  <div className="space-y-3 lg:space-y-4">
+                    {/* Header with Select All and Bulk Actions */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 lg:p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={toggleSelectAll}
+                          className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors"
+                        >
+                          {selectedPhotos.size === pendingPhotos.length && pendingPhotos.length > 0 ? (
+                            <CheckSquare className="w-5 h-5" />
+                          ) : (
+                            <Square className="w-5 h-5" />
+                          )}
+                          <span className="font-mono text-xs lg:text-sm">
+                            {selectedPhotos.size === pendingPhotos.length && pendingPhotos.length > 0
+                              ? "Deselect All"
+                              : "Select All"}
+                          </span>
+                        </button>
+                        <div className="w-px h-4 bg-amber-500/30" />
+                        <span className="font-mono text-xs text-amber-400/70">
+                          {selectedPhotos.size} of {pendingPhotos.length} selected
+                        </span>
+                      </div>
+                      
+                      {selectedPhotos.size > 0 && (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            onClick={handleBulkApprove}
+                            disabled={bulkProcessing}
+                            className="h-8 bg-green-500 hover:bg-green-600 text-white font-mono text-xs"
+                          >
+                            {bulkProcessing ? (
+                              <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                            ) : (
+                              <Check className="w-4 h-4 mr-1" />
+                            )}
+                            Approve ({selectedPhotos.size})
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={handleBulkReject}
+                            disabled={bulkProcessing}
+                            className="h-8 bg-red-500 hover:bg-red-600 text-white font-mono text-xs"
+                          >
+                            {bulkProcessing ? (
+                              <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                            ) : (
+                              <X className="w-4 h-4 mr-1" />
+                            )}
+                            Reject ({selectedPhotos.size})
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                      <h3 className="font-mono text-sm text-amber-400">Pending Review ({pendingPhotos.length})</h3>
+                      <h3 className="font-mono text-xs lg:text-sm text-amber-400">Pending Review ({pendingPhotos.length})</h3>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                       {pendingPhotos.map((photo) => (
                         <motion.div
                           key={photo.id}
                           layout
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className="relative group rounded-2xl overflow-hidden border-2 border-amber-500/50 bg-card/60"
+                          className={`relative group rounded-2xl overflow-hidden border-2 bg-card/60 transition-all ${
+                            selectedPhotos.has(photo.id)
+                              ? "border-green-500 ring-2 ring-green-500/30"
+                              : "border-amber-500/50"
+                          }`}
                         >
+                          {/* Selection checkbox */}
+                          <button
+                            onClick={() => togglePhotoSelection(photo.id)}
+                            className={`absolute top-2 left-2 z-10 p-1.5 rounded-lg transition-all ${
+                              selectedPhotos.has(photo.id)
+                                ? "bg-green-500 text-white"
+                                : "bg-black/50 text-white hover:bg-black/70"
+                            }`}
+                          >
+                            {selectedPhotos.has(photo.id) ? (
+                              <CheckSquare className="w-4 h-4" />
+                            ) : (
+                              <Square className="w-4 h-4" />
+                            )}
+                          </button>
+
                           <div className="aspect-square">
                             <img src={photo.url} alt="" className="w-full h-full object-cover" loading="lazy" />
                           </div>
@@ -662,15 +961,15 @@ export default function AdminPage() {
                 )}
 
                 {/* All Photos */}
-                <div className="space-y-4">
-                  <h3 className="font-mono text-sm text-muted-foreground">All Photos</h3>
+                <div className="space-y-3 lg:space-y-4">
+                  <h3 className="font-mono text-xs lg:text-sm text-muted-foreground">All Photos</h3>
                   {photos.length === 0 ? (
-                    <div className="p-12 text-center rounded-2xl bg-card/40 border border-border/50">
-                      <Camera className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
-                      <p className="font-mono text-sm text-muted-foreground">No photos uploaded yet</p>
+                    <div className="p-8 lg:p-12 text-center rounded-2xl bg-card/40 border border-border/50">
+                      <Camera className="w-10 lg:w-12 h-10 lg:h-12 mx-auto text-muted-foreground/30 mb-4" />
+                      <p className="font-mono text-xs lg:text-sm text-muted-foreground">No photos uploaded yet</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3">
                       {photos.filter(p => p.status !== "pending").map((photo) => (
                         <div
                           key={photo.id}
@@ -709,22 +1008,22 @@ export default function AdminPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
+                className="space-y-4 lg:space-y-6"
               >
                 <div>
-                  <h2 className="text-3xl font-bold mb-2">Shared Projects</h2>
-                  <p className="text-muted-foreground font-mono text-sm">
+                  <h2 className="text-2xl lg:text-3xl font-bold mb-1 lg:mb-2">Shared Projects</h2>
+                  <p className="text-muted-foreground font-mono text-xs lg:text-sm">
                     {stats.totalProjects} projects • {stats.totalLikes} total likes
                   </p>
                 </div>
 
                 {projects.length === 0 ? (
-                  <div className="p-12 text-center rounded-2xl bg-card/40 border border-border/50">
-                    <FolderGit2 className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
-                    <p className="font-mono text-sm text-muted-foreground">No projects shared yet</p>
+                  <div className="p-8 lg:p-12 text-center rounded-2xl bg-card/40 border border-border/50">
+                    <FolderGit2 className="w-10 lg:w-12 h-10 lg:h-12 mx-auto text-muted-foreground/30 mb-4" />
+                    <p className="font-mono text-xs lg:text-sm text-muted-foreground">No projects shared yet</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
                     {projects.map((project) => (
                       <motion.div
                         key={project.id}

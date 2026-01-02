@@ -284,21 +284,21 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="p-8 md:p-12"
+                  className="p-6 sm:p-8 md:p-12"
                 >
-                  <div className="text-center mb-8">
+                  <div className="text-center mb-6 sm:mb-8">
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", delay: 0.2 }}
-                      className="w-16 h-16 mx-auto mb-6 rounded-full bg-foreground/5 border border-foreground/20 flex items-center justify-center"
+                      className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 rounded-full bg-foreground/5 border border-foreground/20 flex items-center justify-center"
                     >
-                      <Mail className="w-8 h-8 text-foreground/70" />
+                      <Mail className="w-7 h-7 sm:w-8 sm:h-8 text-foreground/70" />
                     </motion.div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
                       Verify Your Identity
                     </h2>
-                    <p className="text-muted-foreground">
+                    <p className="text-sm sm:text-base text-muted-foreground">
                       Enter your email to claim your meal
                     </p>
                   </div>
@@ -311,9 +311,9 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         disabled={isVerifying || verified}
-                        className="h-14 pl-12 bg-foreground/5 border-foreground/20 text-foreground placeholder:text-muted-foreground focus:border-foreground/40 transition-all"
+                        className="h-12 sm:h-14 pl-10 sm:pl-12 bg-foreground/5 border-foreground/20 text-foreground placeholder:text-muted-foreground focus:border-foreground/40 transition-all text-sm sm:text-base"
                       />
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <Mail className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
 
                       <AnimatePresence>
                         {verified && (
@@ -333,7 +333,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     <Button
                       onClick={handleVerify}
                       disabled={!email || isVerifying || verified}
-                      className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-semibold"
+                      className="w-full h-11 sm:h-12 bg-foreground text-background hover:bg-foreground/90 font-semibold text-sm sm:text-base"
                     >
                       {isVerifying ? (
                         <motion.div
@@ -679,7 +679,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="p-6 md:p-10"
+                  className="p-5 sm:p-6 md:p-10"
                 >
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
@@ -687,33 +687,62 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     transition={{ type: "spring", stiffness: 200 }}
                     className="text-center"
                   >
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center">
-                      <X className="w-10 h-10 text-red-500" />
-                    </div>
-                    
-                    <h3 className="font-mono text-xl font-bold text-red-400 mb-2">
-                      EMAIL NOT REGISTERED
-                    </h3>
-                    
-                    <p className="text-muted-foreground/70 text-sm font-mono mb-2">
-                      {email}
-                    </p>
-                    
-                    <p className="text-muted-foreground/50 text-xs font-mono mb-6 max-w-sm mx-auto">
-                      This email is not registered for the event. Please check your email address and try again.
-                    </p>
-
-                    <Button
-                      onClick={() => {
-                        setStep("verify");
-                        setEmail("");
-                        setErrorMessage("");
-                      }}
-                      variant="outline"
-                      className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs tracking-wider"
+                    <motion.div 
+                      className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 flex items-center justify-center"
+                      animate={{ rotate: [0, -5, 5, -5, 0] }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
                     >
-                      TRY AGAIN
-                    </Button>
+                      <span className="text-3xl sm:text-4xl">🤔</span>
+                    </motion.div>
+                    
+                    <motion.h3 
+                      className="font-mono text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-2 sm:mb-3"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      bestie who dis??
+                    </motion.h3>
+                    
+                    <motion.p 
+                      className="text-foreground/60 text-sm font-mono mb-2"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      {email}
+                    </motion.p>
+                    
+                    <motion.div
+                      className="bg-foreground/5 border border-foreground/10 rounded-xl p-4 mb-6 max-w-sm mx-auto"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <p className="text-muted-foreground/70 text-sm font-mono leading-relaxed">
+                        ngl we don't have you on the list 💀
+                      </p>
+                      <p className="text-muted-foreground/50 text-xs font-mono mt-2">
+                        double check that email or slide into registration first
+                      </p>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <Button
+                        onClick={() => {
+                          setStep("verify");
+                          setEmail("");
+                          setErrorMessage("");
+                        }}
+                        className="bg-foreground text-background hover:bg-foreground/90 font-mono text-xs tracking-wider"
+                      >
+                        <span className="mr-2">🔄</span> lemme try again
+                      </Button>
+                    </motion.div>
                   </motion.div>
                 </motion.div>
               )}
@@ -725,7 +754,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="p-6 md:p-10"
+                  className="p-5 sm:p-6 md:p-10"
                 >
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
@@ -733,53 +762,91 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     transition={{ type: "spring", stiffness: 200 }}
                     className="text-center"
                   >
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-orange-500/10 border border-orange-500/30 flex items-center justify-center">
-                      <AlertCircle className="w-10 h-10 text-orange-500" />
-                    </div>
+                    <motion.div 
+                      className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 rounded-full bg-gradient-to-br from-orange-500/20 to-yellow-500/20 border border-orange-500/30 flex items-center justify-center"
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                      <span className="text-3xl sm:text-4xl">😏</span>
+                    </motion.div>
                     
-                    <h3 className="font-mono text-xl font-bold text-orange-400 mb-2">
-                      ALREADY CLAIMED
-                    </h3>
+                    <motion.h3 
+                      className="font-mono text-xl sm:text-2xl font-bold bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent mb-1 sm:mb-2"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      round two huh? 👀
+                    </motion.h3>
                     
-                    <p className="text-muted-foreground/70 text-sm font-mono mb-1">
-                      You can't buy again
-                    </p>
+                    <motion.p 
+                      className="text-foreground/60 text-sm font-mono mb-1"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      caught you tryna double dip 🍽️
+                    </motion.p>
                     
-                    <p className="text-muted-foreground/50 text-xs font-mono mb-6">
-                      Claimed on {new Date(existingOrder.claimedAt).toLocaleDateString()} at {new Date(existingOrder.claimedAt).toLocaleTimeString()}
-                    </p>
+                    <motion.p 
+                      className="text-muted-foreground/50 text-xs font-mono mb-6"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      you claimed on {new Date(existingOrder.claimedAt).toLocaleDateString()} at {new Date(existingOrder.claimedAt).toLocaleTimeString()}
+                    </motion.p>
 
                     {/* Existing Order Token */}
-                    <div className="bg-foreground/5 border border-foreground/10 rounded-xl p-4 mb-6">
-                      <span className="font-mono text-xs text-muted-foreground/50 tracking-wider">
-                        YOUR TOKEN
+                    <motion.div 
+                      className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border border-orange-500/20 rounded-2xl p-5 mb-6"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <span className="font-mono text-xs text-orange-400/70 tracking-wider uppercase">
+                        your token still valid tho
                       </span>
-                      <div className="font-mono text-3xl font-bold tracking-[0.15em] text-orange-400 mt-2">
+                      <motion.div 
+                        className="font-mono text-3xl font-bold tracking-[0.15em] text-orange-400 mt-2"
+                        animate={{ opacity: [0.7, 1, 0.7] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
                         {existingOrder.token}
-                      </div>
+                      </motion.div>
                       
-                      <div className="mt-4 space-y-1 text-left">
-                        <p className="font-mono text-xs text-muted-foreground/50">YOUR ORDER:</p>
+                      <div className="mt-4 space-y-1.5 text-left">
+                        <p className="font-mono text-xs text-muted-foreground/50 uppercase tracking-wider">what u ordered:</p>
                         {existingOrder.items.map((item: any, idx: number) => (
-                          <p key={idx} className="font-mono text-sm text-foreground/70">
-                            ✓ {item.name}
+                          <p key={idx} className="font-mono text-sm text-foreground/70 flex items-center gap-2">
+                            <span className="text-green-400">✓</span> {item.name}
                           </p>
                         ))}
                       </div>
-                    </div>
+                    </motion.div>
 
-                    <p className="text-muted-foreground/40 text-xs font-mono mb-4">
-                      If you haven't collected your meal yet, show this token at the counter.
-                    </p>
-
-                    <Button
-                      onClick={handleClose}
-                      variant="outline"
-                      className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs tracking-wider"
+                    <motion.p 
+                      className="text-muted-foreground/50 text-xs font-mono mb-4 max-w-sm mx-auto"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.6 }}
                     >
-                      <Sparkles className="w-3 h-3 mr-2" />
-                      CLOSE
-                    </Button>
+                      haven't grabbed your food yet? just show this token at the counter and you're golden ✨
+                    </motion.p>
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.7 }}
+                    >
+                      <Button
+                        onClick={handleClose}
+                        className="bg-foreground text-background hover:bg-foreground/90 font-mono text-xs tracking-wider"
+                      >
+                        <Sparkles className="w-3 h-3 mr-2" />
+                        bet, i'm out
+                      </Button>
+                    </motion.div>
                   </motion.div>
                 </motion.div>
               )}

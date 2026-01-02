@@ -15,6 +15,9 @@ import {
   RefreshCw,
   Heart,
   Loader2,
+  Sparkles,
+  Code2,
+  Rocket,
 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
@@ -89,6 +92,7 @@ export default function ProjectsPage() {
           author: formData.author,
           description: formData.description,
           githubUrl: formData.githubUrl,
+          linkedinUrl: formData.linkedinUrl || undefined,
           liveUrl: formData.liveUrl || undefined,
           tags: formData.tags
             ? formData.tags.split(",").map((t) => t.trim())
@@ -131,14 +135,22 @@ export default function ProjectsPage() {
         body: JSON.stringify({ action: "like" }),
       });
 
+      const data = await res.json();
+
+      if (res.status === 400 && data.alreadyLiked) {
+        toast.info("You already liked this! ❤️");
+        return;
+      }
+
       if (res.ok) {
-        const updated = await res.json();
         setProjects((prev) =>
-          prev.map((p) => (p.id === projectId ? updated : p))
+          prev.map((p) => (p.id === projectId ? data : p))
         );
+        toast.success("Liked! ❤️");
       }
     } catch (error) {
       console.error("Error liking project:", error);
+      toast.error("Failed to like project");
     }
   };
 
@@ -156,56 +168,151 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="border-b border-foreground/10 bg-foreground/5 sticky top-0 z-40 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="font-mono text-xs px-2 sm:px-3"
-              >
-                <ArrowLeft className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Back</span>
-              </Button>
-            </Link>
-            <div className="min-w-0">
-              <h1 className="font-mono text-sm sm:text-lg font-bold truncate">
-                Project Gallery
-              </h1>
-              <p className="font-mono text-[10px] sm:text-xs text-muted-foreground">
-                {projects.length} projects shared • Cafe Cursor
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Subtle grid pattern background */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.015]">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(to right, currentColor 1px, transparent 1px),
+            linear-gradient(to bottom, currentColor 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px'
+        }} />
+      </div>
 
-          <div className="flex items-center gap-2">
+      {/* Epic Header */}
+      <header className="relative overflow-hidden border-b border-foreground/10">
+        {/* Animated background with subtle gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/10" />
+        <motion.div 
+          className="absolute inset-0"
+          animate={{ 
+            background: [
+              "radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)",
+              "radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)",
+              "radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)",
+            ]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        {/* Floating code symbols - hidden on mobile */}
+        <div className="hidden sm:block absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-foreground/5 font-mono text-4xl"
+              style={{
+                left: `${15 + i * 15}%`,
+                top: `${20 + (i % 3) * 20}%`,
+              }}
+              animate={{
+                y: [0, -20, 0],
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{
+                duration: 3 + i * 0.5,
+                repeat: Infinity,
+                delay: i * 0.3,
+              }}
+            >
+              {["</>", "{}", "=>", "**", "//", "[]"][i]}
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-8">
+          {/* Back button */}
+          <Link href="/" className="inline-block mb-2 sm:mb-6">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => fetchProjects()}
-              className="font-mono text-xs"
+              className="font-mono text-xs text-muted-foreground hover:text-foreground h-7 sm:h-8 px-2 sm:px-3"
             >
-              <RefreshCw className="w-4 h-4" />
+              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="text-[10px] sm:text-xs">back to cafe</span>
             </Button>
-            <Button
-              onClick={() => setShowForm(true)}
-              className="font-mono text-[10px] sm:text-xs bg-foreground text-background hover:bg-foreground/90 px-2 sm:px-3 h-8 sm:h-9 flex-shrink-0"
+          </Link>
+
+          <div className="flex flex-col gap-3 sm:gap-4">
+            <div className="flex items-start sm:items-end justify-between gap-2">
+              <div className="flex-1">
+                {/* Badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-foreground/10 border border-foreground/20 mb-1.5 sm:mb-4"
+                >
+                  <Code2 className="w-2 h-2 sm:w-3 sm:h-3 text-foreground/70" />
+                  <span className="text-[9px] sm:text-xs font-mono text-foreground/70">community showcase</span>
+                </motion.div>
+
+                {/* Title */}
+                <motion.h1 
+                  className="text-xl sm:text-3xl md:text-5xl font-bold mb-1 sm:mb-3 leading-tight"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <span className="bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+                    ship it. share it.
+                  </span>
+                  <br />
+                  <span className="text-foreground/80 text-base sm:text-xl md:text-3xl">inspire others.</span>
+                </motion.h1>
+
+                {/* Subtitle */}
+                <motion.p 
+                  className="font-mono text-[10px] sm:text-sm text-muted-foreground max-w-md"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <span className="text-foreground font-bold">{projects.length}</span> projects from the community
+                </motion.p>
+              </div>
+
+              {/* Refresh button - only on desktop */}
+              <motion.div 
+                className="hidden sm:block"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => fetchProjects()}
+                  className="font-mono text-xs border border-foreground/10 h-8 w-8 p-0"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                </Button>
+              </motion.div>
+            </div>
+
+            {/* Action button - full width on mobile, centered */}
+            <motion.div 
+              className="flex justify-center sm:justify-start"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
             >
-              <Plus className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Share Project</span>
-              <span className="sm:hidden">Share</span>
-            </Button>
+              <Button
+                onClick={() => setShowForm(true)}
+                className="w-full sm:w-auto font-mono text-xs sm:text-sm bg-foreground text-background hover:bg-foreground/90 border border-foreground shadow-lg shadow-foreground/25 h-9 sm:h-10 px-6 sm:px-8 gap-2"
+              >
+                <Rocket className="w-4 h-4" />
+                drop your project
+              </Button>
+            </motion.div>
           </div>
         </div>
       </header>
 
       {/* Projects Grid */}
-      <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {projects.length > 0 ? (
-          <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
               {projects.map((project, index) => (
                 <motion.div
@@ -218,66 +325,73 @@ export default function ProjectsPage() {
                   className="group relative"
                 >
                   {/* Card */}
-                  <div className="relative bg-foreground/5 border border-foreground/10 rounded-xl overflow-hidden hover:border-foreground/20 transition-all">
+                  <div className="relative h-full bg-foreground/[0.03] border border-foreground/10 rounded-2xl overflow-hidden hover:border-foreground/30 hover:bg-foreground/[0.05] transition-all duration-300">
                     {/* Glow effect on hover */}
-                    <div className="absolute -inset-px bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute -inset-px bg-gradient-to-br from-foreground/20 via-transparent to-foreground/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                     {/* Code editor header */}
-                    <div className="relative flex items-center gap-2 px-4 py-2 border-b border-foreground/10 bg-foreground/5">
+                    <div className="relative flex items-center gap-2 px-4 py-2.5 border-b border-foreground/10 bg-foreground/5">
                       <div className="flex gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
                         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
                         <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
                       </div>
-                      <span className="font-mono text-xs text-muted-foreground/60 ml-2 truncate">
-                        ~/{project.title.toLowerCase().replace(/\s+/g, "-")}
-                        /README.md
+                      <span className="font-mono text-[10px] text-muted-foreground/50 ml-2 truncate">
+                        ~/{project.title.toLowerCase().replace(/\s+/g, "-")}/README.md
                       </span>
                     </div>
 
                     {/* Content */}
-                    <div className="relative p-4 space-y-3">
+                    <div className="relative p-5 space-y-4">
                       {/* Project name */}
                       <div className="font-mono">
-                        <span className="text-purple-400 text-xs"># </span>
-                        <span className="text-lg font-bold">{project.title}</span>
+                        <span className="text-foreground/40 text-xs"># </span>
+                        <span className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{project.title}</span>
                       </div>
 
                       {/* Description */}
-                      <p className="font-mono text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                        {project.description || "No description provided"}
+                      <p className="font-mono text-sm text-muted-foreground/70 leading-relaxed line-clamp-2">
+                        {project.description || "no description yet... mystery project"}
                       </p>
 
                       {/* Tags */}
                       {project.tags && project.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {project.tags.slice(0, 4).map((tag, i) => (
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.tags.slice(0, 3).map((tag, i) => (
                             <span
                               key={i}
-                              className="px-2 py-0.5 rounded text-xs font-mono bg-foreground/10 text-foreground/60"
+                              className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-foreground/10 text-foreground/60 border border-foreground/20"
                             >
                               {tag}
                             </span>
                           ))}
+                          {project.tags.length > 3 && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-foreground/5 text-muted-foreground/50">
+                              +{project.tags.length - 3}
+                            </span>
+                          )}
                         </div>
                       )}
 
                       {/* Author info */}
-                      <div className="pt-3 border-t border-foreground/10 space-y-2">
+                      <div className="pt-4 border-t border-foreground/10 space-y-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 font-mono text-xs">
-                            <User className="w-3 h-3 text-muted-foreground/60" />
-                            <span className="text-foreground/80">
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-foreground/30 to-foreground/10 flex items-center justify-center">
+                              <User className="w-3 h-3 text-foreground/60" />
+                            </div>
+                            <span className="text-foreground/70">
                               {project.author}
                             </span>
                           </div>
-                          <button
+                          <motion.button
                             onClick={() => handleLike(project.id)}
-                            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-red-400 transition-colors"
+                            whileTap={{ scale: 0.9 }}
+                            className="flex items-center gap-1.5 text-xs text-muted-foreground/50 hover:text-foreground transition-colors group/like"
                           >
-                            <Heart className="w-3 h-3" />
+                            <Heart className="w-4 h-4 group-hover/like:fill-foreground" />
                             <span>{project.likes}</span>
-                          </button>
+                          </motion.button>
                         </div>
 
                         {/* Links */}
@@ -287,11 +401,22 @@ export default function ProjectsPage() {
                               href={project.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 font-mono text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                              className="flex items-center gap-1.5 font-mono text-xs text-foreground/50 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/5"
                             >
-                              <Github className="w-3 h-3" />
-                              <span>GitHub</span>
-                              <ExternalLink className="w-2.5 h-2.5" />
+                              <Github className="w-3.5 h-3.5" />
+                              <span>code</span>
+                            </a>
+                          )}
+
+                          {project.linkedinUrl && (
+                            <a
+                              href={project.linkedinUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/10"
+                            >
+                              <Linkedin className="w-3.5 h-3.5" />
+                              <span>profile</span>
                             </a>
                           )}
 
@@ -300,18 +425,17 @@ export default function ProjectsPage() {
                               href={project.liveUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 font-mono text-xs text-green-400 hover:text-green-300 transition-colors"
+                              className="flex items-center gap-1.5 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/10"
                             >
-                              <ExternalLink className="w-3 h-3" />
-                              <span>Live</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                              <span>live</span>
                             </a>
                           )}
                         </div>
 
                         {/* Time */}
-                        <p className="font-mono text-[10px] text-muted-foreground/40">
-                          Shared{" "}
-                          {new Date(project.createdAt).toLocaleDateString()}
+                        <p className="font-mono text-[10px] text-muted-foreground/30">
+                          shipped {new Date(project.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -321,24 +445,32 @@ export default function ProjectsPage() {
             </AnimatePresence>
           </div>
         ) : (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center">
-              <FolderGit2 className="w-8 h-8 text-muted-foreground/50" />
-            </div>
-            <p className="font-mono text-muted-foreground/60">
-              No projects shared yet
-            </p>
-            <p className="font-mono text-xs text-muted-foreground/40 mt-1">
-              Be the first to share your project!
+          <motion.div 
+            className="text-center py-20"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <motion.div 
+              className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-foreground/20 to-foreground/5 border border-foreground/10 flex items-center justify-center"
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity }}
+            >
+              <FolderGit2 className="w-10 h-10 text-foreground/50" />
+            </motion.div>
+            <h3 className="font-mono text-xl text-foreground/80 mb-2">
+              no projects yet...
+            </h3>
+            <p className="font-mono text-sm text-muted-foreground/50 mb-6 max-w-sm mx-auto">
+              be the first to flex what you built at cafe cursor
             </p>
             <Button
               onClick={() => setShowForm(true)}
-              className="mt-4 font-mono"
+              className="font-mono bg-foreground text-background hover:bg-foreground/90 border border-foreground"
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Share Project
+              <Rocket className="w-4 h-4 mr-2" />
+              drop your project
             </Button>
-          </div>
+          </motion.div>
         )}
       </div>
 
@@ -386,11 +518,11 @@ export default function ProjectsPage() {
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                   <div className="font-mono text-xs text-muted-foreground/60 mb-4">
-                    # Fill in your project details
+                    # time to show off what you built
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-purple-400">
+                    <label className="font-mono text-xs text-foreground/70">
                       project_title<span className="text-red-400">*</span>
                     </label>
                     <Input
@@ -404,7 +536,7 @@ export default function ProjectsPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-purple-400">
+                    <label className="font-mono text-xs text-foreground/70">
                       your_name<span className="text-red-400">*</span>
                     </label>
                     <Input
@@ -418,7 +550,7 @@ export default function ProjectsPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-cyan-400">
+                    <label className="font-mono text-xs text-foreground/60">
                       github_url<span className="text-red-400">*</span>
                     </label>
                     <Input
@@ -432,7 +564,21 @@ export default function ProjectsPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-green-400">
+                    <label className="font-mono text-xs text-foreground/50">
+                      linkedin_url
+                    </label>
+                    <Input
+                      value={formData.linkedinUrl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, linkedinUrl: e.target.value })
+                      }
+                      placeholder="https://linkedin.com/in/your-profile"
+                      className="font-mono bg-foreground/5 border-foreground/20"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="font-mono text-xs text-foreground/50">
                       live_url
                     </label>
                     <Input
@@ -446,7 +592,7 @@ export default function ProjectsPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-yellow-400">
+                    <label className="font-mono text-xs text-foreground/50">
                       tags
                     </label>
                     <Input
@@ -460,7 +606,7 @@ export default function ProjectsPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-green-400">
+                    <label className="font-mono text-xs text-foreground/50">
                       description
                     </label>
                     <Textarea
@@ -477,15 +623,18 @@ export default function ProjectsPage() {
                   <Button
                     type="submit"
                     disabled={submitting}
-                    className="w-full font-mono bg-foreground text-background hover:bg-foreground/90"
+                    className="w-full font-mono bg-foreground text-background hover:bg-foreground/90 border border-foreground"
                   >
                     {submitting ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Sharing...
+                        shipping it...
                       </>
                     ) : (
-                      "$ git push --project"
+                      <>
+                        <Rocket className="w-4 h-4 mr-2" />
+                        ship it
+                      </>
                     )}
                   </Button>
                 </form>

@@ -7,19 +7,19 @@ import {
   FileText,
   Share2,
   Camera,
-  MapPin,
   ChevronDown,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ClaimMealDialog } from "@/src/components/flows/ClaimMealDialog";
+import { CursorCubeLogo } from "@/src/components/ui/CursorCubeLogo";
 
 const globeColombo = "/globe-colombo.png";
 
 const flowTiles = [
-  { icon: Utensils, label: "Claim Meal", action: "claim-meal" },
-  { icon: FileText, label: "Post Gen", action: "post-gen" },
+  { icon: Utensils, label: "Reserve your Bite", action: "claim-meal" },
+  { icon: FileText, label: "Brew Captions", action: "post-gen" },
   { icon: Share2, label: "Share Project", action: "share-project" },
-  { icon: Camera, label: "Cursor Moments", action: "cursor-moments" },
+  { icon: Camera, label: "Cursor Memories", action: "cursor-moments" },
 ];
 
 export function Hero() {
@@ -47,6 +47,16 @@ export function Hero() {
         id="hero"
         className="h-screen snap-section flex items-center justify-center relative overflow-hidden"
       >
+        {/* Subtle grid pattern background */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
+                             linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px',
+          }}
+        />
+
         {/* Globe background */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
@@ -73,45 +83,27 @@ export function Hero() {
         </motion.div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-6">
-          {/* Badge */}
+          {/* Giant Heading with Logo */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-8"
-          >
-            <MapPin className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">
-              Based in Colombo, Sri Lanka
-            </span>
-          </motion.div>
-
-          {/* Giant Heading */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl lg:text-2xl text-muted-foreground font-light tracking-wide mb-4"
-          >
-            A place where
-          </motion.p>
-          <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] font-bold tracking-tighter text-foreground leading-none"
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="flex flex-col items-center gap-6 mb-8"
           >
-            Cafe Cursor
-          </motion.h1>
+            <CursorCubeLogo className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 text-foreground" />
+            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] font-bold tracking-tighter text-foreground leading-none">
+              Cafe Cursor
+            </h1>
+          </motion.div>
 
-          {/* Subheading */}
+          {/* Subheading with location */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed"
           >
-            Where creators connect, ideas brew, and communities gather around AI
+            Where developers, builders and creators gather as a community to share, network and build - based in Colombo, Sri Lanka
           </motion.p>
         </div>
 
@@ -155,9 +147,18 @@ export function Hero() {
       {/* Flow Cards Section */}
       <section
         id="flows-preview"
-        className="min-h-screen snap-section flex items-center justify-center relative py-24"
+        className="min-h-screen snap-section flex items-center justify-center relative py-24 overflow-hidden"
       >
-        <div className="container mx-auto px-6">
+        {/* Subtle cross pattern background */}
+        <div
+          className="absolute inset-0 opacity-[0.025]"
+          style={{
+            backgroundImage: `radial-gradient(circle at center, hsl(var(--foreground)) 1.5px, transparent 1.5px)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -165,11 +166,8 @@ export function Hero() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-medium">
-              What We Offer
-            </p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground">
-              Available Flows
+              Moments at the Cafe
             </h2>
           </motion.div>
 
