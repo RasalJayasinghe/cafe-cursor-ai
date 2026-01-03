@@ -13,13 +13,24 @@ const claimMealSchema = z.object({
   drinkItem: z.string().min(1, "Please select a drink item"),
 });
 
-// Generate a unique meal token
-const generateMealToken = (): string => {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  return Array.from(
-    { length: 8 },
-    () => chars[Math.floor(Math.random() * chars.length)]
-  ).join("");
+// Generate a unique meal token (CCC = Cafe Cursor Colombo)
+const generateMealToken = async (): Promise<string> => {
+  const allOrders = await ordersDb.getAll();
+  
+  // Find the highest existing CCC number
+  let maxNumber = 0;
+  for (const order of allOrders) {
+    if (order.token && order.token.startsWith("CCC")) {
+      const numPart = parseInt(order.token.slice(3), 10);
+      if (!isNaN(numPart) && numPart > maxNumber) {
+        maxNumber = numPart;
+      }
+    }
+  }
+  
+  // Generate next token
+  const nextNumber = maxNumber + 1;
+  return `CCC${nextNumber.toString().padStart(2, "0")}`;
 };
 
 // Verify email exists in attendees CSV
@@ -96,13 +107,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 3: Generate unique token
-    let token = generateMealToken();
-    const allOrders = await ordersDb.getAll();
-    // Ensure token is unique
-    while (allOrders.some((order) => order.token === token)) {
-      token = generateMealToken();
-    }
+    // Step 3: Generate unique token (CCC01, CCC02, etc.)
+    const token = await generateMealToken();
 
     // Step 4: Create order with token (marks as claimed)
     const customerName = name || attendeeCheck.name || "Guest";
