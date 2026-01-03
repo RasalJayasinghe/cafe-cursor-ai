@@ -14,6 +14,7 @@ import {
   Camera,
   User,
   MessageSquare,
+  Check,
   CheckCircle,
   Clock,
   Sparkles,
