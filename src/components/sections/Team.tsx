@@ -4,92 +4,20 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { AnimatedTooltip, TooltipItem } from "@/src/components/ui/animated-tooltip";
 
-// TechTalk360 team members - 12 people with placeholder images
+// TechTalk360 team members
 const teamMembers: TooltipItem[] = [
-  {
-    id: 1,
-    name: "Team Member 1",
-    designation: "Role",
-    image: "/team/member-1.jpg",
-    fallback: "T1",
-  },
-  {
-    id: 2,
-    name: "Team Member 2",
-    designation: "Role",
-    image: "/team/member-2.jpg",
-    fallback: "T2",
-  },
-  {
-    id: 3,
-    name: "Team Member 3",
-    designation: "Role",
-    image: "/team/member-3.jpg",
-    fallback: "T3",
-  },
-  {
-    id: 4,
-    name: "Team Member 4",
-    designation: "Role",
-    image: "/team/member-4.jpg",
-    fallback: "T4",
-  },
-  {
-    id: 5,
-    name: "Team Member 5",
-    designation: "Role",
-    image: "/team/member-5.jpg",
-    fallback: "T5",
-  },
-  {
-    id: 6,
-    name: "Team Member 6",
-    designation: "Role",
-    image: "/team/member-6.jpg",
-    fallback: "T6",
-  },
-  {
-    id: 7,
-    name: "Team Member 7",
-    designation: "Role",
-    image: "/team/member-7.jpg",
-    fallback: "T7",
-  },
-  {
-    id: 8,
-    name: "Team Member 8",
-    designation: "Role",
-    image: "/team/member-8.jpg",
-    fallback: "T8",
-  },
-  {
-    id: 9,
-    name: "Team Member 9",
-    designation: "Role",
-    image: "/team/member-9.jpg",
-    fallback: "T9",
-  },
-  {
-    id: 10,
-    name: "Team Member 10",
-    designation: "Role",
-    image: "/team/member-10.jpg",
-    fallback: "T10",
-  },
-  {
-    id: 11,
-    name: "Team Member 11",
-    designation: "Role",
-    image: "/team/member-11.jpg",
-    fallback: "T11",
-  },
-  {
-    id: 12,
-    name: "Team Member 12",
-    designation: "Role",
-    image: "/team/member-12.jpg",
-    fallback: "T12",
-  },
+  { id: 1, name: "Rasal", image: "/team/Rasal.JPG", fallback: "RA" },
+  { id: 2, name: "Wishmi", image: "/team/wishmi.jpg", fallback: "WI" },
+  { id: 3, name: "Lithira", image: "/team/lithira.jpeg", fallback: "LI" },
+  { id: 4, name: "Gaurav", image: "/team/gaurav.jpeg", fallback: "GA" },
+  { id: 5, name: "Bushra", image: "/team/Bushra.JPG", fallback: "BU" },
+  { id: 6, name: "Dehami", image: "/team/dehami.png", fallback: "DE" },
+  { id: 7, name: "Veenavi", image: "/team/Veenavi.jpg", fallback: "VE" },
+  { id: 8, name: "Minodya", image: "/team/Minodya.png", fallback: "MI" },
+  { id: 9, name: "Sanindee", image: "/team/Sanindee.jpeg", fallback: "SA" },
+  { id: 10, name: "Sithumi", image: "/team/Sithumi.png", fallback: "SI" },
+  { id: 11, name: "Thinara", image: "/team/Thinara.jpg", fallback: "TH" },
+  { id: 12, name: "Kavina", image: "/team/kavina.png", fallback: "KA" },
 ];
 
 export function Team() {

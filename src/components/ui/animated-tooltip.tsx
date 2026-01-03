@@ -8,7 +8,7 @@ import { cn } from "@/src/lib/utils";
 export interface TooltipItem {
   id: number;
   name: string;
-  designation: string;
+  designation?: string;
   image: string;
   fallback: string;
 }
@@ -73,7 +73,6 @@ export function AnimatedTooltip({ items, className }: AnimatedTooltipProps) {
               <div className="absolute -bottom-px left-1/2 h-px w-[40%] -translate-x-1/2 bg-gradient-to-r from-transparent via-primary to-transparent" />
               <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border-b border-r border-border bg-card" />
               <p className="text-sm font-bold text-foreground">{item.name}</p>
-              <p className="text-xs text-muted-foreground">{item.designation}</p>
             </motion.div>
           )}
           <Avatar
