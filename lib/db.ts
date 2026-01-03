@@ -296,12 +296,13 @@ export const photosDb = {
     return photos.find((photo) => photo.id === id);
   },
 
-  create: async (photo: Omit<Photo, "id" | "uploadedAt" | "likes" | "status">) => {
+  create: async (photo: Omit<Photo, "id" | "uploadedAt" | "likes" | "status" | "likedBy">) => {
     const photos = await readData<Photo>("photos");
     const newPhoto: Photo = {
       ...photo,
       id: `photo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       likes: 0,
+      likedBy: [], // Initialize empty likedBy array
       status: "pending", // All uploads need admin approval
       uploadedAt: new Date().toISOString(),
     };

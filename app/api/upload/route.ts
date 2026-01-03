@@ -123,7 +123,8 @@ export async function POST(request: NextRequest) {
           caption,
         });
       } else {
-        console.error("Cloudinary upload failed, falling back to imgBB");
+        const errorText = await cloudinaryResponse.text();
+        console.error("Cloudinary upload failed:", errorText, "- falling back to imgBB");
       }
     }
 

@@ -92,7 +92,7 @@ export function Footer() {
           >
             <span className="text-foreground/40">hosted_by:</span>
             <a 
-              href="#" 
+              href="https://www.youtube.com/@theTechTalk360" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-[#4AAED9] hover:text-[#5DC1EC] transition-colors font-medium"

@@ -197,11 +197,15 @@ export default function CursorMomentsPage() {
         body: formData,
       });
 
+      const uploadData = await uploadRes.json();
+
       if (!uploadRes.ok) {
-        throw new Error("Image upload failed");
+        throw new Error(uploadData.message || uploadData.error || "Image upload failed");
       }
 
-      const uploadData = await uploadRes.json();
+      if (!uploadData.url) {
+        throw new Error("Upload succeeded but no image URL returned");
+      }
 
       // Step 2: Save photo metadata to our API
       const photoRes = await fetch("/api/photos", {
@@ -215,8 +219,10 @@ export default function CursorMomentsPage() {
         }),
       });
 
+      const photoData = await photoRes.json();
+
       if (!photoRes.ok) {
-        throw new Error("Failed to save photo");
+        throw new Error(photoData.error || "Failed to save photo");
       }
 
       toast.success("Photo uploaded!", {
@@ -230,7 +236,7 @@ export default function CursorMomentsPage() {
       setShowUploadModal(false);
     } catch (error: any) {
       console.error("Upload error:", error);
-      toast.error("Upload failed", { description: error.message });
+      toast.error("Upload failed", { description: error.message || "Please try again" });
     } finally {
       setUploading(false);
     }
