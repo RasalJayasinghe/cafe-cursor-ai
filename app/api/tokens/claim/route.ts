@@ -170,8 +170,10 @@ export async function GET(request: NextRequest) {
         customerName: order.customerName,
         token: order.token,
         items: order.items,
-        claimedAt: order.createdAt,
+        createdAt: order.createdAt,
+        claimedAt: order.createdAt, // Alias for backwards compatibility
         status: order.status,
+        claimed: order.claimed,
       })),
     });
   } catch (error: any) {

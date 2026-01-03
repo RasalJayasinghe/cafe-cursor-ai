@@ -93,6 +93,7 @@ export default function AdminPage() {
   const [previewPhoto, setPreviewPhoto] = useState<Photo | null>(null);
   const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set());
   const [bulkProcessing, setBulkProcessing] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // ==================== DATA FETCHING ====================
   const fetchAllData = async (showToast = false) => {
@@ -337,16 +338,15 @@ export default function AdminPage() {
     );
   }
 
-  // ==================== RENDER ====================
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+  // ==================== NAV ITEMS ====================
   const navItems = [
     { id: "overview", icon: BarChart3, label: "Overview" },
     { id: "meals", icon: UtensilsCrossed, label: "Meals", badge: stats.pendingMeals },
     { id: "photos", icon: Camera, label: "Photos", badge: stats.pendingPhotos, highlight: stats.pendingPhotos > 0 },
     { id: "projects", icon: FolderGit2, label: "Projects" },
   ];
-  
+
+  // ==================== RENDER ====================
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Ambient background */}

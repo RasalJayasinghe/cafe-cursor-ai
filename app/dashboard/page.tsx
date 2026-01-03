@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Check,
@@ -10,11 +10,13 @@ import {
   ArrowLeft,
   RefreshCw,
   ChefHat,
-  Bell,
-  Utensils,
   CheckCircle2,
   Timer,
-  Zap,
+  Circle,
+  Volume2,
+  VolumeX,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import Link from "next/link";
@@ -33,40 +35,132 @@ interface Order {
 
 type Filter = "pending" | "completed" | "all";
 
+// Generate notification sound using Web Audio API
+const playNotificationSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Create a pleasant two-tone notification
+    const playTone = (frequency: number, startTime: number, duration: number) => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = "sine";
+      
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+      gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+      
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration);
+    };
+    
+    const now = audioContext.currentTime;
+    // Pleasant ascending two-tone chime
+    playTone(587.33, now, 0.15); // D5
+    playTone(880, now + 0.12, 0.2); // A5
+    
+  } catch (error) {
+    console.log("Audio not supported");
+  }
+};
+
 export default function KitchenQueue() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<Filter>("pending");
   const [completingId, setCompletingId] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  const [isConnected, setIsConnected] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [newOrderIds, setNewOrderIds] = useState<Set<string>>(new Set());
+  
+  // Track previous order IDs to detect new ones
+  const previousOrderIds = useRef<Set<string>>(new Set());
+  const isFirstLoad = useRef(true);
 
   // Fetch orders from API
-  const fetchOrders = useCallback(async (showToast = false) => {
+  const fetchOrders = useCallback(async () => {
     try {
-      setRefreshing(true);
       const res = await fetch("/api/tokens/claim");
       if (res.ok) {
         const data = await res.json();
-        setOrders(data.claims || []);
+        const fetchedOrders: Order[] = data.claims || [];
+        
+        // Detect new orders (not on first load)
+        if (!isFirstLoad.current) {
+          const currentIds = new Set(fetchedOrders.map(o => o.id));
+          const newIds: string[] = [];
+          
+          fetchedOrders.forEach(order => {
+            if (!previousOrderIds.current.has(order.id) && order.status !== "completed") {
+              newIds.push(order.id);
+            }
+          });
+          
+          if (newIds.length > 0) {
+            // Play sound for new orders
+            if (soundEnabled) {
+              playNotificationSound();
+            }
+            
+            // Mark as new for visual highlight
+            setNewOrderIds(new Set(newIds));
+            
+            // Show toast notification
+            toast.success(
+              newIds.length === 1 ? "New order received" : `${newIds.length} new orders received`,
+              { 
+                description: "Check the queue",
+                duration: 5000,
+              }
+            );
+            
+            // Clear highlight after 5 seconds
+            setTimeout(() => {
+              setNewOrderIds(new Set());
+            }, 5000);
+          }
+          
+          // Update previous IDs
+          previousOrderIds.current = currentIds;
+        } else {
+          // First load - just set the IDs without notification
+          previousOrderIds.current = new Set(fetchedOrders.map(o => o.id));
+          isFirstLoad.current = false;
+        }
+        
+        setOrders(fetchedOrders);
         setLastRefresh(new Date());
-        if (showToast) toast.success("Orders refreshed");
+        setIsConnected(true);
+      } else {
+        setIsConnected(false);
       }
     } catch (error) {
       console.error("Error fetching orders:", error);
-      toast.error("Failed to fetch orders");
+      setIsConnected(false);
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
-  }, []);
+  }, [soundEnabled]);
 
-  // Auto-refresh every 10 seconds
+  // Real-time polling every 3 seconds
   useEffect(() => {
     fetchOrders();
-    const interval = setInterval(() => fetchOrders(), 10000);
+    const interval = setInterval(fetchOrders, 3000);
     return () => clearInterval(interval);
   }, [fetchOrders]);
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
 
   // Mark order as completed
   const handleComplete = async (email: string, orderId: string) => {
@@ -79,14 +173,13 @@ export default function KitchenQueue() {
       });
 
       if (res.ok) {
-        // Update local state
         setOrders((prev) =>
           prev.map((o) =>
             o.id === orderId ? { ...o, status: "completed" } : o
           )
         );
-        toast.success("Order completed!", {
-          description: `Order ready for pickup`,
+        toast.success("Order marked as ready", {
+          description: "Customer can now pick up their order",
         });
       } else {
         toast.error("Failed to update order");
@@ -112,8 +205,8 @@ export default function KitchenQueue() {
   const getTimeSince = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "just now";
-    if (mins < 60) return `${mins}m ago`;
+    if (mins < 1) return "Just now";
+    if (mins < 60) return `${mins} min ago`;
     const hrs = Math.floor(mins / 60);
     return `${hrs}h ${mins % 60}m ago`;
   };
@@ -134,13 +227,11 @@ export default function KitchenQueue() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="mb-4"
+            className="mb-6"
           >
-            <ChefHat className="w-12 h-12 text-foreground/20 mx-auto" />
+            <ChefHat className="w-16 h-16 text-foreground/20 mx-auto" />
           </motion.div>
-          <p className="font-mono text-sm text-muted-foreground">
-            Loading orders...
-          </p>
+          <p className="text-xl text-muted-foreground">Connecting to kitchen...</p>
         </div>
       </div>
     );
@@ -148,251 +239,386 @@ export default function KitchenQueue() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Ambient background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-green-500/5 rounded-full blur-3xl" />
-      </div>
+      {/* Subtle grid background */}
+      <div
+        className="fixed inset-0 opacity-[0.02] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
+                           linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)`,
+          backgroundSize: "60px 60px",
+        }}
+      />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/80 backdrop-blur-xl">
-        <div className="max-w-2xl mx-auto px-4 py-4">
-          {/* Top row */}
-          <div className="flex items-center justify-between mb-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="font-mono text-xs">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Home
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="max-w-6xl mx-auto px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-5">
+              <Link href="/">
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="text-muted-foreground hover:text-foreground hover:bg-foreground/5 text-base px-4"
+                >
+                  <ArrowLeft className="w-5 h-5 mr-2" />
+                  Back
+                </Button>
+              </Link>
+              <div className="h-8 w-px bg-border" />
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-foreground/5 border border-border/50 flex items-center justify-center">
+                  <ChefHat className="w-7 h-7 text-foreground" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold tracking-tight">Kitchen Queue</h1>
+                  <div className="flex items-center gap-3 mt-0.5">
+                    {/* Live indicator */}
+                    <div className="flex items-center gap-1.5">
+                      {isConnected ? (
+                        <>
+                          <motion.div
+                            animate={{ opacity: [1, 0.5, 1] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="w-2 h-2 rounded-full bg-green-500"
+                          />
+                          <span className="text-sm text-green-500 font-medium">Live</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-2 h-2 rounded-full bg-red-500" />
+                          <span className="text-sm text-red-500 font-medium">Disconnected</span>
+                        </>
+                      )}
+                    </div>
+                    <span className="text-sm text-muted-foreground font-mono">
+                      · Synced {lastRefresh.toLocaleTimeString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Sound toggle */}
+              <Button
+                variant="ghost"
+                size="lg"
+                onClick={() => {
+                  setSoundEnabled(!soundEnabled);
+                  if (!soundEnabled) {
+                    playNotificationSound();
+                  }
+                }}
+                className={`px-4 ${
+                  soundEnabled 
+                    ? "text-foreground hover:bg-foreground/5" 
+                    : "text-muted-foreground hover:bg-foreground/5"
+                }`}
+                title={soundEnabled ? "Sound on" : "Sound off"}
+              >
+                {soundEnabled ? (
+                  <Volume2 className="w-5 h-5" />
+                ) : (
+                  <VolumeX className="w-5 h-5" />
+                )}
               </Button>
-            </Link>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => fetchOrders(true)}
-              disabled={refreshing}
-              className="font-mono text-xs"
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
-              Refresh
-            </Button>
-          </div>
 
-          {/* Title */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center">
-              <ChefHat className="w-6 h-6 text-amber-400" />
+              {/* Connection status */}
+              <div 
+                className={`px-4 py-2 rounded-xl flex items-center gap-2 ${
+                  isConnected 
+                    ? "bg-foreground/5 text-foreground" 
+                    : "bg-red-500/10 text-red-500"
+                }`}
+              >
+                {isConnected ? (
+                  <Wifi className="w-4 h-4" />
+                ) : (
+                  <WifiOff className="w-4 h-4" />
+                )}
+                <span className="text-sm font-medium">
+                  {isConnected ? "Connected" : "Offline"}
+                </span>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold">Kitchen Queue</h1>
-              <p className="font-mono text-xs text-muted-foreground">
-                Last updated: {lastRefresh.toLocaleTimeString()}
-              </p>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-3">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="relative p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 overflow-hidden"
-            >
-              {pendingCount > 0 && (
-                <motion.div
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-400"
-                />
-              )}
-              <div className="flex items-center gap-2">
-                <Timer className="w-4 h-4 text-amber-400" />
-                <span className="text-2xl font-bold text-amber-400">{pendingCount}</span>
-              </div>
-              <p className="font-mono text-[10px] text-amber-400/70 mt-1">In Queue</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="p-3 rounded-xl bg-green-500/10 border border-green-500/20"
-            >
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-green-400" />
-                <span className="text-2xl font-bold text-green-400">{completedCount}</span>
-              </div>
-              <p className="font-mono text-[10px] text-green-400/70 mt-1">Completed</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="p-3 rounded-xl bg-foreground/5 border border-foreground/10"
-            >
-              <div className="flex items-center gap-2">
-                <Utensils className="w-4 h-4 text-foreground/50" />
-                <span className="text-2xl font-bold">{orders.length}</span>
-              </div>
-              <p className="font-mono text-[10px] text-muted-foreground mt-1">Total</p>
-            </motion.div>
           </div>
         </div>
       </header>
 
-      {/* Filters */}
-      <div className="max-w-2xl mx-auto px-4 py-4">
-        <div className="flex gap-2 font-mono text-xs">
+      {/* Stats Bar */}
+      <div className="border-b border-border/30">
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <div className="grid grid-cols-3 gap-6">
+            {/* Pending Orders */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`relative p-6 rounded-2xl border transition-all ${
+                pendingCount > 0
+                  ? "bg-foreground/5 border-foreground/20"
+                  : "bg-card/40 border-border/50"
+              }`}
+            >
+              {pendingCount > 0 && (
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="absolute top-5 right-5 w-3 h-3 rounded-full bg-foreground"
+                />
+              )}
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-foreground/10 flex items-center justify-center">
+                  <Timer className="w-7 h-7 text-foreground" />
+                </div>
+                <div>
+                  <span className="text-5xl font-bold text-foreground tabular-nums">
+                    {pendingCount}
+                  </span>
+                  <p className="text-base text-muted-foreground mt-1">In Queue</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Completed Orders */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="p-6 rounded-2xl bg-card/40 border border-border/50"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-foreground/5 flex items-center justify-center">
+                  <CheckCircle2 className="w-7 h-7 text-muted-foreground" />
+                </div>
+                <div>
+                  <span className="text-5xl font-bold text-muted-foreground tabular-nums">
+                    {completedCount}
+                  </span>
+                  <p className="text-base text-muted-foreground mt-1">Completed</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Total Orders */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="p-6 rounded-2xl bg-card/40 border border-border/50"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-foreground/5 flex items-center justify-center">
+                  <UtensilsCrossed className="w-7 h-7 text-muted-foreground" />
+                </div>
+                <div>
+                  <span className="text-5xl font-bold text-muted-foreground tabular-nums">
+                    {orders.length}
+                  </span>
+                  <p className="text-base text-muted-foreground mt-1">Total Today</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="flex gap-3">
           {(["pending", "completed", "all"] as Filter[]).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`flex-1 py-2.5 rounded-xl transition-all ${
+              className={`px-8 py-4 rounded-xl text-lg font-medium transition-all ${
                 filter === f
-                  ? f === "pending"
-                    ? "bg-amber-500/20 border border-amber-500/30 text-amber-400"
-                    : f === "completed"
-                    ? "bg-green-500/20 border border-green-500/30 text-green-400"
-                    : "bg-foreground/10 border border-foreground/20 text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
+                  ? "bg-foreground text-background"
+                  : "bg-card/60 text-muted-foreground hover:text-foreground hover:bg-foreground/5 border border-border/50"
               }`}
             >
-              {f === "pending" && `🔥 Queue (${pendingCount})`}
-              {f === "completed" && `✓ Done (${completedCount})`}
-              {f === "all" && `All (${orders.length})`}
+              {f === "pending" && `Queue (${pendingCount})`}
+              {f === "completed" && `Completed (${completedCount})`}
+              {f === "all" && `All Orders (${orders.length})`}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Orders List */}
-      <div className="max-w-2xl mx-auto px-4 pb-8">
+      {/* Orders Grid */}
+      <div className="max-w-6xl mx-auto px-6 pb-32">
         <AnimatePresence mode="popLayout">
           {filteredOrders.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center py-16"
+              className="text-center py-24"
             >
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-foreground/5 border border-foreground/10 flex items-center justify-center">
+              <div className="w-28 h-28 mx-auto mb-8 rounded-full bg-foreground/5 border border-border/50 flex items-center justify-center">
                 {filter === "pending" ? (
-                  <Coffee className="w-10 h-10 text-muted-foreground/30" />
+                  <Coffee className="w-14 h-14 text-foreground/20" />
                 ) : (
-                  <CheckCircle2 className="w-10 h-10 text-green-400/30" />
+                  <CheckCircle2 className="w-14 h-14 text-foreground/20" />
                 )}
               </div>
-              <p className="font-mono text-lg text-muted-foreground">
-                {filter === "pending" ? "No orders in queue" : "No completed orders"}
+              <p className="text-2xl text-muted-foreground mb-2">
+                {filter === "pending" ? "No orders waiting" : "No completed orders"}
               </p>
-              <p className="font-mono text-xs text-muted-foreground/50 mt-2">
-                {filter === "pending" ? "Waiting for new orders..." : "Complete some orders first"}
+              <p className="text-base text-muted-foreground/60">
+                {filter === "pending"
+                  ? "New orders will appear automatically with a sound alert"
+                  : "Completed orders will show up here"}
               </p>
             </motion.div>
           ) : (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {filteredOrders.map((order, index) => {
                 const urgency = getUrgency(order.createdAt);
                 const isCompleted = order.status === "completed";
+                const isNew = newOrderIds.has(order.id);
 
                 return (
                   <motion.div
                     key={order.id}
                     layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 20, scale: isNew ? 1.02 : 1 }}
+                    animate={{ 
+                      opacity: 1, 
+                      y: 0, 
+                      scale: 1,
+                    }}
                     exit={{ opacity: 0, x: -100 }}
-                    transition={{ delay: index * 0.05 }}
-                    className={`relative rounded-2xl border overflow-hidden transition-all ${
-                      isCompleted
-                        ? "bg-green-500/5 border-green-500/20"
+                    transition={{ delay: index * 0.03 }}
+                    className={`relative rounded-2xl overflow-hidden transition-all ${
+                      isNew
+                        ? "bg-foreground/10 border-2 border-foreground ring-4 ring-foreground/20"
+                        : isCompleted
+                        ? "bg-card/30 border border-border/30"
                         : urgency === "urgent"
-                        ? "bg-red-500/5 border-red-500/30 ring-1 ring-red-500/20"
+                        ? "bg-foreground/[0.08] border-2 border-foreground/30"
                         : urgency === "warning"
-                        ? "bg-amber-500/5 border-amber-500/30"
-                        : "bg-card/60 border-border/50"
+                        ? "bg-foreground/[0.04] border border-foreground/20"
+                        : "bg-card/60 border border-border/50"
                     }`}
                   >
-                    {/* Urgency indicator */}
-                    {!isCompleted && urgency !== "normal" && (
-                      <div className={`absolute top-0 left-0 right-0 h-1 ${
-                        urgency === "urgent" ? "bg-red-500" : "bg-amber-500"
-                      }`} />
+                    {/* New order indicator */}
+                    {isNew && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="absolute top-0 left-0 right-0 h-1 bg-foreground"
+                      />
                     )}
 
-                    <div className="p-4">
-                      {/* Header row */}
-                      <div className="flex items-start justify-between gap-4 mb-3">
-                        <div className="flex items-center gap-3">
-                          {/* Token badge */}
-                          <div className={`px-3 py-2 rounded-xl font-mono text-lg font-bold ${
-                            isCompleted
-                              ? "bg-green-500/20 text-green-400"
-                              : urgency === "urgent"
-                              ? "bg-red-500/20 text-red-400"
-                              : "bg-foreground/10 text-foreground"
-                          }`}>
+                    {/* Urgency indicator bar */}
+                    {!isNew && !isCompleted && urgency !== "normal" && (
+                      <div
+                        className={`h-1.5 ${
+                          urgency === "urgent"
+                            ? "bg-foreground"
+                            : "bg-foreground/50"
+                        }`}
+                      />
+                    )}
+
+                    <div className="p-6">
+                      {/* Order Header */}
+                      <div className="flex items-center justify-between gap-6 mb-6">
+                        <div className="flex items-center gap-5">
+                          {/* Token Badge */}
+                          <div
+                            className={`relative px-5 py-4 rounded-xl font-mono text-2xl font-bold tracking-wider ${
+                              isNew
+                                ? "bg-foreground text-background"
+                                : isCompleted
+                                ? "bg-foreground/5 text-muted-foreground border border-border/50"
+                                : urgency === "urgent"
+                                ? "bg-foreground text-background"
+                                : "bg-foreground/10 text-foreground border border-foreground/20"
+                            }`}
+                          >
+                            {isNew && (
+                              <motion.span
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-bold border-2 border-background"
+                              >
+                                NEW
+                              </motion.span>
+                            )}
                             {order.token}
                           </div>
+
                           <div>
-                            <p className="font-medium">{order.customerName}</p>
-                            <div className={`flex items-center gap-1 text-xs font-mono ${
-                              urgency === "urgent" && !isCompleted
-                                ? "text-red-400"
-                                : urgency === "warning" && !isCompleted
-                                ? "text-amber-400"
-                                : "text-muted-foreground"
-                            }`}>
-                              <Clock className="w-3 h-3" />
-                              {getTimeSince(order.createdAt)}
-                              {!isCompleted && urgency === "urgent" && (
-                                <span className="ml-1 text-red-400">• URGENT</span>
+                            <p className="text-xl font-semibold text-foreground mb-1">
+                              {order.customerName}
+                            </p>
+                            <div
+                              className={`flex items-center gap-2 text-base ${
+                                isNew
+                                  ? "text-foreground"
+                                  : urgency === "urgent" && !isCompleted
+                                  ? "text-foreground"
+                                  : "text-muted-foreground"
+                              }`}
+                            >
+                              <Clock className="w-4 h-4" />
+                              <span>{getTimeSince(order.createdAt)}</span>
+                              {!isCompleted && urgency === "urgent" && !isNew && (
+                                <span className="ml-2 px-2.5 py-0.5 rounded-full bg-foreground text-background text-sm font-medium">
+                                  Urgent
+                                </span>
                               )}
                             </div>
                           </div>
                         </div>
 
+                        {/* Action Button */}
                         {isCompleted ? (
-                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/20 text-green-400 text-xs font-mono">
-                            <CheckCircle2 className="w-4 h-4" />
-                            Done
+                          <div className="flex items-center gap-3 px-5 py-4 rounded-xl bg-foreground/5 text-muted-foreground border border-border/50">
+                            <CheckCircle2 className="w-5 h-5" />
+                            <span className="text-lg font-medium">Done</span>
                           </div>
                         ) : (
                           <Button
                             onClick={() => handleComplete(order.email, order.id)}
                             disabled={completingId === order.id}
-                            className={`font-mono text-sm ${
-                              urgency === "urgent"
-                                ? "bg-red-500 hover:bg-red-600"
-                                : "bg-green-500 hover:bg-green-600"
-                            } text-white`}
+                            size="lg"
+                            className={`h-auto px-8 py-5 rounded-xl text-lg font-semibold transition-all active:scale-95 ${
+                              isNew || urgency === "urgent"
+                                ? "bg-foreground hover:bg-foreground/90 text-background"
+                                : "bg-foreground/90 hover:bg-foreground text-background"
+                            }`}
                           >
                             {completingId === order.id ? (
-                              <RefreshCw className="w-4 h-4 animate-spin" />
+                              <RefreshCw className="w-5 h-5 animate-spin" />
                             ) : (
                               <>
-                                <Check className="w-4 h-4 mr-2" />
-                                Ready
+                                <Check className="w-5 h-5 mr-3" />
+                                Mark Ready
                               </>
                             )}
                           </Button>
                         )}
                       </div>
 
-                      {/* Order items */}
-                      <div className="flex flex-wrap gap-2">
+                      {/* Order Items */}
+                      <div className="flex flex-wrap gap-3">
                         {order.items.map((item, idx) => (
                           <div
                             key={idx}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-mono ${
-                              isCompleted ? "bg-green-500/10" : "bg-foreground/5"
+                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base ${
+                              isNew
+                                ? "bg-foreground/10 text-foreground"
+                                : isCompleted
+                                ? "bg-foreground/[0.03] text-muted-foreground"
+                                : "bg-foreground/5 text-foreground"
                             }`}
                           >
                             {idx === 0 ? (
-                              <UtensilsCrossed className="w-4 h-4 text-amber-400" />
+                              <UtensilsCrossed className="w-5 h-5 text-foreground/50" />
                             ) : (
-                              <Coffee className="w-4 h-4 text-cyan-400" />
+                              <Coffee className="w-5 h-5 text-foreground/50" />
                             )}
-                            <span>{item.name}</span>
+                            <span className="font-medium">{item.name}</span>
                           </div>
                         ))}
                       </div>
@@ -405,19 +631,26 @@ export default function KitchenQueue() {
         </AnimatePresence>
       </div>
 
-      {/* Floating notification for new orders */}
-      {pendingCount > 0 && filter !== "pending" && (
-        <motion.button
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          onClick={() => setFilter("pending")}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-3 rounded-full bg-amber-500 text-black font-mono text-sm shadow-lg shadow-amber-500/30"
-        >
-          <Bell className="w-4 h-4" />
-          {pendingCount} orders waiting
-        </motion.button>
-      )}
+      {/* Floating notification */}
+      <AnimatePresence>
+        {pendingCount > 0 && filter !== "pending" && (
+          <motion.button
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            onClick={() => setFilter("pending")}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-8 py-5 rounded-full bg-foreground text-background text-lg font-semibold shadow-2xl hover:bg-foreground/90 transition-colors active:scale-95"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              <Circle className="w-3 h-3 fill-current" />
+            </motion.div>
+            {pendingCount} order{pendingCount !== 1 ? "s" : ""} waiting
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
