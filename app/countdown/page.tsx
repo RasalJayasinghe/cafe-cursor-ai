@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
-import { ArrowRight, MapPin, Calendar, Clock, Sparkles, ExternalLink } from "lucide-react";
+import { ArrowRight, MapPin, Calendar, Clock, Sparkles, ExternalLink, MessageCircle } from "lucide-react";
 import { CursorCubeLogo } from "@/src/components/ui/CursorCubeLogo";
 
 // Dynamic import for Map (Leaflet needs client-side only)
@@ -288,14 +288,14 @@ export default function CountdownPage() {
 
         {/* Hero section */}
         <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
-          {/* Pre-title */}
+          {/* Cursor Logo */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center gap-2 mb-6 sm:mb-8"
+            className="flex items-center justify-center mb-4 sm:mb-6"
           >
-           
+            <CursorCubeLogo className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" />
           </motion.div>
 
           {/* Main title */}
@@ -352,7 +352,7 @@ export default function CountdownPage() {
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white/[0.03] border border-white/10 rounded-full backdrop-blur-sm">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
-              <span className="text-[10px] sm:text-xs md:text-sm font-mono text-white/70">10am - 10pm</span>
+              <span className="text-[10px] sm:text-xs md:text-sm font-mono text-white/70">10AM - 10PM</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white/[0.03] border border-white/10 rounded-full backdrop-blur-sm">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
@@ -360,11 +360,12 @@ export default function CountdownPage() {
             </div>
           </motion.div>
 
-          {/* CTA Button */}
+          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2 }}
+            className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4"
           >
             <a
               href="https://lu.ma/01ken2xj"
@@ -387,6 +388,66 @@ export default function CountdownPage() {
                 />
               </motion.button>
             </a>
+            
+            <a
+              href="https://chat.whatsapp.com/CgIkBUB8t3jDIoLhT2qZJd"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative px-5 sm:px-8 py-3 sm:py-4 bg-white text-black font-medium rounded-full overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2 text-xs sm:text-sm md:text-base">
+                  <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  Join WhatsApp Community
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+                {/* Hover shine effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-black/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                />
+              </motion.button>
+            </a>
+          </motion.div>
+
+          {/* Sponsors */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4 }}
+            className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-12 sm:gap-16 md:gap-24"
+          >
+            {/* Connectivity Partner */}
+            <div className="flex flex-col items-center">
+              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                Connectivity Partner
+              </span>
+              <div className="h-12 sm:h-16 md:h-20 w-40 sm:w-52 md:w-64 overflow-hidden flex items-center justify-center">
+                <motion.img
+                  src="/starlink.png"
+                  alt="Starlink"
+                  className="w-full h-auto scale-[2] opacity-90 hover:opacity-100 transition-opacity"
+                  whileHover={{ scale: 2.1 }}
+                />
+              </div>
+            </div>
+            
+            {/* Venue Partner */}
+            <div className="flex flex-col items-center">
+              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+                Venue Partner
+              </span>
+              <div className="h-12 sm:h-16 md:h-20 w-40 sm:w-52 md:w-64 overflow-hidden flex items-center justify-center">
+                <motion.img
+                  src="/kai.png"
+                  alt="Kai Colombo"
+                  className="w-full h-auto scale-[2] opacity-90 hover:opacity-100 transition-opacity"
+                  whileHover={{ scale: 2.1 }}
+                />
+              </div>
+            </div>
           </motion.div>
         </main>
 
@@ -421,7 +482,7 @@ export default function CountdownPage() {
               </span>
             </div>
             
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1 sm:mb-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white sm:mb-5">
               Kai Colombo
             </h2>
             <p className="text-white/60 text-xs sm:text-sm font-mono mb-3 sm:mb-4">

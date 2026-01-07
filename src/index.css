@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CursorGothic Font Family */
+@font-face {
+  font-family: 'CursorGothic';
+  src: url('/fonts/WOFF2/CursorGothic-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CursorGothic';
+  src: url('/fonts/WOFF2/CursorGothic-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CursorGothic';
+  src: url('/fonts/WOFF2/CursorGothic-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CursorGothic';
+  src: url('/fonts/WOFF2/CursorGothic-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 0 0% 3%;
@@ -82,12 +115,25 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground antialiased;
-  }
-
   html {
     scroll-behavior: smooth;
+    font-family: 'CursorGothic', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'CursorGothic', system-ui, sans-serif;
+  }
+
+  /* Ensure headings use bold weight */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'CursorGothic', system-ui, sans-serif;
+    font-weight: 700;
+  }
+  
+  /* Force all text elements to use the font */
+  p, span, a, li, td, th, label, input, button, textarea, select {
+    font-family: 'CursorGothic', system-ui, sans-serif;
   }
 }
 
