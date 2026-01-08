@@ -417,36 +417,32 @@ export default function CountdownPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4 }}
-            className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-12 sm:gap-16 md:gap-24"
+            className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-14 md:gap-20"
           >
             {/* Connectivity Partner */}
             <div className="flex flex-col items-center">
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">
                 Connectivity Partner
               </span>
-              <div className="h-12 sm:h-16 md:h-20 w-40 sm:w-52 md:w-64 overflow-hidden flex items-center justify-center">
-                <motion.img
-                  src="/starlink.png"
-                  alt="Starlink"
-                  className="w-full h-auto scale-[2] opacity-90 hover:opacity-100 transition-opacity"
-                  whileHover={{ scale: 2.1 }}
-                />
-              </div>
+              <motion.img
+                src="/starlink.png"
+                alt="Starlink"
+                className="h-10 sm:h-12 md:h-14 w-auto opacity-90 hover:opacity-100 transition-opacity"
+                whileHover={{ scale: 1.05 }}
+              />
             </div>
             
             {/* Venue Partner */}
             <div className="flex flex-col items-center">
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">
                 Venue Partner
               </span>
-              <div className="h-12 sm:h-16 md:h-20 w-40 sm:w-52 md:w-64 overflow-hidden flex items-center justify-center">
-                <motion.img
-                  src="/kai.png"
-                  alt="Kai Colombo"
-                  className="w-full h-auto scale-[2] opacity-90 hover:opacity-100 transition-opacity"
-                  whileHover={{ scale: 2.1 }}
-                />
-              </div>
+              <motion.img
+                src="/kai.png"
+                alt="Kai Colombo"
+                className="h-7 sm:h-8 md:h-10 w-auto opacity-90 hover:opacity-100 transition-opacity"
+                whileHover={{ scale: 1.05 }}
+              />
             </div>
           </motion.div>
         </main>
