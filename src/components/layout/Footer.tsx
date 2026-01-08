@@ -88,17 +88,30 @@ export function Footer() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="text-sm flex items-center gap-2"
+            className="text-sm flex items-center gap-4 sm:gap-6"
           >
-            <span className="text-foreground/40">hosted_by:</span>
-            <a 
-              href="https://www.youtube.com/@theTechTalk360" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-[#4AAED9] hover:text-[#5DC1EC] transition-colors font-medium"
-            >
-              TechTalk360
-            </a>
+            <div className="flex items-center gap-2">
+              <span className="text-foreground/40">built_with:</span>
+              <a 
+                href="https://cursor.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-foreground/70 hover:text-foreground transition-colors font-medium"
+              >
+                Cursor
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-foreground/40">hosted_by:</span>
+              <a 
+                href="https://www.youtube.com/@theTechTalk360" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[#4AAED9] hover:text-[#5DC1EC] transition-colors font-medium"
+              >
+                TechTalk360
+              </a>
+            </div>
           </motion.div>
         </div>
       </div>

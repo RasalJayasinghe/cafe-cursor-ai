@@ -424,12 +424,14 @@ export default function CountdownPage() {
               <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">
                 Connectivity Partner
               </span>
-              <motion.img
-                src="/starlink.png"
-                alt="Starlink"
-                className="h-10 sm:h-12 md:h-14 w-auto opacity-90 hover:opacity-100 transition-opacity"
-                whileHover={{ scale: 1.05 }}
-              />
+              <div className="h-12 sm:h-14 md:h-16 flex items-center justify-center">
+                <motion.img
+                  src="/starlink.png"
+                  alt="Starlink"
+                  className="h-11 sm:h-14 md:h-16 w-auto opacity-90 hover:opacity-100 transition-opacity"
+                  whileHover={{ scale: 1.05 }}
+                />
+              </div>
             </div>
             
             {/* Venue Partner */}
@@ -437,12 +439,14 @@ export default function CountdownPage() {
               <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">
                 Venue Partner
               </span>
-              <motion.img
-                src="/kai.png"
-                alt="Kai Colombo"
-                className="h-7 sm:h-8 md:h-10 w-auto opacity-90 hover:opacity-100 transition-opacity"
-                whileHover={{ scale: 1.05 }}
-              />
+              <div className="h-12 sm:h-14 md:h-16 flex items-center justify-center">
+                <motion.img
+                  src="/kai.png"
+                  alt="Kai Colombo"
+                  className="h-7 sm:h-8 md:h-10 w-auto opacity-90 hover:opacity-100 transition-opacity"
+                  whileHover={{ scale: 1.05 }}
+                />
+              </div>
             </div>
           </motion.div>
         </main>
