@@ -201,7 +201,7 @@ export default function ProjectsPage() {
           {[...Array(6)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute text-foreground/5 font-mono text-4xl"
+              className="absolute text-foreground/5 text-4xl"
               style={{
                 left: `${15 + i * 15}%`,
                 top: `${20 + (i % 3) * 20}%`,
@@ -227,7 +227,7 @@ export default function ProjectsPage() {
             <Button
               variant="ghost"
               size="sm"
-              className="font-mono text-xs text-muted-foreground hover:text-foreground h-7 sm:h-8 px-2 sm:px-3"
+              className="text-xs text-muted-foreground hover:text-foreground h-7 sm:h-8 px-2 sm:px-3"
             >
               <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               <span className="text-[10px] sm:text-xs">back to cafe</span>
@@ -244,7 +244,7 @@ export default function ProjectsPage() {
                   className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-foreground/10 border border-foreground/20 mb-1.5 sm:mb-4"
                 >
                   <Code2 className="w-2 h-2 sm:w-3 sm:h-3 text-foreground/70" />
-                  <span className="text-[9px] sm:text-xs font-mono text-foreground/70">community showcase</span>
+                  <span className="text-[9px] sm:text-xs text-foreground/70">community showcase</span>
                 </motion.div>
 
                 {/* Title */}
@@ -263,7 +263,7 @@ export default function ProjectsPage() {
 
                 {/* Subtitle */}
                 <motion.p 
-                  className="font-mono text-[10px] sm:text-sm text-muted-foreground max-w-md"
+                  className="text-[10px] sm:text-sm text-muted-foreground max-w-md"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -283,7 +283,7 @@ export default function ProjectsPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => fetchProjects()}
-                  className="font-mono text-xs border border-foreground/10 h-8 w-8 p-0"
+                  className="text-xs border border-foreground/10 h-8 w-8 p-0"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                 </Button>
@@ -299,7 +299,7 @@ export default function ProjectsPage() {
             >
               <Button
                 onClick={() => setShowForm(true)}
-                className="w-full sm:w-auto font-mono text-xs sm:text-sm bg-foreground text-background hover:bg-foreground/90 border border-foreground shadow-lg shadow-foreground/25 h-9 sm:h-10 px-6 sm:px-8 gap-2"
+                className="w-full sm:w-auto text-xs sm:text-sm bg-foreground text-background hover:bg-foreground/90 border border-foreground shadow-lg shadow-foreground/25 h-9 sm:h-10 px-6 sm:px-8 gap-2"
               >
                 <Rocket className="w-4 h-4" />
                 drop your project
@@ -336,7 +336,7 @@ export default function ProjectsPage() {
                         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
                         <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
                       </div>
-                      <span className="font-mono text-[10px] text-muted-foreground/50 ml-2 truncate">
+                      <span className="text-[10px] text-muted-foreground/50 ml-2 truncate">
                         ~/{project.title.toLowerCase().replace(/\s+/g, "-")}/README.md
                       </span>
                     </div>
@@ -344,13 +344,13 @@ export default function ProjectsPage() {
                     {/* Content */}
                     <div className="relative p-5 space-y-4">
                       {/* Project name */}
-                      <div className="font-mono">
+                      <div className="">
                         <span className="text-foreground/40 text-xs"># </span>
                         <span className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{project.title}</span>
                       </div>
 
                       {/* Description */}
-                      <p className="font-mono text-sm text-muted-foreground/70 leading-relaxed line-clamp-2">
+                      <p className="text-sm text-muted-foreground/70 leading-relaxed line-clamp-2">
                         {project.description || "no description yet... mystery project"}
                       </p>
 
@@ -360,13 +360,13 @@ export default function ProjectsPage() {
                           {project.tags.slice(0, 3).map((tag, i) => (
                             <span
                               key={i}
-                              className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-foreground/10 text-foreground/60 border border-foreground/20"
+                              className="px-2 py-0.5 rounded-full text-[10px] bg-foreground/10 text-foreground/60 border border-foreground/20"
                             >
                               {tag}
                             </span>
                           ))}
                           {project.tags.length > 3 && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-foreground/5 text-muted-foreground/50">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] bg-foreground/5 text-muted-foreground/50">
                               +{project.tags.length - 3}
                             </span>
                           )}
@@ -376,7 +376,7 @@ export default function ProjectsPage() {
                       {/* Author info */}
                       <div className="pt-4 border-t border-foreground/10 space-y-3">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 font-mono text-xs">
+                          <div className="flex items-center gap-2 text-xs">
                             <div className="w-6 h-6 rounded-full bg-gradient-to-br from-foreground/30 to-foreground/10 flex items-center justify-center">
                               <User className="w-3 h-3 text-foreground/60" />
                             </div>
@@ -401,7 +401,7 @@ export default function ProjectsPage() {
                               href={project.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 font-mono text-xs text-foreground/50 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/5"
+                              className="flex items-center gap-1.5 text-xs text-foreground/50 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/5"
                             >
                               <Github className="w-3.5 h-3.5" />
                               <span>code</span>
@@ -413,7 +413,7 @@ export default function ProjectsPage() {
                               href={project.linkedinUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/10"
+                              className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/10"
                             >
                               <Linkedin className="w-3.5 h-3.5" />
                               <span>profile</span>
@@ -425,7 +425,7 @@ export default function ProjectsPage() {
                               href={project.liveUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/10"
+                              className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-foreground/10"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
                               <span>live</span>
@@ -434,7 +434,7 @@ export default function ProjectsPage() {
                         </div>
 
                         {/* Time */}
-                        <p className="font-mono text-[10px] text-muted-foreground/30">
+                        <p className="text-[10px] text-muted-foreground/30">
                           shipped {new Date(project.createdAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -457,15 +457,15 @@ export default function ProjectsPage() {
             >
               <FolderGit2 className="w-10 h-10 text-foreground/50" />
             </motion.div>
-            <h3 className="font-mono text-xl text-foreground/80 mb-2">
+            <h3 className="text-xl text-foreground/80 mb-2">
               no projects yet...
             </h3>
-            <p className="font-mono text-sm text-muted-foreground/50 mb-6 max-w-sm mx-auto">
+            <p className="text-sm text-muted-foreground/50 mb-6 max-w-sm mx-auto">
               be the first to flex what you built at cafe cursor
             </p>
             <Button
               onClick={() => setShowForm(true)}
-              className="font-mono bg-foreground text-background hover:bg-foreground/90 border border-foreground"
+              className="bg-foreground text-background hover:bg-foreground/90 border border-foreground"
             >
               <Rocket className="w-4 h-4 mr-2" />
               drop your project
@@ -503,7 +503,7 @@ export default function ProjectsPage() {
                       <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
                       <div className="w-3 h-3 rounded-full bg-green-500/70" />
                     </div>
-                    <span className="font-mono text-xs text-muted-foreground ml-2">
+                    <span className="text-xs text-muted-foreground ml-2">
                       ~/share-project.sh
                     </span>
                   </div>
@@ -517,12 +517,12 @@ export default function ProjectsPage() {
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                  <div className="font-mono text-xs text-muted-foreground/60 mb-4">
+                  <div className="text-xs text-muted-foreground/60 mb-4">
                     # time to show off what you built
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-foreground/70">
+                    <label className="text-xs text-foreground/70">
                       project_title<span className="text-red-400">*</span>
                     </label>
                     <Input
@@ -531,12 +531,12 @@ export default function ProjectsPage() {
                         setFormData({ ...formData, title: e.target.value })
                       }
                       placeholder="My Awesome Project"
-                      className="font-mono bg-foreground/5 border-foreground/20"
+                      className="bg-foreground/5 border-foreground/20"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-foreground/70">
+                    <label className="text-xs text-foreground/70">
                       your_name<span className="text-red-400">*</span>
                     </label>
                     <Input
@@ -545,12 +545,12 @@ export default function ProjectsPage() {
                         setFormData({ ...formData, author: e.target.value })
                       }
                       placeholder="John Doe"
-                      className="font-mono bg-foreground/5 border-foreground/20"
+                      className="bg-foreground/5 border-foreground/20"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-foreground/60">
+                    <label className="text-xs text-foreground/60">
                       github_url<span className="text-red-400">*</span>
                     </label>
                     <Input
@@ -559,12 +559,12 @@ export default function ProjectsPage() {
                         setFormData({ ...formData, githubUrl: e.target.value })
                       }
                       placeholder="https://github.com/username/project"
-                      className="font-mono bg-foreground/5 border-foreground/20"
+                      className="bg-foreground/5 border-foreground/20"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-foreground/50">
+                    <label className="text-xs text-foreground/50">
                       linkedin_url
                     </label>
                     <Input
@@ -573,12 +573,12 @@ export default function ProjectsPage() {
                         setFormData({ ...formData, linkedinUrl: e.target.value })
                       }
                       placeholder="https://linkedin.com/in/your-profile"
-                      className="font-mono bg-foreground/5 border-foreground/20"
+                      className="bg-foreground/5 border-foreground/20"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-foreground/50">
+                    <label className="text-xs text-foreground/50">
                       live_url
                     </label>
                     <Input
@@ -587,12 +587,12 @@ export default function ProjectsPage() {
                         setFormData({ ...formData, liveUrl: e.target.value })
                       }
                       placeholder="https://myproject.vercel.app"
-                      className="font-mono bg-foreground/5 border-foreground/20"
+                      className="bg-foreground/5 border-foreground/20"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-foreground/50">
+                    <label className="text-xs text-foreground/50">
                       tags
                     </label>
                     <Input
@@ -601,12 +601,12 @@ export default function ProjectsPage() {
                         setFormData({ ...formData, tags: e.target.value })
                       }
                       placeholder="react, ai, nextjs (comma separated)"
-                      className="font-mono bg-foreground/5 border-foreground/20"
+                      className="bg-foreground/5 border-foreground/20"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-mono text-xs text-foreground/50">
+                    <label className="text-xs text-foreground/50">
                       description
                     </label>
                     <Textarea
@@ -616,14 +616,14 @@ export default function ProjectsPage() {
                       }
                       placeholder="Tell us about your project..."
                       rows={3}
-                      className="font-mono bg-foreground/5 border-foreground/20 resize-none"
+                      className="bg-foreground/5 border-foreground/20 resize-none"
                     />
                   </div>
 
                   <Button
                     type="submit"
                     disabled={submitting}
-                    className="w-full font-mono bg-foreground text-background hover:bg-foreground/90 border border-foreground"
+                    className="w-full bg-foreground text-background hover:bg-foreground/90 border border-foreground"
                   >
                     {submitting ? (
                       <>

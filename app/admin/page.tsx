@@ -332,7 +332,7 @@ export default function AdminPage() {
           >
             <Shield className="w-12 h-12 text-foreground/20 mx-auto" />
           </motion.div>
-          <p className="font-mono text-sm text-muted-foreground">Loading admin panel...</p>
+          <p className="text-sm text-muted-foreground">Loading admin panel...</p>
         </div>
       </div>
     );
@@ -398,7 +398,7 @@ export default function AdminPage() {
                   </span>
                 )}
               </div>
-              <span className="text-[10px] font-mono">{item.label}</span>
+              <span className="text-[10px]">{item.label}</span>
               {activeSection === item.id && (
                 <motion.div
                   layoutId="activeTab"
@@ -421,7 +421,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <h1 className="font-bold text-lg">Admin</h1>
-                <p className="text-[10px] text-muted-foreground font-mono">Cafe Cursor</p>
+                <p className="text-[10px] text-muted-foreground">Cafe Cursor</p>
               </div>
             </Link>
           </div>
@@ -432,7 +432,7 @@ export default function AdminPage() {
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id as Section)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-mono text-sm transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${
                   activeSection === item.id
                     ? "bg-foreground/10 text-foreground border border-foreground/20"
                     : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
@@ -458,7 +458,7 @@ export default function AdminPage() {
               size="sm"
               onClick={() => fetchAllData(true)}
               disabled={refreshing}
-              className="w-full font-mono text-xs justify-start"
+              className="w-full text-xs justify-start"
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
               Refresh Data
@@ -467,13 +467,13 @@ export default function AdminPage() {
               variant="outline"
               size="sm"
               onClick={exportToCsv}
-              className="w-full font-mono text-xs justify-start"
+              className="w-full text-xs justify-start"
             >
               <Download className="w-4 h-4 mr-2" />
               Export CSV
             </Button>
             <Link href="/">
-              <Button variant="ghost" size="sm" className="w-full font-mono text-xs justify-start text-muted-foreground">
+              <Button variant="ghost" size="sm" className="w-full text-xs justify-start text-muted-foreground">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Site
               </Button>
@@ -495,7 +495,7 @@ export default function AdminPage() {
               >
                 <div>
                   <h2 className="text-2xl lg:text-3xl font-bold mb-1 lg:mb-2">Dashboard Overview</h2>
-                  <p className="text-muted-foreground font-mono text-xs lg:text-sm">Real-time event statistics</p>
+                  <p className="text-muted-foreground text-xs lg:text-sm">Real-time event statistics</p>
                 </div>
 
                 {/* Stats Grid */}
@@ -519,7 +519,7 @@ export default function AdminPage() {
                           <stat.icon className={`w-5 lg:w-6 h-5 lg:h-6 ${stat.color}`} />
                         </div>
                         <p className={`text-2xl lg:text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-                        <p className="text-xs lg:text-sm text-muted-foreground font-mono mt-1">{stat.label}</p>
+                        <p className="text-xs lg:text-sm text-muted-foreground mt-1">{stat.label}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -532,7 +532,7 @@ export default function AdminPage() {
                       <FolderGit2 className="w-5 h-5 text-cyan-400" />
                       <div className="text-center sm:text-left">
                         <p className="text-lg lg:text-xl font-bold">{stats.totalProjects}</p>
-                        <p className="text-[10px] lg:text-xs text-muted-foreground font-mono">Projects</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground">Projects</p>
                       </div>
                     </div>
                   </div>
@@ -541,7 +541,7 @@ export default function AdminPage() {
                       <ImageIcon className="w-5 h-5 text-pink-400" />
                       <div className="text-center sm:text-left">
                         <p className="text-lg lg:text-xl font-bold">{stats.approvedPhotos}</p>
-                        <p className="text-[10px] lg:text-xs text-muted-foreground font-mono">Photos</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground">Photos</p>
                       </div>
                     </div>
                   </div>
@@ -550,7 +550,7 @@ export default function AdminPage() {
                       <Heart className="w-5 h-5 text-red-400" />
                       <div className="text-center sm:text-left">
                         <p className="text-lg lg:text-xl font-bold">{stats.totalLikes}</p>
-                        <p className="text-[10px] lg:text-xs text-muted-foreground font-mono">Likes</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground">Likes</p>
                       </div>
                     </div>
                   </div>
@@ -569,12 +569,12 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <p className="font-semibold text-amber-400">{stats.pendingPhotos} photos awaiting review</p>
-                        <p className="text-sm text-amber-400/70 font-mono">Click to moderate</p>
+                        <p className="text-sm text-amber-400/70">Click to moderate</p>
                       </div>
                     </div>
                     <Button
                       onClick={() => setActiveSection("photos")}
-                      className="bg-amber-500 hover:bg-amber-600 text-black font-mono"
+                      className="bg-amber-500 hover:bg-amber-600 text-black"
                     >
                       Review Now
                     </Button>
@@ -585,7 +585,7 @@ export default function AdminPage() {
                 <div className="rounded-2xl bg-card/40 border border-border/50 overflow-hidden">
                   <div className="p-4 border-b border-border/50 flex items-center gap-2">
                     <Activity className="w-4 h-4 text-muted-foreground" />
-                    <h3 className="font-mono text-sm">Recent Claims</h3>
+                    <h3 className="text-sm">Recent Claims</h3>
                   </div>
                   <div className="divide-y divide-border/30 max-h-64 overflow-y-auto">
                     {claims.slice(0, 5).map((claim) => (
@@ -596,18 +596,18 @@ export default function AdminPage() {
                           </div>
                           <div>
                             <p className="font-medium text-sm">{claim.customerName}</p>
-                            <p className="text-xs text-muted-foreground font-mono">{claim.email}</p>
+                            <p className="text-xs text-muted-foreground">{claim.email}</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-mono text-sm text-primary font-bold">{claim.token}</p>
+                          <p className="text-sm text-primary font-bold">{claim.token}</p>
                           <p className="text-xs text-muted-foreground">{new Date(claim.claimedAt).toLocaleTimeString()}</p>
                         </div>
                       </div>
                     ))}
                     {claims.length === 0 && (
                       <div className="p-8 text-center text-muted-foreground">
-                        <p className="font-mono text-sm">No claims yet</p>
+                        <p className="text-sm">No claims yet</p>
                       </div>
                     )}
                   </div>
@@ -627,7 +627,7 @@ export default function AdminPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <h2 className="text-2xl lg:text-3xl font-bold mb-1">Meal Claims</h2>
-                    <p className="text-muted-foreground font-mono text-xs lg:text-sm">
+                    <p className="text-muted-foreground text-xs lg:text-sm">
                       {stats.claimedMeals} of {stats.totalAttendees} claimed ({stats.claimRate}%)
                     </p>
                   </div>
@@ -637,7 +637,7 @@ export default function AdminPage() {
                       placeholder="Search attendees..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="pl-10 font-mono text-sm bg-card/60 border-border/50"
+                      className="pl-10 text-sm bg-card/60 border-border/50"
                     />
                   </div>
                 </div>
@@ -654,7 +654,7 @@ export default function AdminPage() {
 
                 {/* Mobile Export Button */}
                 <div className="flex lg:hidden justify-end">
-                  <Button variant="outline" size="sm" onClick={exportToCsv} className="font-mono text-xs">
+                  <Button variant="outline" size="sm" onClick={exportToCsv} className="text-xs">
                     <Download className="w-4 h-4 mr-2" />
                     Export CSV
                   </Button>
@@ -662,7 +662,7 @@ export default function AdminPage() {
 
                 {/* Desktop Table View */}
                 <div className="hidden lg:block rounded-2xl bg-card/40 border border-border/50 overflow-hidden">
-                  <div className="grid grid-cols-12 gap-4 p-4 border-b border-border/50 font-mono text-xs text-muted-foreground">
+                  <div className="grid grid-cols-12 gap-4 p-4 border-b border-border/50 text-xs text-muted-foreground">
                     <div className="col-span-3">Attendee</div>
                     <div className="col-span-3">Email</div>
                     <div className="col-span-1">Status</div>
@@ -689,21 +689,21 @@ export default function AdminPage() {
                           <span className="font-medium text-sm truncate">{attendee.name}</span>
                         </div>
                         <div className="col-span-3">
-                          <span className="font-mono text-xs text-muted-foreground truncate block">{attendee.email}</span>
+                          <span className="text-xs text-muted-foreground truncate block">{attendee.email}</span>
                         </div>
                         <div className="col-span-1">
                           {attendee.hasClaimed ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-green-500/10 text-green-400">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-green-500/10 text-green-400">
                               <CheckCircle2 className="w-3 h-3" />
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-orange-500/10 text-orange-400">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-orange-500/10 text-orange-400">
                               <Clock className="w-3 h-3" />
                             </span>
                           )}
                         </div>
                         <div className="col-span-1">
-                          <span className="font-mono text-xs font-bold text-primary">
+                          <span className="text-xs font-bold text-primary">
                             {attendee.claim?.token || "—"}
                           </span>
                         </div>
@@ -762,16 +762,16 @@ export default function AdminPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="font-medium truncate">{attendee.name}</p>
-                            <p className="font-mono text-xs text-muted-foreground truncate">{attendee.email}</p>
+                            <p className="text-xs text-muted-foreground truncate">{attendee.email}</p>
                           </div>
                         </div>
                         {attendee.hasClaimed ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-mono bg-green-500/10 text-green-400 flex-shrink-0">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] bg-green-500/10 text-green-400 flex-shrink-0">
                             <CheckCircle2 className="w-3 h-3" />
                             Claimed
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-mono bg-orange-500/10 text-orange-400 flex-shrink-0">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] bg-orange-500/10 text-orange-400 flex-shrink-0">
                             <Clock className="w-3 h-3" />
                             Pending
                           </span>
@@ -781,7 +781,7 @@ export default function AdminPage() {
                       {attendee.hasClaimed && attendee.claim && (
                         <div className="flex items-center justify-between pt-3 border-t border-border/30">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-sm font-bold text-primary">{attendee.claim.token}</span>
+                            <span className="text-sm font-bold text-primary">{attendee.claim.token}</span>
                             <div className="flex gap-1">
                               {attendee.claim.items.map((item, idx) => (
                                 <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded bg-foreground/5">
@@ -822,7 +822,7 @@ export default function AdminPage() {
               >
                 <div>
                   <h2 className="text-2xl lg:text-3xl font-bold mb-1 lg:mb-2">Photo Moderation</h2>
-                  <p className="text-muted-foreground font-mono text-xs lg:text-sm">
+                  <p className="text-muted-foreground text-xs lg:text-sm">
                     {stats.pendingPhotos} pending • {stats.approvedPhotos} approved • {photos.length} total
                   </p>
                 </div>
@@ -842,14 +842,14 @@ export default function AdminPage() {
                           ) : (
                             <Square className="w-5 h-5" />
                           )}
-                          <span className="font-mono text-xs lg:text-sm">
+                          <span className="text-xs lg:text-sm">
                             {selectedPhotos.size === pendingPhotos.length && pendingPhotos.length > 0
                               ? "Deselect All"
                               : "Select All"}
                           </span>
                         </button>
                         <div className="w-px h-4 bg-amber-500/30" />
-                        <span className="font-mono text-xs text-amber-400/70">
+                        <span className="text-xs text-amber-400/70">
                           {selectedPhotos.size} of {pendingPhotos.length} selected
                         </span>
                       </div>
@@ -860,7 +860,7 @@ export default function AdminPage() {
                             size="sm"
                             onClick={handleBulkApprove}
                             disabled={bulkProcessing}
-                            className="h-8 bg-green-500 hover:bg-green-600 text-white font-mono text-xs"
+                            className="h-8 bg-green-500 hover:bg-green-600 text-white text-xs"
                           >
                             {bulkProcessing ? (
                               <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
@@ -873,7 +873,7 @@ export default function AdminPage() {
                             size="sm"
                             onClick={handleBulkReject}
                             disabled={bulkProcessing}
-                            className="h-8 bg-red-500 hover:bg-red-600 text-white font-mono text-xs"
+                            className="h-8 bg-red-500 hover:bg-red-600 text-white text-xs"
                           >
                             {bulkProcessing ? (
                               <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
@@ -888,7 +888,7 @@ export default function AdminPage() {
 
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                      <h3 className="font-mono text-xs lg:text-sm text-amber-400">Pending Review ({pendingPhotos.length})</h3>
+                      <h3 className="text-xs lg:text-sm text-amber-400">Pending Review ({pendingPhotos.length})</h3>
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                       {pendingPhotos.map((photo) => (
@@ -924,7 +924,7 @@ export default function AdminPage() {
                           </div>
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                             <div className="absolute bottom-0 left-0 right-0 p-4">
-                              <p className="font-mono text-xs text-white mb-1">{photo.uploadedBy}</p>
+                              <p className="text-xs text-white mb-1">{photo.uploadedBy}</p>
                               {photo.caption && <p className="text-[10px] text-white/70 truncate">{photo.caption}</p>}
                               <div className="flex gap-2 mt-3">
                                 <Button
@@ -962,11 +962,11 @@ export default function AdminPage() {
 
                 {/* All Photos */}
                 <div className="space-y-3 lg:space-y-4">
-                  <h3 className="font-mono text-xs lg:text-sm text-muted-foreground">All Photos</h3>
+                  <h3 className="text-xs lg:text-sm text-muted-foreground">All Photos</h3>
                   {photos.length === 0 ? (
                     <div className="p-8 lg:p-12 text-center rounded-2xl bg-card/40 border border-border/50">
                       <Camera className="w-10 lg:w-12 h-10 lg:h-12 mx-auto text-muted-foreground/30 mb-4" />
-                      <p className="font-mono text-xs lg:text-sm text-muted-foreground">No photos uploaded yet</p>
+                      <p className="text-xs lg:text-sm text-muted-foreground">No photos uploaded yet</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3">
@@ -981,7 +981,7 @@ export default function AdminPage() {
                             <img src={photo.url} alt="" className="w-full h-full object-cover" loading="lazy" />
                           </div>
                           <div className="absolute top-1 left-1">
-                            <span className={`px-1.5 py-0.5 rounded text-[8px] font-mono font-bold ${
+                            <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold ${
                               photo.status === "approved" ? "bg-green-500 text-black" : "bg-red-500 text-white"
                             }`}>
                               {photo.status.toUpperCase()}
@@ -1012,7 +1012,7 @@ export default function AdminPage() {
               >
                 <div>
                   <h2 className="text-2xl lg:text-3xl font-bold mb-1 lg:mb-2">Shared Projects</h2>
-                  <p className="text-muted-foreground font-mono text-xs lg:text-sm">
+                  <p className="text-muted-foreground text-xs lg:text-sm">
                     {stats.totalProjects} projects • {stats.totalLikes} total likes
                   </p>
                 </div>
@@ -1020,7 +1020,7 @@ export default function AdminPage() {
                 {projects.length === 0 ? (
                   <div className="p-8 lg:p-12 text-center rounded-2xl bg-card/40 border border-border/50">
                     <FolderGit2 className="w-10 lg:w-12 h-10 lg:h-12 mx-auto text-muted-foreground/30 mb-4" />
-                    <p className="font-mono text-xs lg:text-sm text-muted-foreground">No projects shared yet</p>
+                    <p className="text-xs lg:text-sm text-muted-foreground">No projects shared yet</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
@@ -1035,11 +1035,11 @@ export default function AdminPage() {
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h4 className="font-bold text-lg">{project.title}</h4>
-                              <p className="text-sm text-muted-foreground font-mono">by {project.author}</p>
+                              <p className="text-sm text-muted-foreground">by {project.author}</p>
                             </div>
                             <div className="flex items-center gap-1 text-red-400">
                               <Heart className="w-4 h-4" />
-                              <span className="font-mono text-sm">{project.likes}</span>
+                              <span className="text-sm">{project.likes}</span>
                             </div>
                           </div>
                           {project.description && (
@@ -1112,7 +1112,7 @@ export default function AdminPage() {
                 className="w-full h-full object-contain rounded-lg"
               />
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent rounded-b-lg">
-                <p className="font-mono text-white font-medium mb-1">{previewPhoto.uploadedBy}</p>
+                <p className="text-white font-medium mb-1">{previewPhoto.uploadedBy}</p>
                 {previewPhoto.caption && <p className="text-sm text-white/70 mb-4">{previewPhoto.caption}</p>}
                 {previewPhoto.status === "pending" && (
                   <div className="flex gap-3">

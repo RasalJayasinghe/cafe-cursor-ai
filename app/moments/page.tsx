@@ -108,7 +108,7 @@ function PinterestCard({ photo, index, onLike, onOpen }: {
                   </span>
                 </div>
                 {photo.caption && (
-                  <p className="text-white/80 text-xs line-clamp-2 font-mono">
+                  <p className="text-white/80 text-xs line-clamp-2">
                     {photo.caption}
                   </p>
                 )}
@@ -347,7 +347,7 @@ export default function CursorMomentsPage() {
             <Button
               variant="ghost"
               size="sm"
-              className="font-mono text-xs text-muted-foreground hover:text-foreground h-7 sm:h-8 px-2 sm:px-3"
+              className="text-xs text-muted-foreground hover:text-foreground h-7 sm:h-8 px-2 sm:px-3"
             >
               <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               <span className="text-[10px] sm:text-xs">back to cafe</span>
@@ -363,7 +363,7 @@ export default function CursorMomentsPage() {
                 className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-foreground/10 border border-foreground/20 mb-1.5 sm:mb-4"
               >
                 <Camera className="w-2 h-2 sm:w-3 sm:h-3 text-foreground/70" />
-                <span className="text-[9px] sm:text-xs font-mono text-foreground/70">live memories</span>
+                <span className="text-[9px] sm:text-xs text-foreground/70">live memories</span>
               </motion.div>
 
               {/* Title */}
@@ -382,7 +382,7 @@ export default function CursorMomentsPage() {
 
               {/* Stats */}
               <motion.div
-                className="flex items-center gap-2 sm:gap-4 font-mono text-[10px] sm:text-sm"
+                className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-sm"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -408,13 +408,13 @@ export default function CursorMomentsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={fetchPhotos}
-                className="font-mono text-xs border border-foreground/10 h-7 sm:h-8 w-7 sm:w-8 p-0"
+                className="text-xs border border-foreground/10 h-7 sm:h-8 w-7 sm:w-8 p-0"
               >
                 <RefreshCw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </Button>
               <Button
                 size="sm"
-                className="flex-1 sm:flex-none font-mono text-[10px] sm:text-xs bg-foreground text-background hover:bg-foreground/90 border border-foreground shadow-lg shadow-foreground/25 h-7 sm:h-8 px-3 sm:px-4"
+                className="flex-1 sm:flex-none text-[10px] sm:text-xs bg-foreground text-background hover:bg-foreground/90 border border-foreground shadow-lg shadow-foreground/25 h-7 sm:h-8 px-3 sm:px-4"
                 onClick={() => setShowUploadModal(true)}
               >
                 <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 sm:mr-2" />
@@ -455,15 +455,15 @@ export default function CursorMomentsPage() {
             >
               <Camera className="w-12 h-12 text-foreground/50" />
             </motion.div>
-            <h3 className="font-mono text-2xl text-foreground/80 mb-2">
+            <h3 className="text-2xl text-foreground/80 mb-2">
               no vibes captured yet
             </h3>
-            <p className="font-mono text-sm text-muted-foreground/50 mb-6 max-w-sm mx-auto">
+            <p className="text-sm text-muted-foreground/50 mb-6 max-w-sm mx-auto">
               be the first to share a moment from cafe cursor and start the gallery!
             </p>
             <Button
               onClick={() => setShowUploadModal(true)}
-              className="font-mono bg-foreground text-background hover:bg-foreground/90 border border-foreground"
+              className="bg-foreground text-background hover:bg-foreground/90 border border-foreground"
             >
               <Camera className="w-4 h-4 mr-2" />
               drop the first pic
@@ -524,16 +524,16 @@ export default function CursorMomentsPage() {
                         <User className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <span className="font-mono font-bold text-white block">
+                        <span className="font-bold text-white block">
                           {lightboxPhoto.uploadedBy}
                         </span>
-                        <span className="font-mono text-xs text-white/50">
+                        <span className="text-xs text-white/50">
                           {new Date(lightboxPhoto.uploadedAt).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
                     {lightboxPhoto.caption && (
-                      <p className="font-mono text-sm text-white/80 max-w-md">
+                      <p className="text-sm text-white/80 max-w-md">
                         {lightboxPhoto.caption}
                       </p>
                     )}
@@ -545,7 +545,7 @@ export default function CursorMomentsPage() {
                     className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-red-500/80 border border-white/20 hover:border-red-500/50 transition-all backdrop-blur-sm"
                   >
                     <Heart className="w-5 h-5 text-white" />
-                    <span className="font-mono text-white font-bold">{lightboxPhoto.likes}</span>
+                    <span className="text-white font-bold">{lightboxPhoto.likes}</span>
                   </motion.button>
                 </div>
               </motion.div>
@@ -583,8 +583,8 @@ export default function CursorMomentsPage() {
                       <Camera className="w-5 h-5 text-foreground" />
                     </div>
                     <div>
-                    <h3 className="font-mono text-sm font-bold">share a moment</h3>
-                      <p className="font-mono text-[10px] text-muted-foreground">capture the vibe</p>
+                    <h3 className="text-sm font-bold">share a moment</h3>
+                      <p className="text-[10px] text-muted-foreground">capture the vibe</p>
                     </div>
                   </div>
                   <button
@@ -624,9 +624,9 @@ export default function CursorMomentsPage() {
                           className="w-full h-52 object-cover rounded-xl"
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-xl">
-                          <p className="font-mono text-sm text-white">tap to change</p>
+                          <p className="text-sm text-white">tap to change</p>
                         </div>
-                        <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-green-500/80 text-white text-[10px] font-mono flex items-center gap-1">
+                        <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-green-500/80 text-white text-[10px] flex items-center gap-1">
                           <Check className="w-3 h-3" />
                           ready
                         </div>
@@ -639,10 +639,10 @@ export default function CursorMomentsPage() {
                         >
                           <ImagePlus className="w-12 h-12 mx-auto text-foreground/50 mb-3" />
                         </motion.div>
-                        <p className="font-mono text-sm text-foreground/70">
+                        <p className="text-sm text-foreground/70">
                           tap to add your pic
                         </p>
-                        <p className="font-mono text-xs text-muted-foreground/50 mt-1">
+                        <p className="text-xs text-muted-foreground/50 mt-1">
                           max 10MB • jpg, png, gif
                         </p>
                       </div>
@@ -651,7 +651,7 @@ export default function CursorMomentsPage() {
 
                   {/* Name input */}
                   <div className="space-y-2">
-                    <label className="font-mono text-xs text-foreground/70 uppercase tracking-wider">
+                    <label className="text-xs text-foreground/70 uppercase tracking-wider">
                       who dis? <span className="text-red-400">*</span>
                     </label>
                     <div className="relative">
@@ -662,14 +662,14 @@ export default function CursorMomentsPage() {
                           setUploadForm({ ...uploadForm, name: e.target.value })
                         }
                         placeholder="your name"
-                        className="font-mono bg-foreground/5 border-foreground/20 pl-10 rounded-xl"
+                        className="bg-foreground/5 border-foreground/20 pl-10 rounded-xl"
                       />
                     </div>
                   </div>
 
                   {/* Caption input */}
                   <div className="space-y-2">
-                    <label className="font-mono text-xs text-foreground/60 uppercase tracking-wider">
+                    <label className="text-xs text-foreground/60 uppercase tracking-wider">
                       caption the moment
                     </label>
                     <div className="relative">
@@ -684,11 +684,11 @@ export default function CursorMomentsPage() {
                         }
                         placeholder="what's the vibe?"
                         rows={2}
-                        className="w-full font-mono text-sm bg-foreground/5 border border-foreground/20 rounded-xl pl-10 pr-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-pink-500/30"
+                        className="w-full text-sm bg-foreground/5 border border-foreground/20 rounded-xl pl-10 pr-3 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-pink-500/30"
                         maxLength={200}
                       />
                     </div>
-                    <p className="font-mono text-[10px] text-muted-foreground/50 text-right">
+                    <p className="text-[10px] text-muted-foreground/50 text-right">
                       {uploadForm.caption.length}/200
                     </p>
                   </div>
@@ -696,7 +696,7 @@ export default function CursorMomentsPage() {
                   {/* Info box */}
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
                     <Clock className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                    <p className="font-mono text-xs text-amber-300/80">
+                    <p className="text-xs text-amber-300/80">
                       heads up! your photo goes through a quick admin check before showing up in the gallery
                     </p>
                   </div>
@@ -705,7 +705,7 @@ export default function CursorMomentsPage() {
                   <Button
                     onClick={handleUpload}
                     disabled={uploading || !selectedFile || !uploadForm.name.trim()}
-                    className="w-full font-mono bg-foreground text-background hover:bg-foreground/90 border border-foreground rounded-xl h-12 text-sm"
+                    className="w-full bg-foreground text-background hover:bg-foreground/90 border border-foreground rounded-xl h-12 text-sm"
                   >
                     {uploading ? (
                       <>

@@ -91,7 +91,7 @@ export function Dashboard() {
                     <div className="flex-1 grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground text-xs">Token</p>
-                        <p className="font-mono font-semibold text-foreground">{token.token}</p>
+                        <p className="font-semibold text-foreground">{token.token}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground text-xs">Name</p>

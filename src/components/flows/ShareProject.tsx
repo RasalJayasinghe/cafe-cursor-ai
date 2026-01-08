@@ -150,7 +150,7 @@ export function ShareProject() {
                       <p className="text-sm text-muted-foreground truncate">
                         {project.personName}
                       </p>
-                      <p className="text-xs text-primary font-mono truncate mt-1">
+                      <p className="text-xs text-primary truncate mt-1">
                         {project.shortLink}
                       </p>
                     </div>

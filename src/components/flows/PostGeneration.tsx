@@ -156,7 +156,7 @@ export function PostGeneration() {
     <div className="space-y-6" aria-live="polite">
       {/* Platform Selection */}
       <div className="space-y-2">
-        <Label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">where you posting? 📱</Label>
+        <Label className="text-xs text-muted-foreground uppercase tracking-wider">where you posting? 📱</Label>
         <Select
           value={platform}
           onValueChange={(v) => setPlatform(v as Platform)}
@@ -182,7 +182,7 @@ export function PostGeneration() {
 
       {/* Caption Input */}
       <div className="space-y-2">
-        <Label htmlFor="caption" className="text-xs font-mono text-muted-foreground uppercase tracking-wider">drop your thoughts ✍️</Label>
+        <Label htmlFor="caption" className="text-xs text-muted-foreground uppercase tracking-wider">drop your thoughts ✍️</Label>
         <Textarea
           id="caption"
           placeholder="what's on your mind? spill the tea..."
@@ -194,11 +194,11 @@ export function PostGeneration() {
 
       {/* Image Upload */}
       <div className="space-y-2">
-        <Label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">add a pic (optional) 📸</Label>
+        <Label className="text-xs text-muted-foreground uppercase tracking-wider">add a pic (optional) 📸</Label>
         <label className="block">
           <div className="flex items-center gap-2 px-4 py-3 border border-foreground/20 bg-foreground/5 rounded-lg cursor-pointer hover:bg-foreground/10 transition-colors">
             <Upload className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground font-mono">
+            <span className="text-sm text-muted-foreground">
               {imageName || "tap to upload something fire 🔥"}
             </span>
           </div>
@@ -212,7 +212,7 @@ export function PostGeneration() {
         {imageName && (
           <button
             onClick={() => setImageName(null)}
-            className="text-sm text-muted-foreground hover:text-foreground font-mono"
+            className="text-sm text-muted-foreground hover:text-foreground"
           >
             ❌ remove
           </button>
@@ -223,7 +223,7 @@ export function PostGeneration() {
       {!generatedTemplate && (
         <Button
           onClick={handleGenerate}
-          className="w-full bg-foreground text-background hover:bg-foreground/90 font-mono"
+          className="w-full bg-foreground text-background hover:bg-foreground/90"
           disabled={!caption.trim()}
         >
           ✨ make it happen
@@ -241,7 +241,7 @@ export function PostGeneration() {
           >
             <div className="p-4 bg-foreground/5 border border-foreground/10 rounded-xl">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono font-medium text-foreground/70 flex items-center gap-2 uppercase tracking-wider">
+                <span className="text-xs font-medium text-foreground/70 flex items-center gap-2 uppercase tracking-wider">
                   {platform === "x" ? (
                     <Twitter className="w-4 h-4" />
                   ) : (
@@ -250,7 +250,7 @@ export function PostGeneration() {
                   preview looks fire 🔥
                 </span>
               </div>
-              <pre className="whitespace-pre-wrap text-sm text-foreground font-mono leading-relaxed">
+              <pre className="whitespace-pre-wrap text-sm text-foreground leading-relaxed">
                 {generatedTemplate}
               </pre>
             </div>
@@ -260,17 +260,17 @@ export function PostGeneration() {
               <div className="flex gap-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
                 <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-100/80">
-                  <p className="font-mono font-medium mb-1 text-blue-400">quick linkedin hack:</p>
-                  <ol className="list-decimal list-inside space-y-1 text-blue-200/70 font-mono text-xs">
+                  <p className="font-medium mb-1 text-blue-400">quick linkedin hack:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-blue-200/70 text-xs">
                     <li>hit "share to linkedin" below</li>
                     <li>we'll copy it for you automatically 😎</li>
                     <li>
                       just{" "}
-                      <kbd className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded text-xs font-mono">
+                      <kbd className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded text-xs">
                         Ctrl+V
                       </kbd>{" "}
                       or{" "}
-                      <kbd className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded text-xs font-mono">
+                      <kbd className="px-1.5 py-0.5 bg-blue-500/20 border border-blue-500/30 rounded text-xs">
                         ⌘+V
                       </kbd>{" "}
                       to paste
@@ -284,7 +284,7 @@ export function PostGeneration() {
               <Button
                 onClick={handleCopy}
                 variant="outline"
-                className="flex-1 gap-2 border-foreground/20 hover:bg-foreground/10 font-mono text-xs"
+                className="flex-1 gap-2 border-foreground/20 hover:bg-foreground/10 text-xs"
               >
                 {copied ? (
                   <Check className="w-4 h-4" />
@@ -297,7 +297,7 @@ export function PostGeneration() {
               {platform === "x" ? (
                 <Button
                   onClick={handleShareToTwitter}
-                  className="flex-1 gap-2 bg-black hover:bg-black/90 font-mono text-xs"
+                  className="flex-1 gap-2 bg-black hover:bg-black/90 text-xs"
                 >
                   <Twitter className="w-4 h-4" />
                   post to X
@@ -305,7 +305,7 @@ export function PostGeneration() {
               ) : (
                 <Button
                   onClick={handleShareToLinkedIn}
-                  className="flex-1 gap-2 bg-[#0A66C2] hover:bg-[#0A66C2]/90 font-mono text-xs"
+                  className="flex-1 gap-2 bg-[#0A66C2] hover:bg-[#0A66C2]/90 text-xs"
                 >
                   <Linkedin className="w-4 h-4" />
                   share to linkedin
@@ -315,7 +315,7 @@ export function PostGeneration() {
               <Button 
                 variant="outline" 
                 onClick={handleReset}
-                className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs"
+                className="border-foreground/20 hover:bg-foreground/10 text-xs"
               >
                 🔄 new
               </Button>

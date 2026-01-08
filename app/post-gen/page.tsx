@@ -314,11 +314,11 @@ function CoffeeCupLogo({ vibe }: { vibe: Vibe }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: config.primary }}>
+        <span className="text-[10px] uppercase tracking-[0.3em]" style={{ color: config.primary }}>
           cafe cursor
         </span>
         <motion.span 
-          className="font-mono text-sm"
+          className="text-sm"
           style={{ color: config.primary }}
           animate={{ opacity: cursorVisible ? 1 : 0 }}
           transition={{ duration: 0.1 }}
@@ -541,7 +541,7 @@ export default function PostGeneration() {
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-8">
           {/* Back button */}
           <Link href="/" className="inline-block mb-2 sm:mb-6">
-            <button className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-mono text-muted-foreground hover:text-foreground transition-colors h-7 sm:h-8 group px-2 sm:px-3">
+            <button className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground hover:text-foreground transition-colors h-7 sm:h-8 group px-2 sm:px-3">
               <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 group-hover:-translate-x-1 transition-transform" />
               back to cafe
             </button>
@@ -556,7 +556,7 @@ export default function PostGeneration() {
                 className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-foreground/10 border border-foreground/20 mb-1.5 sm:mb-4"
               >
                 <Sparkles className="w-2 h-2 sm:w-3 sm:h-3 text-foreground/70" />
-                <span className="text-[9px] sm:text-xs font-mono text-foreground/70">caption generator</span>
+                <span className="text-[9px] sm:text-xs text-foreground/70">caption generator</span>
               </motion.div>
 
               {/* Title */}
@@ -575,7 +575,7 @@ export default function PostGeneration() {
 
               {/* Subtitle */}
               <motion.p 
-                className="font-mono text-[10px] sm:text-sm text-muted-foreground max-w-md"
+                className="text-[10px] sm:text-sm text-muted-foreground max-w-md"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -608,7 +608,7 @@ export default function PostGeneration() {
           >
             <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
               <Coffee className="w-4 h-4 sm:w-5 sm:h-5 text-foreground/60" />
-              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">Brew your post</span>
+              <span className="text-[10px] sm:text-xs text-foreground/40 uppercase tracking-widest">Brew your post</span>
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
               What's your <span className="text-foreground/60">vibe</span>?
@@ -626,7 +626,7 @@ export default function PostGeneration() {
               <button
                 key={v}
                 onClick={() => handleVibeChange(v)}
-                className={`relative px-3 sm:px-5 py-2 sm:py-2.5 rounded-full font-mono text-xs sm:text-sm transition-all duration-300 ${
+                className={`relative px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm transition-all duration-300 ${
                   vibe === v
                     ? 'bg-foreground text-background'
                     : 'bg-transparent border border-foreground/20 text-foreground/60 hover:border-foreground/40 hover:text-foreground'
@@ -679,13 +679,13 @@ export default function PostGeneration() {
                 </button>
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/5 hover:bg-foreground/10 rounded-lg transition-colors text-xs sm:text-sm font-mono"
+                  className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/5 hover:bg-foreground/10 rounded-lg transition-colors text-xs sm:text-sm"
                 >
                   {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   {copied ? 'copied!' : 'copy'}
                 </button>
               </div>
-              <span className={`font-mono text-[10px] sm:text-xs ${isOverLimit ? 'text-red-400' : 'text-foreground/30'}`}>
+              <span className={`text-[10px] sm:text-xs ${isOverLimit ? 'text-red-400' : 'text-foreground/30'}`}>
                 {charCount}/{MAX_CHARS}
               </span>
             </div>
@@ -727,7 +727,7 @@ export default function PostGeneration() {
           >
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
               <Sparkles className="w-3 h-3" style={{ color: currentScreenVibe.accent, opacity: 0.6 }} />
-              <span className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest">Preview</span>
+              <span className="text-[10px] sm:text-xs text-foreground/40 uppercase tracking-widest">Preview</span>
             </div>
 
             {/* Terminal-style preview */}
@@ -743,11 +743,11 @@ export default function PostGeneration() {
                 <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style={{ backgroundColor: currentScreenVibe.accent, opacity: 0.4 }} />
                 <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-foreground/20" />
                 <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-foreground/20" />
-                <span className="ml-1 sm:ml-2 text-[8px] sm:text-[10px] font-mono text-foreground/30">your-post.txt</span>
+                <span className="ml-1 sm:ml-2 text-[8px] sm:text-[10px] text-foreground/30">your-post.txt</span>
               </div>
               
               {/* Content */}
-              <div className="p-3 sm:p-4 min-h-[120px] sm:min-h-[200px] font-mono text-xs sm:text-sm leading-relaxed">
+              <div className="p-3 sm:p-4 min-h-[120px] sm:min-h-[200px] text-xs sm:text-sm leading-relaxed">
                 <span className="text-foreground/80">{displayedText}</span>
                 <span 
                   className={`${cursorVisible ? 'opacity-100' : 'opacity-0'} transition-opacity`}
@@ -760,10 +760,10 @@ export default function PostGeneration() {
                 className="px-3 sm:px-4 py-1.5 sm:py-2 bg-foreground/[0.02] flex items-center justify-between transition-colors duration-500"
                 style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: currentScreenVibe.border }}
               >
-                <span className="text-[8px] sm:text-[10px] font-mono" style={{ color: currentScreenVibe.accent, opacity: 0.6 }}>
+                <span className="text-[8px] sm:text-[10px]" style={{ color: currentScreenVibe.accent, opacity: 0.6 }}>
                   {vibeEmoji[vibe]} {vibe}
                 </span>
-                <span className="text-[8px] sm:text-[10px] font-mono text-foreground/30">
+                <span className="text-[8px] sm:text-[10px] text-foreground/30">
                   {charCount} chars
                 </span>
               </div>
@@ -777,12 +777,12 @@ export default function PostGeneration() {
             transition={{ delay: 0.4 }}
             className="mt-4 sm:mt-8 space-y-2 sm:space-y-3"
           >
-            <p className="text-[10px] sm:text-xs font-mono text-foreground/40 uppercase tracking-widest mb-2 sm:mb-4">Share</p>
+            <p className="text-[10px] sm:text-xs text-foreground/40 uppercase tracking-widest mb-2 sm:mb-4">Share</p>
             
             <div className="flex gap-2 sm:flex-col sm:gap-3">
               <button
                 onClick={handleShareX}
-                className="flex-1 sm:flex-none w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-foreground text-background rounded-lg sm:rounded-xl font-mono text-xs sm:text-sm hover:bg-foreground/90 transition-colors group"
+                className="flex-1 sm:flex-none w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-foreground text-background rounded-lg sm:rounded-xl text-xs sm:text-sm hover:bg-foreground/90 transition-colors group"
               >
                 <Twitter className="w-4 h-4" />
                 <span className="hidden sm:inline">Post to X</span>
@@ -792,7 +792,7 @@ export default function PostGeneration() {
 
               <button
                 onClick={handleShareLinkedIn}
-                className="flex-1 sm:flex-none w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-transparent border border-foreground/20 text-foreground rounded-lg sm:rounded-xl font-mono text-xs sm:text-sm hover:bg-foreground/5 hover:border-foreground/30 transition-all"
+                className="flex-1 sm:flex-none w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-transparent border border-foreground/20 text-foreground rounded-lg sm:rounded-xl text-xs sm:text-sm hover:bg-foreground/5 hover:border-foreground/30 transition-all"
               >
                 <Linkedin className="w-4 h-4" />
                 <span className="hidden sm:inline">Share on LinkedIn</span>
@@ -808,7 +808,7 @@ export default function PostGeneration() {
             transition={{ delay: 0.5 }}
             className="mt-4 sm:mt-8 pt-3 sm:pt-4 border-t border-foreground/10"
           >
-            <p className="text-[8px] sm:text-[10px] font-mono text-foreground/20 text-center">
+            <p className="text-[8px] sm:text-[10px] text-foreground/20 text-center">
               brewed with ☕ at cafe cursor, colombo
             </p>
           </motion.div>

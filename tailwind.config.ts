@@ -15,6 +15,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ["CursorGothic", "system-ui", "sans-serif"],
+        mono: ["CursorGothic", "system-ui", "sans-serif"],
+        serif: ["CursorGothic", "system-ui", "sans-serif"],
         gothic: ["CursorGothic", "system-ui", "sans-serif"],
       },
       colors: {

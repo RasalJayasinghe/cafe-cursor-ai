@@ -28,7 +28,7 @@ export function Footer() {
               ease: 'linear',
               delay: i * 0.8,
             }}
-            className="absolute whitespace-nowrap font-mono text-xs text-foreground/50"
+            className="absolute whitespace-nowrap text-xs text-foreground/50"
             style={{ top: `${10 + i * 10}%` }}
           >
             {binary.repeat(10)}
@@ -50,7 +50,7 @@ export function Footer() {
             viewport={{ once: true }}
             className="flex items-center gap-3"
           >
-            <div className="flex items-center gap-2 font-mono text-sm">
+            <div className="flex items-center gap-2 text-sm">
               <span className="text-foreground/40">&gt;</span>
               <span className="text-foreground/70">2026</span>
               <span className="text-foreground font-medium">Cafe Cursor</span>
@@ -88,7 +88,7 @@ export function Footer() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="font-mono text-sm flex items-center gap-2"
+            className="text-sm flex items-center gap-2"
           >
             <span className="text-foreground/40">hosted_by:</span>
             <a 

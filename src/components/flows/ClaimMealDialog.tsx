@@ -93,14 +93,14 @@ function CodeLine({
 
       {/* Line number - highlighted when selected */}
       <span
-        className={`font-mono text-sm w-6 text-right select-none relative z-10 ${
+        className={`text-sm w-6 text-right select-none relative z-10 ${
           selected ? "text-foreground/80" : "text-muted-foreground/50"
         }`}
       >
         {lineNumber}
       </span>
 
-      <div className="flex-1 font-mono text-sm relative z-10">{children}</div>
+      <div className="flex-1 text-sm relative z-10">{children}</div>
 
       {/* Selected indicator */}
       {selected && (
@@ -109,7 +109,7 @@ function CodeLine({
           animate={{ scale: 1, opacity: 1 }}
           className="relative z-10 flex items-center gap-1"
         >
-          <span className="text-green-400 text-xs font-mono">selected</span>
+          <span className="text-green-400 text-xs">selected</span>
           <span className="text-green-400">✓</span>
         </motion.div>
       )}
@@ -374,16 +374,16 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                         <div className="w-3 h-3 rounded-full bg-green-500/70" />
                       </div>
                     </div>
-                    <span className="font-mono text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       ~/cafe-cursor/menu.yml
                     </span>
-                    <span className="font-mono text-xs text-muted-foreground/50">
+                    <span className="text-xs text-muted-foreground/50">
                       yml
                     </span>
                   </div>
 
                   {/* Code content */}
-                  <div className="p-2 sm:p-4 font-mono text-xs sm:text-sm max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
+                  <div className="p-2 sm:p-4 text-xs sm:text-sm max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
                     {/* Command line */}
                     <div className="text-muted-foreground/60 text-[10px] sm:text-xs mb-3 sm:mb-4 px-2">
                       # Select one meal and one drink to complete your order
@@ -493,7 +493,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     <Button
                       onClick={handleConfirmOrder}
                       disabled={!selectedMeal || !selectedDrink || isSubmitting}
-                      className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-mono font-semibold disabled:opacity-50"
+                      className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-semibold disabled:opacity-50"
                     >
                       <span className="flex items-center gap-2">
                         {isSubmitting ? (
@@ -533,7 +533,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     transition={{ delay: 0.1 }}
                     className="text-center mb-6"
                   >
-                    <span className="font-mono text-xs text-muted-foreground/60 tracking-widest uppercase">
+                    <span className="text-xs text-muted-foreground/60 tracking-widest uppercase">
                       Cafe Cursor • Colombo
                     </span>
                   </motion.div>
@@ -570,7 +570,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
 
                       {/* Top section - Token */}
                       <div className="p-6 pb-10 text-center">
-                        <span className="font-mono text-xs text-muted-foreground/50 tracking-wider">
+                        <span className="text-xs text-muted-foreground/50 tracking-wider">
                           YOUR TOKEN
                         </span>
 
@@ -592,7 +592,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                               transition={{ duration: 1.5, repeat: Infinity }}
                               className="absolute inset-0 bg-foreground/20 blur-2xl rounded-full"
                             />
-                            <span className="relative font-mono text-4xl md:text-5xl font-bold tracking-[0.2em] text-foreground">
+                            <span className="relative text-4xl md:text-5xl font-bold tracking-[0.2em] text-foreground">
                               {orderToken || "CC-0000"}
                             </span>
                           </div>
@@ -602,7 +602,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.6 }}
-                          className="text-muted-foreground/60 text-sm font-mono"
+                          className="text-muted-foreground/60 text-sm"
                         >
                           Show this token to claim your meal
                         </motion.p>
@@ -610,7 +610,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
 
                       {/* Bottom section - Order details */}
                       <div className="p-6 pt-10 bg-foreground/5">
-                        <div className="font-mono text-xs space-y-2">
+                        <div className="text-xs space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="text-muted-foreground/50">
                               MEAL
@@ -663,7 +663,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     <Button
                       onClick={handleClose}
                       variant="outline"
-                      className="border-foreground/20 hover:bg-foreground/10 font-mono text-xs tracking-wider"
+                      className="border-foreground/20 hover:bg-foreground/10 text-xs tracking-wider"
                     >
                       <Sparkles className="w-3 h-3 mr-2" />
                       DONE
@@ -696,7 +696,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     </motion.div>
                     
                     <motion.h3 
-                      className="font-mono text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-2 sm:mb-3"
+                      className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent mb-2 sm:mb-3"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
@@ -705,7 +705,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     </motion.h3>
                     
                     <motion.p 
-                      className="text-foreground/60 text-sm font-mono mb-2"
+                      className="text-foreground/60 text-sm mb-2"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3 }}
@@ -719,10 +719,10 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 }}
                     >
-                      <p className="text-muted-foreground/70 text-sm font-mono leading-relaxed">
+                      <p className="text-muted-foreground/70 text-sm leading-relaxed">
                         ngl we don't have you on the list 💀
                       </p>
-                      <p className="text-muted-foreground/50 text-xs font-mono mt-2">
+                      <p className="text-muted-foreground/50 text-xs mt-2">
                         double check that email or slide into registration first
                       </p>
                     </motion.div>
@@ -738,7 +738,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                           setEmail("");
                           setErrorMessage("");
                         }}
-                        className="bg-foreground text-background hover:bg-foreground/90 font-mono text-xs tracking-wider"
+                        className="bg-foreground text-background hover:bg-foreground/90 text-xs tracking-wider"
                       >
                         <span className="mr-2">🔄</span> lemme try again
                       </Button>
@@ -771,7 +771,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     </motion.div>
                     
                     <motion.h3 
-                      className="font-mono text-xl sm:text-2xl font-bold bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent mb-1 sm:mb-2"
+                      className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent mb-1 sm:mb-2"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
@@ -780,7 +780,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     </motion.h3>
                     
                     <motion.p 
-                      className="text-foreground/60 text-sm font-mono mb-1"
+                      className="text-foreground/60 text-sm mb-1"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3 }}
@@ -789,7 +789,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     </motion.p>
                     
                     <motion.p 
-                      className="text-muted-foreground/50 text-xs font-mono mb-6"
+                      className="text-muted-foreground/50 text-xs mb-6"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
@@ -804,11 +804,11 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
                     >
-                      <span className="font-mono text-xs text-orange-400/70 tracking-wider uppercase">
+                      <span className="text-xs text-orange-400/70 tracking-wider uppercase">
                         your token still valid tho
                       </span>
                       <motion.div 
-                        className="font-mono text-3xl font-bold tracking-[0.15em] text-orange-400 mt-2"
+                        className="text-3xl font-bold tracking-[0.15em] text-orange-400 mt-2"
                         animate={{ opacity: [0.7, 1, 0.7] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       >
@@ -816,9 +816,9 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                       </motion.div>
                       
                       <div className="mt-4 space-y-1.5 text-left">
-                        <p className="font-mono text-xs text-muted-foreground/50 uppercase tracking-wider">what u ordered:</p>
+                        <p className="text-xs text-muted-foreground/50 uppercase tracking-wider">what u ordered:</p>
                         {existingOrder.items.map((item: any, idx: number) => (
-                          <p key={idx} className="font-mono text-sm text-foreground/70 flex items-center gap-2">
+                          <p key={idx} className="text-sm text-foreground/70 flex items-center gap-2">
                             <span className="text-green-400">✓</span> {item.name}
                           </p>
                         ))}
@@ -826,7 +826,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     </motion.div>
 
                     <motion.p 
-                      className="text-muted-foreground/50 text-xs font-mono mb-4 max-w-sm mx-auto"
+                      className="text-muted-foreground/50 text-xs mb-4 max-w-sm mx-auto"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.6 }}
@@ -841,7 +841,7 @@ export function ClaimMealDialog({ open, onOpenChange }: ClaimMealDialogProps) {
                     >
                       <Button
                         onClick={handleClose}
-                        className="bg-foreground text-background hover:bg-foreground/90 font-mono text-xs tracking-wider"
+                        className="bg-foreground text-background hover:bg-foreground/90 text-xs tracking-wider"
                       >
                         <Sparkles className="w-3 h-3 mr-2" />
                         bet, i'm out

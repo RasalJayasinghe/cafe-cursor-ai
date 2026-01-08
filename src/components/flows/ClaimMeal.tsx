@@ -321,7 +321,7 @@ export function ClaimMeal() {
 
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">Your Token</p>
-                <p className="text-4xl font-mono font-bold text-green-700 dark:text-green-400 tracking-widest">
+                <p className="text-4xl font-bold text-green-700 dark:text-green-400 tracking-widest">
                   {orderToken}
                 </p>
               </div>
@@ -376,7 +376,7 @@ export function ClaimMeal() {
 
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">Your Token</p>
-                <p className="text-3xl font-mono font-bold text-orange-700 dark:text-orange-400 tracking-widest">
+                <p className="text-3xl font-bold text-orange-700 dark:text-orange-400 tracking-widest">
                   {existingOrder.token}
                 </p>
               </div>

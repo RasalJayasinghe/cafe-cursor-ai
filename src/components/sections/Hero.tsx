@@ -123,7 +123,7 @@ export function Hero() {
             }
           >
             {/* Terminal command */}
-            <div className="flex items-center gap-1 font-mono text-sm text-foreground/50 group-hover:text-foreground/70 transition-colors">
+            <div className="flex items-center gap-1 text-sm text-foreground/50 group-hover:text-foreground/70 transition-colors">
               <span className="text-foreground/30">&gt;</span>
               <span>scroll</span>
               <motion.span

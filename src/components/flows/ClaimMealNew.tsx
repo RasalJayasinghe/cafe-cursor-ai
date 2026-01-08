@@ -292,7 +292,7 @@ export function ClaimMealNew() {
                 <p className="text-sm text-muted-foreground">
                   Your Order Number
                 </p>
-                <p className="text-4xl font-mono font-bold text-green-700 dark:text-green-400 tracking-wider">
+                <p className="text-4xl font-bold text-green-700 dark:text-green-400 tracking-wider">
                   #{orderId.slice(0, 8).toUpperCase()}
                 </p>
               </div>

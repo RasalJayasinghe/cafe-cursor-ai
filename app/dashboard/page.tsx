@@ -290,7 +290,7 @@ export default function KitchenQueue() {
                         </>
                       )}
                     </div>
-                    <span className="text-sm text-muted-foreground font-mono">
+                    <span className="text-sm text-muted-foreground">
                       · Synced {lastRefresh.toLocaleTimeString()}
                     </span>
                   </div>
@@ -525,7 +525,7 @@ export default function KitchenQueue() {
                         <div className="flex items-center gap-5">
                           {/* Token Badge */}
                           <div
-                            className={`relative px-5 py-4 rounded-xl font-mono text-2xl font-bold tracking-wider ${
+                            className={`relative px-5 py-4 rounded-xl text-2xl font-bold tracking-wider ${
                               isNew
                                 ? "bg-foreground text-background"
                                 : isCompleted

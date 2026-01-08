@@ -11,7 +11,7 @@ const Map = dynamic(() => import("@/src/components/ui/Map").then((mod) => mod.Ma
   ssr: false,
   loading: () => (
     <div className="w-full h-full bg-neutral-900 animate-pulse flex items-center justify-center">
-      <span className="text-white/30 font-mono text-sm">Loading map...</span>
+      <span className="text-white/30 text-sm">Loading map...</span>
     </div>
   ),
 });
@@ -107,7 +107,7 @@ function CountdownUnit({ value, label, index }: TimeUnit & { index: number }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 + index * 0.1 }}
-          className="mt-2 sm:mt-3 md:mt-4 text-[8px] xs:text-[9px] sm:text-xs md:text-sm font-mono uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/40 text-center"
+          className="mt-2 sm:mt-3 md:mt-4 text-[8px] xs:text-[9px] sm:text-xs md:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/40 text-center"
         >
           {label}
         </motion.p>
@@ -348,15 +348,15 @@ export default function CountdownPage() {
           >
             <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white/[0.03] border border-white/10 rounded-full backdrop-blur-sm">
               <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
-              <span className="text-[10px] sm:text-xs md:text-sm font-mono text-white/70">24 Jan 2026</span>
+              <span className="text-[10px] sm:text-xs md:text-sm text-white/70">24 Jan 2026</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white/[0.03] border border-white/10 rounded-full backdrop-blur-sm">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
-              <span className="text-[10px] sm:text-xs md:text-sm font-mono text-white/70">10AM - 10PM</span>
+              <span className="text-[10px] sm:text-xs md:text-sm text-white/70">10AM - 10PM</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white/[0.03] border border-white/10 rounded-full backdrop-blur-sm">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
-              <span className="text-[10px] sm:text-xs md:text-sm font-mono text-white/70">Kai Colombo</span>
+              <span className="text-[10px] sm:text-xs md:text-sm text-white/70">Kai Colombo</span>
             </div>
           </motion.div>
 
@@ -421,7 +421,7 @@ export default function CountdownPage() {
           >
             {/* Connectivity Partner */}
             <div className="flex flex-col items-center">
-              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">
                 Connectivity Partner
               </span>
               <div className="h-12 sm:h-16 md:h-20 w-40 sm:w-52 md:w-64 overflow-hidden flex items-center justify-center">
@@ -436,7 +436,7 @@ export default function CountdownPage() {
             
             {/* Venue Partner */}
             <div className="flex flex-col items-center">
-              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 mb-2">
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">
                 Venue Partner
               </span>
               <div className="h-12 sm:h-16 md:h-20 w-40 sm:w-52 md:w-64 overflow-hidden flex items-center justify-center">
@@ -477,7 +477,7 @@ export default function CountdownPage() {
           >
             <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
               <div className="h-[1px] w-6 sm:w-8 bg-white/30" />
-              <span className="text-[9px] sm:text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/50">
+              <span className="text-[9px] sm:text-[10px] md:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/50">
                 The Venue
               </span>
             </div>
@@ -485,7 +485,7 @@ export default function CountdownPage() {
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white sm:mb-5">
               Kai Colombo
             </h2>
-            <p className="text-white/60 text-xs sm:text-sm font-mono mb-3 sm:mb-4">
+            <p className="text-white/60 text-xs sm:text-sm mb-3 sm:mb-4">
               74 Flower Rd, Colombo 00700
             </p>
             
@@ -498,7 +498,7 @@ export default function CountdownPage() {
               href="https://www.google.com/maps/place/Kai+Colombo-+Coffee+Bar+and+Eatery/@6.9069439,79.8580735,21z/data=!4m14!1m7!3m6!1s0x3ae2590077592baf:0x27efcfbd6002c560!2sKai+Colombo-+Coffee+Bar+and+Eatery!8m2!3d6.9070594!4d79.8582979!16s%2Fg%2F11xssyxv05!3m5!1s0x3ae2590077592baf:0x27efcfbd6002c560!8m2!3d6.9070594!4d79.8582979!16s%2Fg%2F11xssyxv05"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-mono text-white/70 hover:text-white transition-colors group"
+              className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70 hover:text-white transition-colors group"
             >
               <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Get Directions</span>

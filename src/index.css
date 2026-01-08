@@ -132,8 +132,18 @@
   }
   
   /* Force all text elements to use the font */
-  p, span, a, li, td, th, label, input, button, textarea, select {
+  p, span, a, li, td, th, label, input, button, textarea, select, div {
     font-family: 'CursorGothic', system-ui, sans-serif;
+  }
+
+  /* Override monospace/code elements */
+  code, pre, kbd, samp, var {
+    font-family: 'CursorGothic', system-ui, sans-serif;
+  }
+
+  /* Universal fallback */
+  * {
+    font-family: inherit;
   }
 }
 
